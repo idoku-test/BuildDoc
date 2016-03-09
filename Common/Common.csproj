@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{731B583C-F2E4-471F-A22B-5D5E1EDA8462}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common</RootNamespace>
+    <AssemblyName>Common</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SharedBinaries\log4net.2.0.0\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Log4Net, Version=1.2.0.1, Culture=neutral, PublicKeyToken=af08829b84f0328e">
+      <HintPath>..\SharedBinaries\log4net.2.0.0\Common.Logging.Log4Net.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Aliases>global</Aliases>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\SharedBinaries\NPOI\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\SharedBinaries\NPOI\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <HintPath>..\SharedBinaries\log4net.2.0.0\log4net.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.JScript" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\SharedBinaries\Json.Net\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>..\SharedBinaries\NPOI\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\SharedBinaries\NPOI\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\SharedBinaries\NPOI\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\SharedBinaries\NPOI\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.ScratchPad.HWPF">
+      <HintPath>..\SharedBinaries\NPOI\NPOI.ScratchPad.HWPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Aop">
+      <HintPath>..\SharedBinaries\Spring.NET\Spring.Aop.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SharedBinaries\Spring.NET\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Baidu\MapPoint.cs" />
+    <Compile Include="Baidu\StaticMapHelper.cs" />
+    <Compile Include="Cache\ICacheClient.cs" />
+    <Compile Include="Cache\LocalCacheClient.cs" />
+    <Compile Include="Calculate\CalBase.cs" />
+    <Compile Include="Calculate\CalculateTable.cs" />
+    <Compile Include="Calculate\CalDBJ.cs" />
+    <Compile Include="Calculate\CalDBX.cs" />
+    <Compile Include="Calculate\CalZHDBJ.cs" />
+    <Compile Include="Calculate\CalZHDBX.cs" />
+    <Compile Include="Calculate\TaxType.cs" />
+    <Compile Include="Extension\DateExtensions.cs" />
+    <Compile Include="Helper\CacheHelper.cs" />
+    <Compile Include="Helper\ConfigHelper.cs" />
+    <Compile Include="Helper\EnumHelper.cs" />
+    <Compile Include="Helper\FileHelper.cs" />
+    <Compile Include="Helper\INIHelper.cs" />
+    <Compile Include="Helper\JsonTools.cs" />
+    <Compile Include="Helper\RSAHelper.cs" />
+    <Compile Include="Helper\StringHelper.cs" />
+    <Compile Include="Helper\XmlHelper.cs" />
+    <Compile Include="Helper\DecimalHelper.cs" />
+    <Compile Include="ImageProcessor\Captcha.cs" />
+    <Compile Include="Helper\MemoryCacheHelper.cs" />
+    <Compile Include="ImageProcessor\ImageShrink.cs" />
+    <Compile Include="Logging\LogerHelper.cs" />
+    <Compile Include="News\GetNews.cs" />
+    <Compile Include="Other\MemoryTributary.cs" />
+    <Compile Include="Other\OperationTimer.cs" />
+    <Compile Include="Extension\StringExtensions.cs" />
+    <Compile Include="Other\HashingCompute.cs" />
+    <Compile Include="Extension\CommonExtension.cs" />
+    <Compile Include="ImageProcessor\ImageFactory.cs" />
+    <Compile Include="ImageProcessor\Imaging\AnchorPosition.cs" />
+    <Compile Include="ImageProcessor\Imaging\BorderLayer.cs" />
+    <Compile Include="ImageProcessor\Imaging\ColorQuantizer.cs" />
+    <Compile Include="ImageProcessor\Imaging\ImageUtils.cs" />
+    <Compile Include="ImageProcessor\Imaging\ResizeLayer.cs" />
+    <Compile Include="ImageProcessor\Imaging\ResizeMode.cs" />
+    <Compile Include="ImageProcessor\Imaging\ResponseType.cs" />
+    <Compile Include="ImageProcessor\Imaging\RotateLayer.cs" />
+    <Compile Include="ImageProcessor\Imaging\RoundedCornerLayer.cs" />
+    <Compile Include="ImageProcessor\Imaging\TextLayer.cs" />
+    <Compile Include="ImageProcessor\Processors\Borders.cs" />
+    <Compile Include="ImageProcessor\Processors\IGraphicsProcessor.cs" />
+    <Compile Include="ImageProcessor\Processors\Resize.cs" />
+    <Compile Include="ImageProcessor\Processors\Rotate.cs" />
+    <Compile Include="ImageProcessor\Processors\RoundedCorners.cs" />
+    <Compile Include="ImageProcessor\Processors\Watermark.cs" />
+    <Compile Include="Intercept\LoggingAroundAdvice.cs" />
+    <Compile Include="Interface\ICreateFactory.cs" />
+    <Compile Include="Logging\LogHelper.cs" />
+    <Compile Include="Mail\EmailEngine.cs" />
+    <Compile Include="Mail\EmailEntity.cs" />
+    <Compile Include="Mail\EmailPop3.cs" />
+    <Compile Include="OfficeHelper\DocumentWith2003.cs" />
+    <Compile Include="OfficeHelper\DocumentWith2007.cs" />
+    <Compile Include="OfficeHelper\ExcelHelperWithNPOI.cs" />
+    <Compile Include="OfficeHelper\HeaderBlockConstants.cs" />
+    <Compile Include="OfficeHelper\IExcelHelper.cs" />
+    <Compile Include="OfficeHelper\IParagraph.cs" />
+    <Compile Include="OfficeHelper\IWordDocument.cs" />
+    <Compile Include="OfficeHelper\IWordHelper.cs" />
+    <Compile Include="OfficeHelper\ParagraphWith2003.cs" />
+    <Compile Include="OfficeHelper\ParagraphWith2007.cs" />
+    <Compile Include="OfficeHelper\POIFSConstants.cs" />
+    <Compile Include="OfficeHelper\WordHelperWithNPOI.cs" />
+    <Compile Include="OfficeHelper\WorkbookFactory.cs" />
+    <Compile Include="Other\RandomHelper.cs" />
+    <Compile Include="Helper\NetHelper.cs" />
+    <Compile Include="Other\RelateWithDLL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SharpZip\SharpZipHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Baidu\StaticMap.cd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

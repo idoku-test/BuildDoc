@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Redas.WebApp.Common.Baidu.Bmap.StaticMapHelper">
+    <Position X="3" Y="0.5" Width="3.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Redas.WebApp.Common.Baidu.Bmap.StaticMapHelper.MapMarkIcon" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Bmap\StaticMapHelper.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Redas.WebApp.Common.Baidu.Bmap.StaticMapHelper.MapMarker">
+        <TypeIdentifier>
+          <NewMemberFileName>Bmap\StaticMapHelper.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Redas.WebApp.Common.Baidu.Bmap.StaticMapHelper.MapLabel">
+        <TypeIdentifier>
+          <NewMemberFileName>Bmap\StaticMapHelper.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Enum Name="Redas.WebApp.Common.Baidu.Bmap.StaticMapHelper.mMarkStyle" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Bmap\StaticMapHelper.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Redas.WebApp.Common.Baidu.Bmap.StaticMapHelper.mFormat" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Bmap\StaticMapHelper.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Redas.WebApp.Common.Baidu.Bmap.StaticMapHelper.mSize">
+        <TypeIdentifier>
+          <NewMemberFileName>Bmap\StaticMapHelper.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Redas.WebApp.Common.Baidu.Bmap.StaticMapHelper.mColor">
+        <TypeIdentifier>
+          <NewMemberFileName>Bmap\StaticMapHelper.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAIAAEAFEEAAAAAEAoIAEAAQAIAIAAgAFEAAAAAAAA=</HashCode>
+      <FileName>Common\Baidu\StaticMapHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="宋体" Size="9" />
+</ClassDiagram>
