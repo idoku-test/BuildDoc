@@ -1,0 +1,571 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Drawing.Text;
+using Common.ImageProcessor.Imaging;
+using Common.Extensions;
+
+namespace Common.ImageProcessor.Processors
+{
+    /// <summary>
+    /// Encapsulates methods to change the alpha component of the image to effect its transparency.
+    /// </summary>
+    public class Watermark : IGraphicsProcessor
+    {
+        /// <summary>
+        /// The regular expression to search strings for.
+        /// </summary>
+        private static readonly Regex QueryRegex = new Regex(@"watermark=[^&]*", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search strings for the text attribute.
+        /// </summary>
+        private static readonly Regex TextRegex = new Regex(@"text-[^/:?#\[\]@!$&'()*%\|,;=]+", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search strings for the position attribute.
+        /// </summary>
+        private static readonly Regex PositionRegex = new Regex(@"position-\d+[-,]\d+", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search string for the  alignment attribute.
+        /// </summary>
+        private static readonly Regex DirectionRegex = new Regex(@"direction-(LeftTop|LeftBottom|RightTop|RightBottom|TopMiddle|BottomMiddle)", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search strings for the color attribute.
+        /// </summary>
+        private static readonly Regex ColorRegex = new Regex(@"color-([0-9a-fA-F]{3}){1,2}", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search strings for the font size attribute.
+        /// </summary>
+        private static readonly Regex FontSizeRegex = new Regex(@"size-\d{1,3}", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The font scale regex
+        /// </summary>
+        private static readonly Regex FontScaleRegex = new Regex(@"scale-\d+(\.\d+)?", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search strings for the font style attribute.
+        /// </summary>
+        private static readonly Regex FontStyleRegex = new Regex(@"style-(bold|italic|regular|strikeout|underline)", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search strings for the font family attribute.
+        /// </summary>
+        private static readonly Regex FontFamilyRegex = new Regex(@"font-[^/:?#\[\]@!$&'()*%\|,;=0-9]+", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search strings for the opacity attribute.
+        /// </summary>
+        private static readonly Regex OpacityRegex = new Regex(@"opacity-(?:100|[1-9]?[0-9])", RegexOptions.Compiled);
+
+        /// <summary>
+        /// The regular expression to search strings for the shadow attribute.
+        /// </summary>
+        private static readonly Regex ShadowRegex = new Regex(@"shadow-true", RegexOptions.Compiled);
+
+
+        /// <summary>
+        /// The sizes of scale wartermark size
+        /// </summary>
+        private static readonly int[] sizes = new int[] { 1000, 800, 700, 650, 600, 560, 540, 500, 450, 400, 380,
+                    360, 340, 320, 300, 280, 260, 240, 220, 200, 180, 160, 140, 120, 100, 80, 72, 64,
+                    48, 32, 28, 26, 24, 20, 28, 16, 14, 12, 10, 8, 6, 4, 2 };
+        #region IGraphicsProcessor Members
+        /// <summary>
+        /// Gets the regular expression to search strings for.
+        /// </summary>
+        public Regex RegexPattern
+        {
+            get
+            {
+                return QueryRegex;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets DynamicParameter.
+        /// </summary>
+        public dynamic DynamicParameter
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets the order in which this processor is to be used in a chain.
+        /// </summary>
+        public int SortOrder
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets or sets any additional settings required by the processor.
+        /// </summary>
+        public Dictionary<string, string> Settings
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The position in the original string where the first character of the captured substring was found.
+        /// </summary>
+        /// <param name="queryString">
+        /// The query string to search.
+        /// </param>
+        /// <returns>
+        /// The zero-based starting position in the original string where the captured substring was found.
+        /// </returns>
+        public int MatchRegexIndex(string queryString)
+        {
+            int index = 0;
+
+            // Set the sort order to max to allow filtering.
+            this.SortOrder = int.MaxValue;
+
+            foreach (Match match in this.RegexPattern.Matches(queryString))
+            {
+                if (match.Success)
+                {
+                    if (index == 0)
+                    {
+                        // Set the index on the first instance only.
+                        this.SortOrder = match.Index;
+
+                        TextLayer textLayer = new TextLayer();
+
+                        string toParse = match.Value;
+
+                        textLayer.Text = this.ParseText(toParse);
+                        textLayer.Position = this.ParsePosition(toParse);
+                        textLayer.Direction = this.ParseDirection(toParse); 
+                        textLayer.TextColor = this.ParseColor(toParse);
+                        textLayer.FontSize = this.ParseFontSize(toParse);
+                        textLayer.FontScale = this.ParseFontScale(toParse);
+                        textLayer.Font = this.ParseFontFamily(toParse);
+                        textLayer.Style = this.ParseFontStyle(toParse);
+                        textLayer.Opacity = this.ParseOpacity(toParse);
+                        textLayer.DropShadow = this.ParseDropShadow(toParse);
+
+                        this.DynamicParameter = textLayer;
+                    }
+
+                    index += 1;
+                }
+            }
+
+            return this.SortOrder;
+        }
+
+        /// <summary>
+        /// Processes the image.
+        /// </summary>
+        /// <param name="factory">
+        /// The the current instance of the <see cref="T:ImageProcessor.ImageFactory"/> class containing
+        /// the image to process.
+        /// </param>
+        /// <returns>
+        /// The processed image from the current instance of the <see cref="T:ImageProcessor.ImageFactory"/> class.
+        /// </returns>
+        public Image ProcessImage(ImageFactory factory)
+        {
+            Bitmap newImage = null;
+            Image image = factory.Image;
+
+            try
+            {
+                newImage = new Bitmap(image);
+                TextLayer textLayer = this.DynamicParameter;
+                string text = textLayer.Text;
+                int opacity = textLayer.Opacity;
+                int fontSize = textLayer.FontSize;
+                float fontScale = textLayer.FontScale;
+
+                FontStyle fontStyle = textLayer.Style;
+
+
+           
+
+                using (Graphics graphics = Graphics.FromImage(newImage))
+                {
+                    //using (Font font = this.GetFont(textLayer.Font, fontSize, fontStyle))
+                    //{
+          
+                            //建立字体大小的数组,循环找出适合图片的水印字体                  
+                            System.Drawing.Font font = null;
+                            System.Drawing.SizeF crSize = new SizeF();
+                            for (int i = 0; i < 43; i++)
+                            {
+                                font = new Font("arial", sizes[i], FontStyle.Bold);
+                                crSize = graphics.MeasureString(text, font);
+
+                                if ((ushort)crSize.Width < (ushort)image.Width * fontScale)
+                                    break;
+                            }
+                                       
+                    using (StringFormat drawFormat = new StringFormat())
+                    {
+                        using (Brush brush = new SolidBrush(Color.FromArgb(opacity, textLayer.TextColor)))
+                        {
+                            Point origin = textLayer.Position;
+
+                            // Work out the size of the text.
+                            SizeF textSize = graphics.MeasureString(text, font, new SizeF(image.Width, image.Height), drawFormat);
+
+                            // We need to ensure that there is a position set for the watermark
+                            if (origin == Point.Empty)
+                            {
+                                //int x = (int)(image.Width - textSize.Width) / 2;
+                                //int y = (int)(image.Height - textSize.Height) / 2;
+                                int x, y;
+                                switch (textLayer.Direction)
+                                {
+                                    case Direction.Center:
+                                        x = (int)(image.Width - textSize.Width) / 2;
+                                        y = (int)(image.Height - textSize.Height) / 2;
+                                        break;
+                                    case Direction.LeftTop:
+                                        x = 0;
+                                        y = 0;
+                                        break;
+                                    case Direction.LeftBottom:
+                                        x = 0;
+                                        y = (int)(image.Height - textSize.Height);
+                                        break;
+                                    case Direction.RightTop:
+                                        x = (int)(image.Width - textSize.Width);
+                                        y = 0;
+                                        break;
+                                    case Direction.RightBottom:
+                                        x = (int)(image.Width - textSize.Width);
+                                        y = (int)(image.Height - textSize.Height);
+                                        break;
+                                    case Direction.TopMiddle:
+                                        x = (int)(image.Width - textSize.Width) / 2;
+                                        y = 0;
+                                        break;
+                                    case Direction.BottomMiddle:
+                                        x = (int)(image.Width - textSize.Width) / 2;
+                                        y = (int)(image.Height - textSize.Height);
+                                        break;
+                                    default:
+                                        x = (int)(image.Width - textSize.Width) / 2;
+                                        y = (int)(image.Height - textSize.Height) / 2;
+                                        break;
+                                }
+
+                                origin = new Point(x, y);
+                            }
+
+                            // Set the hinting and draw the text.
+                            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+                            // Create bounds for the text.
+                            RectangleF bounds;
+
+                            if (textLayer.DropShadow)
+                            {
+                                // Shadow opacity should change with the base opacity.
+                                int shadowOpacity = opacity - (int)Math.Ceiling((30 / 100f) * 255);
+                                int finalShadowOpacity = shadowOpacity > 0 ? shadowOpacity : 0;
+
+                                using (Brush shadowBrush = new SolidBrush(Color.FromArgb(finalShadowOpacity, Color.Black)))
+                                {
+                                    // Scale the shadow position to match the font size.
+                                    // Magic number but it's based on artistic preference.
+                                    int shadowDiff = (int)Math.Ceiling(fontSize / 24f);
+                                    Point shadowPoint = new Point(origin.X + shadowDiff, origin.Y + shadowDiff);
+
+                                    // Set the bounds so any overlapping text will wrap.
+                                    bounds = new RectangleF(shadowPoint, new SizeF(image.Width - shadowPoint.X, image.Height - shadowPoint.Y));
+
+                                    graphics.DrawString(text, font, shadowBrush, bounds, drawFormat);
+                                }
+                            }
+
+                            // Set the bounds so any overlapping text will wrap.
+                            bounds = new RectangleF(origin, new SizeF(image.Width - origin.X, image.Height - origin.Y));
+
+                            graphics.DrawString(text, font, brush, bounds, drawFormat);
+                        }
+                       // }
+                    }
+
+                    image.Dispose();
+                    image = newImage;
+                }
+            }
+            catch
+            {
+                if (newImage != null)
+                {
+                    newImage.Dispose();
+                }
+            }
+
+            return image;
+        }
+        #endregion
+
+        #region Private Methods
+        /// <summary>
+        /// Returns the correct <see cref="T:System.Drawing.Font"/> for the given parameters
+        /// </summary>
+        /// <param name="font">
+        /// The font.
+        /// </param>
+        /// <param name="fontSize">
+        /// The font size.
+        /// </param>
+        /// <param name="fontStyle">
+        /// The font style.
+        /// </param>
+        /// <returns>
+        /// The correct <see cref="T:System.Drawing.Font"/>
+        /// </returns>
+        private Font GetFont(string font, int fontSize, FontStyle fontStyle)
+        {
+            try
+            {
+                using (FontFamily fontFamily = new FontFamily(font))
+                {
+                    return new Font(fontFamily, fontSize, fontStyle, GraphicsUnit.Pixel);
+                }
+            }
+            catch
+            {
+                using (FontFamily fontFamily = FontFamily.GenericSansSerif)
+                {
+                    return new Font(fontFamily, fontSize, fontStyle, GraphicsUnit.Pixel);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the correct <see cref="T:System.String"/> for the given string.
+        /// </summary>
+        /// <param name="input">
+        /// The input string containing the value to parse.
+        /// </param>
+        /// <returns>
+        /// The correct <see cref="T:System.String"/> for the given string.
+        /// </returns>
+        private string ParseText(string input)
+        {
+            foreach (Match match in TextRegex.Matches(input))
+            {
+                // split on text-
+                return match.Value.Split('-')[1].Replace("+", " ");
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Returns the correct <see cref="T:System.Drawing.Point"/> for the given string.
+        /// </summary>
+        /// <param name="input">
+        /// The input string containing the value to parse.
+        /// </param>
+        /// <returns>
+        /// The correct <see cref="T:System.Drawing.Point"/>
+        /// </returns>
+        private Point ParsePosition(string input)
+        {
+            foreach (Match match in PositionRegex.Matches(input))
+            {
+                int[] position = match.Value.ToPositiveIntegerArray();
+
+                if (position != null)
+                {
+                    int x = position[0];
+                    int y = position[1];
+
+                    return new Point(x, y);
+                }
+            }
+
+            return Point.Empty;
+        }
+
+        /// <summary>
+        /// Returns the correct <see cref="T:System.Drawing.Color"/> for the given string.
+        /// </summary>
+        /// <param name="input">
+        /// The input string containing the value to parse.
+        /// </param>
+        /// <returns>
+        /// The correct <see cref="T:System.Drawing.Color"/>
+        /// </returns>
+        private Color ParseColor(string input)
+        {
+            foreach (Match match in ColorRegex.Matches(input))
+            {
+                // split on color-hex
+                return ColorTranslator.FromHtml("#" + match.Value.Split('-')[1]);
+            }
+
+            return Color.Black;
+        }
+
+        /// <summary>
+        /// Returns the correct <see cref="T:System.Int32"/> for the given string.
+        /// </summary>
+        /// <param name="input">
+        /// The input string containing the value to parse.
+        /// </param>
+        /// <returns>
+        /// The correct <see cref="T:System.Int32"/>
+        /// </returns>
+        private int ParseFontSize(string input)
+        {            
+            foreach (Match match in FontSizeRegex.Matches(input))
+            {
+                // split on size-value
+                return int.Parse(match.Value.Split('-')[1]);
+            }
+          
+            // Matches the default number in TextLayer.
+            return 48;
+        }
+
+        /// <summary>
+        /// Parses the font scale.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns></returns>
+        private float ParseFontScale(string input)
+        {
+            foreach (Match match in FontScaleRegex.Matches(input))
+            {
+                return float.Parse(match.Value.Split('-')[1]);
+            }
+            //Matches the default number in TextLayer
+            return 0.2f;
+        }
+
+
+        /// <summary>
+        /// Parses the direction.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns></returns>
+        private Direction ParseDirection(string input)
+        {
+            Direction direction = Direction.Center;
+            foreach (Match match in DirectionRegex.Matches(input))
+            {              
+                //split direction
+                if (Enum.TryParse<Direction>(match.Value.Split('-')[1], out direction))
+                {
+                    direction = direction;
+                }                              
+            }
+            return direction;
+        }
+
+        /// <summary>
+        /// Returns the correct <see cref="T:System.Drawing.FontStyle"/> for the given string.
+        /// </summary>
+        /// <param name="input">
+        /// The string containing the respective font style.
+        /// </param>
+        /// <returns>
+        /// The correct <see cref="T:System.Drawing.FontStyle"/>
+        /// </returns>
+        private FontStyle ParseFontStyle(string input)
+        {
+            FontStyle fontStyle = FontStyle.Bold;
+
+            foreach (Match match in FontStyleRegex.Matches(input))
+            {
+                // split on style-
+                switch (match.Value.Split('-')[1])
+                {
+                    case "italic":
+                        fontStyle = FontStyle.Italic;
+                        break;
+                    case "regular":
+                        fontStyle = FontStyle.Regular;
+                        break;
+                    case "strikeout":
+                        fontStyle = FontStyle.Strikeout;
+                        break;
+                    case "underline":
+                        fontStyle = FontStyle.Underline;
+                        break;
+                }
+            }
+
+            return fontStyle;
+        }
+
+        /// <summary>
+        /// Returns the correct <see cref="T:System.String"/> containing the font family for the given string.
+        /// </summary>
+        /// <param name="input">
+        /// The input string containing the value to parse.
+        /// </param>
+        /// <returns>
+        /// The correct <see cref="T:System.String"/> containing the font family for the given string.
+        /// </returns>
+        private string ParseFontFamily(string input)
+        {
+            foreach (Match match in FontFamilyRegex.Matches(input))
+            {
+                // split on font-
+                string font = match.Value.Split('-')[1].Replace("+", " ");
+
+                return font;
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Returns the correct <see cref="T:System.Int32"/> containing the opacity for the given string.
+        /// </summary>
+        /// <param name="input">
+        /// The input string containing the value to parse.
+        /// </param>
+        /// <returns>
+        /// The correct <see cref="T:System.Int32"/> containing the opacity for the given string.
+        /// </returns>
+        private int ParseOpacity(string input)
+        {
+            foreach (Match match in OpacityRegex.Matches(input))
+            {
+                // split on opacity-
+                return int.Parse(match.Value.Split('-')[1]);
+            }
+
+            // full opacity - matches the Textlayer default.
+            return 100;
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the watermark is to have a shadow.
+        /// </summary>
+        /// <param name="input">
+        /// The input string containing the value to parse.
+        /// </param>
+        /// <returns>
+        /// The true if the watermark is to have a shadow; otherwise false.
+        /// </returns>
+        private bool ParseDropShadow(string input)
+        {
+            return ShadowRegex.Matches(input).Cast<Match>().Any();
+        }
+
+        #endregion
+    }
+}
