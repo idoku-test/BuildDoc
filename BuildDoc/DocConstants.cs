@@ -61,26 +61,31 @@
         /// <summary>
         /// 条件标签
         /// </summary>
+        [Description("条件标签")]
         ConditionLabel,
 
         /// <summary>
         /// 文档标签
         /// </summary>
+        [Description("文档标签")]
         DocLabel,
 
         /// <summary>
         /// 图像标签
         /// </summary>
+        [Description("图像标签")]
         ImageLabel,
 
         /// <summary>
         /// 表格标签
         /// </summary>
+        [Description("表格标签")]
         TableLabel,
 
         /// <summary>
         /// 文本标签
         /// </summary>
+        [Description("文本标签")]
         TextLabel
     }
 
@@ -110,14 +115,14 @@
         /// <summary>
         /// 动态表单
         /// </summary>
-        [Description("动态表单")]
-        Dynamic,
+        //[Description("动态表单")]
+        //Dynamic,
 
         /// <summary>
         /// 多数据源
         /// </summary>
-        [Description("多数据源")]
-        MultiSource
+        //[Description("多数据源")]
+        //MultiSource
     }
 
     /// <summary>
