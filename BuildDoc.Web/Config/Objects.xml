@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net">
+  <!-- 验证码逻辑 -->
+  <object id="IVerifyCodeLogic" type="Redas.Logic.VerifyCodeLogic, Redas.Logic" />
+
+</objects>

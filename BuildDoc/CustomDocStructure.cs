@@ -98,7 +98,7 @@
                 this.structureID = structureID;
                 //this.customerID = customerID;
                 this.NewSection = false;
-                this.buildWord = new BuildWord(FileHelper.GetFileStream(this.FileID));
+                //this.buildWord = new BuildWord(FileHelper.GetFileStream(this.FileID));
                 //this.LabelList = this.GetLabelList();
             }
             catch {

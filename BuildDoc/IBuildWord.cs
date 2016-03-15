@@ -13,6 +13,10 @@
     /// </summary>
     public interface IBuildWord
     {
+        BuildWord Load(Stream stream);
+
+        BuildWord Load(string fullPath);
+
         /// <summary>
         /// 插入文档
         /// </summary>

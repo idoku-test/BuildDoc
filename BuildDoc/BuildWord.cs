@@ -17,6 +17,26 @@
     public class BuildWord : IBuildWord
     {
         /// <summary>
+        /// 内部文档地址
+        /// </summary>
+        private string docPath;
+
+        /// <summary>
+        /// 内部文档对象
+        /// </summary>
+        private Document doc = null;
+
+        /// <summary>
+        /// 内部文档对象流
+        /// </summary>
+        private Stream docStream = null;
+
+        /// <summary>
+        /// 是否清除文档最后面的分节线
+        /// </summary>
+        private bool clearBlankLineWithDocumentEnd = false;
+
+        /// <summary>
         /// 空
         /// </summary>
         public BuildWord() 
@@ -36,19 +56,41 @@
         }
 
         /// <summary>
-        /// 内部文档对象
+        /// 读取文档
         /// </summary>
-        private Document doc = null;
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        public BuildWord Load(string fullPath)
+        {
+           
+            string docName = Path.GetFileName(fullPath);
+            
+            FileInfo fi = new FileInfo(fullPath);
+            
+            if (fi.Exists)
+            {
+                this.docPath = fullPath;
+                this.doc = new Document(fullPath);    
+              
+            }
+
+            return this;
+        }
 
         /// <summary>
-        /// 内部文档对象流
+        /// 读取文档
         /// </summary>
-        private Stream docStream = null;
+        /// <param name="docStream"></param>
+        /// <returns></returns>
+        public BuildWord Load(Stream docStream)
+        {
+            this.doc = new Document(docStream);
+            this.docStream = new MemoryTributary();
+            // 清除下划线开头的书签
+            this.DelBookmarks(this.doc, "_");
+            return this;
+        }
 
-        /// <summary>
-        /// 是否清除文档最后面的分节线
-        /// </summary>
-        private bool clearBlankLineWithDocumentEnd = false;
 
         #region--InsertDoc
         /// <summary>
