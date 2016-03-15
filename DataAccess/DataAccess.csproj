@@ -62,12 +62,8 @@
     <Compile Include="Database\HelperBase.cs" />
     <Compile Include="Database\OracleHelper.cs" />
     <Compile Include="Database\OracleHelper_static.cs" />
-    <Compile Include="Implement\BaseHelper.cs" />
-    <Compile Include="Implement\EGJDBHelper.cs" />
     <Compile Include="Implement\OmpdDBHelper.cs" />
-    <Compile Include="Implement\OriDBHelper.cs" />
     <Compile Include="Implement\RedasDBHelper.cs" />
-    <Compile Include="Implement\TestDBHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Database\SqlServerHelper.cs" />
     <Compile Include="Database\SqlServerHelper_static.cs" />

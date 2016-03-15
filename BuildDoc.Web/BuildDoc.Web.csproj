@@ -109,9 +109,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Logic\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Documents\" />
-    <Folder Include="Views\Labels\" />
     <Folder Include="Views\Mothers\" />
   </ItemGroup>
   <ItemGroup>
@@ -122,14 +121,17 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LabelsController.cs" />
     <Compile Include="Controllers\MothersController.cs" />
+    <Compile Include="Extensions\HtmlDropDownExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Logic\IReportLogic.cs" />
-    <Compile Include="Logic\ReportLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\AOP.xml" />
+    <Content Include="Config\Objects.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
@@ -139,6 +141,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Docs\test19.doc" />
+    <Content Include="Config\log4net.config" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -163,8 +166,19 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Labels\Index.cshtml" />
+    <Content Include="Views\Documents\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BuildDoc.Logic\BuildDoc.Logic.csproj">
+      <Project>{f777968c-9e52-4374-b1eb-6ecd88b8e3c0}</Project>
+      <Name>BuildDoc.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildDoc\BuildDoc.csproj">
+      <Project>{b723c4d1-5e43-44df-bcc6-5d99124417b5}</Project>
+      <Name>BuildDoc</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />

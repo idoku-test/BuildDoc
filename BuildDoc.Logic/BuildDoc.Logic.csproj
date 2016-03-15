@@ -43,6 +43,16 @@
     <Compile Include="IBuildDocLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BuildDoc.Entities\BuildDoc.Entities.csproj">
+      <Project>{0c1c0dd2-38fa-4693-8dd1-e7f9e71f4ba0}</Project>
+      <Name>BuildDoc.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{32246b87-3afe-44fc-a98c-1b3b7fd4d9ba}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
