@@ -32,6 +32,24 @@ namespace BuildDoc.Web
                     Selected = (value.Equals(selectedValue))
                 };
             return htmlHelper.DropDownList(name, items, optionLabel, htmlAttributes);
+        }
+
+
+        public static MvcHtmlString EnumDropDownList<TEnum>(this HtmlHelper htmlHelper, string name, TEnum selectedValue, string optionLabel, bool isEnumValue, object htmlAttributes)
+        {
+            var values = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
+            var items =
+                from value in values
+                let fi = value.GetType().GetField(value.ToString())
+                let attribute = fi.GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault()
+                let text = attribute == null ? value.ToString() : ((DescriptionAttribute)attribute).Description
+                select new SelectListItem
+                {
+                    Text = text,
+                    Value = isEnumValue? value.ToString() : Convert.ToInt32(value).ToString(),
+                    Selected = (value.Equals(selectedValue))
+                };
+            return htmlHelper.DropDownList(name, items, optionLabel, htmlAttributes);
         } 
     }
 }

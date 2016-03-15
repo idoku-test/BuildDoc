@@ -1,9 +1,12 @@
 ﻿$(function () {
 
-    $('[name*="GetDataMethod_"]').hide();
+    $('[name="GetDataMethod"]').hide();
 
-    $('#GetDataMethod').change(function () {
-        var val = $(this).find("option:selected").text();;
-        $('[name="GetDataMethod_' + val + '"]').show();
+    $('#DataMethod').change(function () {
+        var val = $(this).val();
+        $('[name="GetDataMethod"][method="' + val + '"]').show();
+        $('[name="GetDataMethod"][v!="' + val + '"]').hide();
     });
+
+    $('#DataMethod').change();
 })
