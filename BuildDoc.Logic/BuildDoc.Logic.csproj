@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Spring.Aop">
+      <HintPath>..\SharedBinaries\Spring.NET\Spring.Aop.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core">
+      <HintPath>..\SharedBinaries\Spring.NET\Spring.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +50,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BuildDoc.Entities\BuildDoc.Entities.csproj">
+      <Project>{0c1c0dd2-38fa-4693-8dd1-e7f9e71f4ba0}</Project>
+      <Name>BuildDoc.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{32246b87-3afe-44fc-a98c-1b3b7fd4d9ba}</Project>
       <Name>DataAccess</Name>
