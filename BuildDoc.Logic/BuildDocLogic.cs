@@ -41,9 +41,10 @@ namespace BuildDoc.Logic
                    
                     //提取sql中的参数
                     Regex reg = new Regex(@"(?<=as\b).*?(?=,)");
-                    var fields = new List<string>();
+                 
                     foreach (var info in result)
                     {
+                        var fields = new List<string>();
                         if (reg.IsMatch(info.SQL_CONTENT))
                         { 
                             var matches = reg.Matches(info.SQL_CONTENT);

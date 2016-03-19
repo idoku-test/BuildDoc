@@ -256,10 +256,10 @@ namespace BuildDoc
                 case FormatType.Date:
                     tmpValue = this.FormatDate(value);
                     break;
-                case FormatType.UpperNumber1:
+                case FormatType.Upper:
                     tmpValue = this.UpperNumber1(this.Fixed(value));
                     break;
-                case FormatType.UpperNumber2:
+                case FormatType.Ammount:
                     tmpValue = this.UpperNumber2(this.Fixed(value));
                     break;
                 case FormatType.ValueToText:

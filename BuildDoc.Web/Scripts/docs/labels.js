@@ -1,16 +1,39 @@
 ﻿var label = new Object();
 label.DataSource = null;
-$(function () {
 
+$(function () {
+  
     $('[name="GetDataMethod"]').hide();
 
+    //数据源切换
     $('#DataMethod').change(function () {
         var val = $(this).val();
         $('[name="GetDataMethod"][method="' + val + '"]').show();
         $('[name="GetDataMethod"][method!="' + val + '"]').hide();
     });
-
     $('#DataMethod').change();
+
+    //数据类型
+    $('#FormatType').change(function () {
+        var val = $(this).val();       
+        $('[name="FormatInf"][format="' + val + '"]').show();
+        $('[name="FormatInf"][format!="' + val + '"]').hide();
+    });
+    $('#FormatType').change();
+  
+   
+    //设置公式
+    $('#txtLabelFormula').click(function () {
+
+        AlertDiv('#alert_Formula');
+        var fields = [];
+
+        $('#grid').find("td[title=\"labelName\"]").each(function () {
+            fields.push($(this).text());
+        })
+        var feditor = new formualEditor(fields);
+
+    });
 
     label.BindDataSource($('#sltDataSource'));
 });
@@ -32,23 +55,23 @@ label.BindDataSource = function (sltSource) {
             var fields = datas[index].Fields;
             $('#sltDisplayFields').empty();
             $('#sltFilterFields').empty();
-            if (fields != null) {                
+            if (fields != null) {
                 for (var i = 0; i < fields.length; i++) {
-                   $('<option>', {
-                       val: fields[i],
-                       text: fields[i]
-                   }).appendTo($('#sltDisplayFields'));
-                   
-                   $('<option>', {
-                       val: fields[i],
-                       text: fields[i]
-                   }).appendTo($('#sltFilterFields'));
-                }                
-            }          
+                    $('<option>', {
+                        val: fields[i],
+                        text: fields[i]
+                    }).appendTo($('#sltDisplayFields'));
+
+                    $('<option>', {
+                        val: fields[i],
+                        text: fields[i]
+                    }).appendTo($('#sltFilterFields'));
+                }
+            }
         });
         $(sltSource).change();
     });
-}
+};
 
 
 

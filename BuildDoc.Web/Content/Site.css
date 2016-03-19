@@ -40,3 +40,41 @@ input[type="checkbox"].input-validation-error {
 .validation-summary-valid {
     display: none;
 }
+
+/***************alert******************/
+.alert{ width:100%; height:auto; padding:0; top:0; left:0; z-index:999999;display:none; position:fixed;}
+	
+	.alertZ{ width:100%; height:10000px; position:absolute; top:0; z-index:99; background-color:#000;filter:alpha(opacity=70);-moz-opacity:0.7;-khtml-opacity: 0.7;opacity: 0.7;  }
+	.alertC{ width:auto; height:auto; margin:0 auto; background-color:#fff;position:absolute; z-index:99999; border-radius:2px; padding-bottom:10px;}
+	.alertCT{ width:auto; height:50px; padding:0 20px; background-color:#f7f7f7; border-bottom:1px solid #999; border-radius:2px; cursor:move;}
+	.alertCT p{ width:auto; height:50px; line-height:50px; cursor:auto;}
+	.alertCT i{ margin-top:10px; cursor:pointer;}
+	.alertCB{width:auto; height:auto; margin:0 auto; padding:20px 20px 10px;}
+		.alertCB_S h1{ width:100%; height:30px; line-height:30px; padding:20px 0; font-weight:normal;font-size:16px;}
+		.alertCB_S h2{ width:100%; height:30px; line-height:30px; padding:10px 0; font-weight:normal; font-size:14px;}
+		.alertCB_S h1 i{ margin:0 10px 0 20px;}
+		.alertCB_S h2 i{ margin:0 10px 0 20px;}
+		.alertCB_S p{ width:auto; padding-left:60px; height:25px; line-height:25px; }
+        .alertCB p.ts {font:12px/22px "微软雅黑";margin-bottom: 10px;padding: 1%; border:1px solid #ccc;max-height:250px; overflow-y: auto;}
+            .alertCB p.ts img { display:block; margin:10px auto; max-width:520px; height:auto;}
+	.alertCM{ width:auto; height:auto;padding:0 20px 10px; overflow:hidden;}
+	.alertCMPic{ width:auto; height:auto;padding:0 20px 100px; overflow:hidden;}
+	
+	.alertCBT{width:100%; height:30px;}
+	.alertCBT h4{ float:left; height:30px; line-height:30px;font-size:14px; font-weight:normal;}
+	.alertCBT a.blue{height:30px; line-height:30px;float:left; margin-left:10px;} 
+	.alertCBT .Abutton{ margin-left:10px; margin-bottom:5px;}
+	
+	
+	.D_alert_B{width:auto; height:auto; padding:5px 0 10px; margin-top:10px;box-shadow:0px 0px 5px #aaa;}
+	
+	
+	
+	.alertT{ width:100%; height:36px; padding-bottom:14px;}
+		.alertT ul{ width:auto; height:auto; overflow:hidden;}
+		.alertT ul li{ float:left; width:auto;}
+		.alertT ul li a{ width:auto; height:30px; border-right:1px solid #d5d5d5; line-height:30px; margin:3px 0; background-color:#e5e5e5; padding:0 15px; display:block; text-align:center;}
+		.alertT ul li a.hover,.alertT ul li a:hover{padding:3px 15px; margin:0; background-color:#0090d9; color:#fff; border-radius:2px;}
+	.alertB{width:100%; height:auto; overflow:hidden; }
+		.alertBL{ width:60%; height:auto;}
+		.alertBR{ width:38%; height:auto;}

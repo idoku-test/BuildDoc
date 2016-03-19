@@ -1,9 +1,53 @@
 ﻿@model IList<string>
 @{    
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/docs/formula_editor.js"></script>
 <script src="~/Scripts/docs/labels.js"></script>
+
+
+<style>
+      .wBreak {
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+    .ui-autocomplete {
+        max-height: 200px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        padding-right: 5px;
+        z-index: 9999999;
+    }
+    /* IE 6 doesn't support max-height 
+* we use height instead, but this forces the menu to always be this tall 
+*/
+    * html .ui-autocomplete {
+        height: 200px;
+    }
+    .formula_operator {
+        height: 260px;
+    }
+
+        .formula_operator li {
+            width: 100px;
+            float: left;
+        }
+
+            .formula_operator li input {
+                width: 50px;
+                margin: 15px;
+            }
+    #formual_operands li {
+        text-align:left;
+        
+    }
+        #formual_operands li:hover {
+            background-color: #ffdf7e;
+        }
+</style> 
 
 <table id="grid" style=" width: 100%;" border="0" cellpadding="0" cellspacing="0" class="table table2">
     <!-- 正常显示 -->
@@ -18,17 +62,17 @@
     @foreach (var item in Model)
     {
       <tr>
-        <th style="width:50px">序号</th>
-        <th style="width:120px">@item</th>
-        <th style="width:80px">标签类型</th>
-        <th style="width:160px" class="wBreak">配置信息</th>
-        <th style="width:80px" class="wBreak">控件信息</th>
-        <th style="width:50px">操作</th>
+        <td style="width:50px">序号</td>
+        <td style="width:120px" title="labelName">@item</td>
+        <td style="width:80px">标签类型</td>
+        <td style="width:160px" class="wBreak">配置信息</td>
+        <td style="width:80px" class="wBreak">控件信息</td>
+        <td style="width:50px">操作</td>
     </tr>
     }
  
     <!-- mode为提供复制的模版,此模版复制后id修改为trLabel_(id) -->
-    <tr id="model" style="display:none">
+    @*<tr id="model" style="display:none">
         <td id="tdCONFIG_CONTENT" style="display:none"></td>
         <td id="tdLabelType" style="display:none"></td>
         <td id="tdNumber"></td>
@@ -37,7 +81,7 @@
         <td style="word-break: break-all; word-wrap: break-word;" id="tdConfigInfo"></td>
         <td style="word-break: break-all; word-wrap: break-word;" id="tdControlInfo"></td>
         <td id="tdOpreation" style="word-break: break-all; word-wrap: break-word;"></td>
-    </tr>
+    </tr>*@
     <!-- trLabel_ -->
 </table>
 
@@ -78,8 +122,8 @@
                         <p class="tc" style="padding-top:30px">
                             值:
                         </p><span class="red">注意：@@符号后请保留空格,如：“@@建筑面积 ”</span>
-                        <input class="fl box_text" style="width:270px " title="" /><span class="red">*</span>
-                        <span><a onclick="AlertDiv('#alert_FormulaFormart', 999999)">选择</a></span>
+                        <input id="txtLabelFormula" class="fl box_text" style="width:270px " title="" /><span class="red">*</span>
+                        @*<span><a onclick="AlertDiv('#alert_FormulaFormart', 999999)">选择</a></span>*@
                     </li>
 
                     @* 数据源 *@
@@ -153,4 +197,135 @@
     </div>
     <!-- label value ----- end -->
 
+    <!-- label format ----- begin -->
+    <div id="div_FormatInfo" class="Vsearch">
+        <ul class="oh">
+            <li>
+                <p>
+                    <strong>  数据处理</strong>&nbsp;&nbsp;&nbsp;类型:
+                </p>@Html.EnumDropDownList("FormatType", BuildDoc.FormatType.Date, null, true, new { })
+                
+            </li>
+
+            <li name="FormatInf" format="@BuildDoc.FormatType.Date">
+                <p>
+                    匹配值:
+                </p><input type="text" class="fl box_text" />
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Date">
+                <p>
+                    日期格式化:
+                </p><input type="text" id="FormatInfo_Date_DateFormatString" class="fl box_text" readonly="true" title="点击选择" onclick="AlertDiv('#alert_dataFormart', 999999)" /><span class="red">*</span>
+
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Date">
+                <p>是否大写</p><input type="checkbox" id="FormatInfo_Date_IsUpperDate" class="fl" style="margin-top:7px; margin-left:5px;" />
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Date">
+                <p>转换之后参与计算</p><input type="checkbox" id="FormatInfo_Date_IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
+            </li>
+
+            <li name="FormatInf" format="@BuildDoc.FormatType.Number">
+                <p>
+                    匹配值
+                </p><input type="text" id="FormatInfo_Number_FormatString" class="fl box_text" />
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Number">
+                <p>
+                    小数点位数
+                </p><input type="text" id="FormatInfo_Number_DecimalCount" class="fl box_text" />
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Number">
+                <p>  除数</p><input type="text" id="FormatInfo_Number_Dividend" class="fl box_text" />
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Number">
+                <p>转换之后参与计算</p><input type="checkbox" id="FormatInfo_Number_IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
+            </li>
+
+            <li name="FormatInf" format="@BuildDoc.FormatType.Number">
+                <p>
+                    匹配值:
+                </p><input type="text" id="FormatInfo_ValueToText_FormatString" class="fl box_text" />
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Number">
+                <p>
+                    数据源:
+                </p><select id="FormatInfo_ValueToText_DataSourceName" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+            </li>
+
+            <li name="FormatInf" format="@BuildDoc.FormatType.Upper" >
+                <p> 匹配值:</p><input type="text" id="FormatInfo_UpperNumber1_FormatString" class="fl box_text" />
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Upper" >
+                <p>
+                    小数点位数
+                </p><input type="text" id="FormatInfo_UpperNumber1_DecimalCount" class="fl box_text" />
+            </li>
+            <li name="FormatInf" format="@BuildDoc.FormatType.Upper">
+                <p>  除数</p><input type="text" id="FormatInfo_UpperNumber1_Dividend" class="fl box_text" />
+            </li>
+
+            <li name="FormatInf" format="@BuildDoc.FormatType.Ammount">
+                <p> 匹配值:</p><input type="text" id="FormatInfo_UpperNumber2_FormatString" class="fl box_text" />
+            </li>
+
+            <li name="FormatInf" format="@BuildDoc.FormatType.Ammount">
+                <input type="radio" id="FormatInfo_UpperNumber2_IsThousand" name="FormatInfo_UpperNumber2_IsThousand" value="true" /> 千分位
+                <input type="radio" name="FormatInfo_UpperNumber2_IsThousand" value="false" checked="checked" alt="1" /> 大写
+            </li>
+
+        </ul>
+    </div>
+    <!-- label format --------end -->
+
+</div>
+
+
+@*弹出设置公式的窗口*@
+<div class="alert" id="alert_Formula">
+    <div class="alertZ"></div>
+    <div class="alertC" style="width: 600px;">
+        <div class="alertCT oh">
+            <p class="fl f16">设置公式</p>
+            <i class="icon alert_close fr Animate_rotateIn" onclick=" AlertClose($('#alert_Formula'))"></i>
+        </div>
+        <div class="alertCB">
+            <div id="dformula">
+                <table class="tableA table3 table" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td style="width:190px">请输入@标签<input type="text" id="txtOperand" style="width:90%"></td>
+                        <td rowspan="2"><input type="button" id="btnAddOperand" value=">>" title="添加标签" /></td>
+                        <td>公式<br /><textarea id="txtFormula" style="width:90%" rows="3"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="alert_tab" style="height:260px;">
+                                <ul id="formual_operands"></ul>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <ul id="formula_operator" class="formula_operator">
+                                    <li><input type="button" value="+" /></li>
+                                    <li><input type="button" value="-" /></li>
+                                    <li><input type="button" value="*" /></li>
+                                    <li><input type="button" value="/" /></li>
+                                    <li><input type="button" value="(" /></li>
+                                    <li><input type="button" value=")" /></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+        </div>
+        <div class="alertCM">
+            <div class="button">
+                <a class="fr gray_bg white tc br2" onclick="AlertClose($('#alert_Formula'))">取消</a>
+                <a class="fr mblue_bg white tc br2" id="btnSetFormulaSave">确定</a>
+            </div>
+        </div>
+    </div>
 </div>

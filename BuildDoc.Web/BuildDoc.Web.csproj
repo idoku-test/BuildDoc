@@ -150,7 +150,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\commom.js" />
     <Content Include="Scripts\docs\documents.js" />
+    <Content Include="Scripts\docs\formula_editor.js" />
     <Content Include="Scripts\docs\labels.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

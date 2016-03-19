@@ -133,27 +133,32 @@
         /// <summary>
         /// 数字
         /// </summary>
+        [Description("数字")]
         Number,
 
         /// <summary>
         /// 日期
         /// </summary>
+        [Description("日期")]
         Date,
 
         /// <summary>
         /// 值转文本
         /// </summary>
+        [Description("数据库值转换")]
         ValueToText,
 
         /// <summary>
-        /// 转大写1
+        /// 转大写
         /// </summary>
-        UpperNumber1,
+        [Description("大写转换")]
+        Upper,
 
         /// <summary>
-        /// 转大写2
+        /// 大写金额
         /// </summary>
-        UpperNumber2
+        [Description("金额转换")]
+        Ammount
     }
 
     /// <summary>
