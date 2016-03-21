@@ -16,11 +16,21 @@ $(function () {
     //数据类型
     $('#FormatType').change(function () {
         var val = $(this).val();       
-        $('[name="FormatInf"][format="' + val + '"]').show();
-        $('[name="FormatInf"][format!="' + val + '"]').hide();
+        $('[name="FormatInfo"][format="' + val + '"]').show();
+        $('[name="FormatInfo"][format!="' + val + '"]').hide();
     });
     $('#FormatType').change();
   
+    //控件类型
+    $('#ControlType').change(function () {
+        var val = $(this).val();
+        $('[name="LabelControl"][control="' + val + '"]').show();
+        $('[name="LabelControl"][control!="' + val + '"]').hide();
+    });
+    $('#ControlType').change();
+
+    //填充方式
+    
    
     //设置公式
     $('#txtLabelFormula').click(function () {
