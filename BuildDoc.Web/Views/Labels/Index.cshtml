@@ -197,17 +197,36 @@
     </div>
     <!-- label value ----- end -->
 
+    <!-- label contition --- begin  -->
+    <div id="div_ConditionLabel">
+        <div class="project_detail1_T" style="margin-top:0;">
+            <h4>条件</h4>
+            <a class=" Abutton fr mblue_bg white br2 tc" id="btnAddCondition">添加条件</a>
+        </div>
+        <div class="alert_tab" style="height:120px; margin-top:0; margin-bottom:10px; background-color :#FFF;">
+            <table class="tableA table3" border="0" cellpadding="0" cellspacing="0" id="tbCondition">
+                <tbody>
+                    <tr>
+
+                        <th>条件</th>
+                        <th>配置</th>
+                        <th>操作</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- label contition --- end  -->
+
     <!-- label format ----- begin -->
     <div id="div_FormatInfo" class="Vsearch">
         <ul class="oh">
             <li>
                 <p>
                     <strong>  数据处理</strong>&nbsp;&nbsp;&nbsp;类型:
-                </p>@Html.EnumDropDownList("FormatType", BuildDoc.FormatType.Date, null, true, new { })
-                
+                </p>@Html.EnumDropDownList("FormatType", BuildDoc.FormatType.Date, null, true, new { })                
             </li>
-
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
+            <li>
                 <p>
                     匹配值:
                 </p><input type="text" class="fl box_text" />
@@ -215,64 +234,38 @@
             <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
                 <p>
                     日期格式化:
-                </p><input type="text" id="FormatInfo_Date_DateFormatString" class="fl box_text" readonly="true" title="点击选择" onclick="AlertDiv('#alert_dataFormart', 999999)" /><span class="red">*</span>
+                </p><input type="text" id="DateFormatString" class="fl box_text" readonly="true" title="点击选择" onclick="AlertDiv('#alert_dataFormart', 999999)" /><span class="red">*</span>
 
             </li>
             <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
-                <p>是否大写</p><input type="checkbox" id="FormatInfo_Date_IsUpperDate" class="fl" style="margin-top:7px; margin-left:5px;" />
+                <p>是否大写</p><input type="checkbox" id="IsUpperDate" class="fl" style="margin-top:7px; margin-left:5px;" />
             </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
-                <p>转换之后参与计算</p><input type="checkbox" id="FormatInfo_Date_IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
-            </li>
-
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Number">
-                <p>
-                    匹配值
-                </p><input type="text" id="FormatInfo_Number_FormatString" class="fl box_text" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Number">
+          
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
                 <p>
                     小数点位数
-                </p><input type="text" id="FormatInfo_Number_DecimalCount" class="fl box_text" />
+                </p><input type="text" id="DecimalCount" class="fl box_text" />
             </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Number">
-                <p>  除数</p><input type="text" id="FormatInfo_Number_Dividend" class="fl box_text" />
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
+                <p>  除数</p><input type="text" id="Dividend" class="fl box_text" />
             </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Number">
-                <p>转换之后参与计算</p><input type="checkbox" id="FormatInfo_Number_IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
-            </li>
-
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Number">
-                <p>
-                    匹配值:
-                </p><input type="text" id="FormatInfo_ValueToText_FormatString" class="fl box_text" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Number">
-                <p>
-                    数据源:
-                </p><select id="FormatInfo_ValueToText_DataSourceName" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+  
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Date @BuildDoc.FormatType.Number">
+                <p>转换之后参与计算</p><input type="checkbox" id="IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
             </li>
 
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Upper">
-                <p> 匹配值:</p><input type="text" id="FormatInfo_UpperNumber1_FormatString" class="fl box_text" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Upper">
-                <p>
-                    小数点位数
-                </p><input type="text" id="FormatInfo_UpperNumber1_DecimalCount" class="fl box_text" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Upper">
-                <p>  除数</p><input type="text" id="FormatInfo_UpperNumber1_Dividend" class="fl box_text" />
-            </li>
-
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Ammount">
-                <p> 匹配值:</p><input type="text" id="FormatInfo_UpperNumber2_FormatString" class="fl box_text" />
-            </li>
+          
 
             <li name="FormatInfo" format="@BuildDoc.FormatType.Ammount">
                 <input type="radio" id="FormatInfo_UpperNumber2_IsThousand" name="FormatInfo_UpperNumber2_IsThousand" value="true" /> 千分位
                 <input type="radio" name="FormatInfo_UpperNumber2_IsThousand" value="false" checked="checked" alt="1" /> 大写
             </li>
+
+            <li name="FormatInfo" format="@BuildDoc.FormatType.ValueToText">
+                <p>
+                    数据源:
+                </p><select id="sltFormatFields" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+            </li> 
 
         </ul>
     </div>
@@ -289,11 +282,7 @@
                 <li>
                     <p class="tc">  类型:</p>
                     @Html.EnumDropDownList("ControlType", BuildDoc.ControlType.Text, null, true, new { })
-                </li>
-
-                <li name="LabelControl" control="@BuildDoc.ControlType.Text">
-                    <p class="tc">是否必填</p><input type="checkbox" id="Control_Text_Required" class="fl" style="margin-top:7px; margin-left:5px;" />
-                </li>
+                </li>               
                 <li name="LabelControl" control="@BuildDoc.ControlType.Text">
                     <p class="tc"> 格式要求</p><select id="Control_Text_ValidateString" class="box_text fl">                        
                         <option value="1">整数</option>
@@ -301,19 +290,19 @@
                     </select>
                     @*<input type="text" id="Control_Text_ValidateString" class="fl box_text" />*@
                 </li>
+
                 <li name="LabelControl" control="@BuildDoc.ControlType.Date">
                     <p class="tc">
                         最小日期
                     </p><input type="text" id="Control_Date_MinDate" onclick="WdatePicker()" class="fl box_text" />
                 </li>
+
                 <li name="LabelControl" control="@BuildDoc.ControlType.Date">
                     <p class="tc">
                         最大日期
                     </p><input type="text" id="Control_Date_MaxDate" onclick="WdatePicker()" class="fl box_text" />
                 </li>
-                <li name="LabelControl" control="@BuildDoc.ControlType.Date">
-                    <p class="tc">是否必填</p><input type="checkbox" id="Control_Date_Required" class="fl" style="margin-top: 7px; margin-left: 5px;" />
-                </li>
+               
                 <li name="LabelControl" control="@BuildDoc.ControlType.Dropdown">
                     <p class="tc">
                         填充方式:
@@ -321,35 +310,32 @@
                     @Html.EnumDropDownList("FillType", BuildDoc.FillType.Custom, null, true, new { })
                 </li>
 
-                <li name="ControlFill" control="@BuildDoc.FillType.Custom">
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.Custom">
                     <p class="tc">
                         选项：
                     </p><input type="text" class="fl box_text" style="width:180px" /><span class="red">*</span>
                 </li>
-                <li name="ControlFill" control="@BuildDoc.FillType.Custom">
+
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.Custom">
                     <p class="tc">
                         分隔符：
                     </p><input type="text" id="Control_Dropdown_FillType_Custom_Separtor" class="fl box_text" />
                 </li>
-                <li name="ControlFill" control="@BuildDoc.FillType.Custom">
-                    <p class="tc">是否多选:</p>  <input type="checkbox" id="Control_Dropdown_FillType_Custom_IsMultiMode" class="fl" style="margin-top: 7px; margin-left: 5px;" />
-                </li>
-                <li name="ControlFill" control="@BuildDoc.FillType.Custom">
-                    <p class="tc">是否必填</p><input type="checkbox" id="Control_Dropdown_FillType_Custom_Required" class="fl" style="margin-top: 7px; margin-left: 5px;" />
-                </li>
 
-
-                <li name="ControlFill" control="@BuildDoc.FillType.DataSource">
+              
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.DataSource">
                     <p class="tc">
                         数据源:
-                    </p><select id="Control_Dropdown_FillType_DataSource_DataSource" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+                    </p><select id="sltFillDataSource" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
                 </li>
 
-                <li name="ControlFill" control="@BuildDoc.FillType.DataSource">
-                    <p class="tc">是否多选:</p>  <input type="checkbox" id="Control_Dropdown_FillType_DataSource_IsMultiMode" style="margin-top: 7px; margin-left: 5px;" class="fl" />
+
+                <li name="LabelControl" control="@BuildDoc.ControlType.Dropdown">
+                    <p class="tc">是否多选:</p>  <input type="checkbox" id="ControlIsMultiMode" style="margin-top: 7px; margin-left: 5px;" class="fl" />
                 </li>
-                <li name="ControlFill" control="@BuildDoc.FillType.DataSource" >
-                    <p class="tc">是否必填</p><input type="checkbox" id="Control_Dropdown_FillType_DataSource_Required" class="fl" style="margin-top: 7px; margin-left: 5px;" />
+               
+                <li>
+                    <p class="tc">是否必填</p><input type="checkbox" id="ControlRequired" class="fl" style="margin-top: 7px; margin-left: 5px;" />
                 </li>
             </ul>
 
@@ -359,6 +345,7 @@
         </div>
     </div>
     <!-- label control ---- end -->
+
 
     
 </div>

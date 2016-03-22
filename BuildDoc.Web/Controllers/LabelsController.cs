@@ -26,5 +26,12 @@ namespace BuildDoc.Web.Controllers
             
             return View(marks);
         }
+
+        public ActionResult Condition()
+        {
+
+            return View();
+        }
+
 	}
 }

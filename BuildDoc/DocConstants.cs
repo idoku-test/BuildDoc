@@ -169,16 +169,19 @@
         /// <summary>
         /// 文本
         /// </summary>
+        [Description("文本")]
         Text,
 
         /// <summary>
         /// 日期
         /// </summary>
+        [Description("日期")]
         Date,
 
         /// <summary>
         /// 下拉框
         /// </summary>
+        [Description("下拉选择")]
         Dropdown
     }
 
@@ -190,12 +193,14 @@
         /// <summary>
         /// 数据源获取
         /// </summary>
+          [Description("数据源")]
         DataSource,
 
         /// <summary>
         /// 自定义输入
         /// </summary>
-        Custom
+          [Description("自定义")]
+          Custom
     }
 
     /// <summary>

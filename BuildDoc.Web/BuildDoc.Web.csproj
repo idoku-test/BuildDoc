@@ -179,6 +179,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Labels\Index.cshtml" />
     <Content Include="Views\Documents\Index.cshtml" />
+    <Content Include="Views\Labels\_ConditionPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildDoc.Entities\BuildDoc.Entities.csproj">

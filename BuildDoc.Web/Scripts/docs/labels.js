@@ -15,9 +15,9 @@ $(function () {
 
     //数据类型
     $('#FormatType').change(function () {
-        var val = $(this).val();       
-        $('[name="FormatInfo"][format="' + val + '"]').show();
+        var val = $(this).val();            
         $('[name="FormatInfo"][format!="' + val + '"]').hide();
+        $('[name="FormatInfo"][format*="' + val + '"]').show();
     });
     $('#FormatType').change();
   
@@ -26,15 +26,24 @@ $(function () {
         var val = $(this).val();
         $('[name="LabelControl"][control="' + val + '"]').show();
         $('[name="LabelControl"][control!="' + val + '"]').hide();
+        $('#FillType').change();
     });
     $('#ControlType').change();
 
     //填充方式
-    
-   
+    $('#FillType').change(function () {
+        var val = $(this).val();        
+        var control = $('#ControlType').val();
+        //屏蔽填充方式不一致的选项
+        $('[name="LabelFill"][control!="' + control + '"]').hide();
+        $('[name="LabelFill"][control="'+ control +'"][fill="' + val + '"]').show();
+        $('[name="LabelFill"][control="'+ control+'"][fill!="' + val + '"]').hide();
+       
+    });
+    $('#FillType').change();
+
     //设置公式
     $('#txtLabelFormula').click(function () {
-
         AlertDiv('#alert_Formula');
         var fields = [];
 
@@ -45,9 +54,10 @@ $(function () {
 
     });
 
-    label.BindDataSource($('#sltDataSource'));
+    label.BindDataSource($('#sltDataSource'));     
 });
 
+//绑定数据源
 label.BindDataSource = function (sltSource) {
     $.getJSON("/DataSource/GetDataSource", function (datas) {
         label.DataSource = datas;
@@ -63,25 +73,26 @@ label.BindDataSource = function (sltSource) {
         $(sltSource).change(function () {
             var index = $(this).prop('selectedIndex');
             var fields = datas[index].Fields;
-            $('#sltDisplayFields').empty();
-            $('#sltFilterFields').empty();
-            if (fields != null) {
-                for (var i = 0; i < fields.length; i++) {
-                    $('<option>', {
-                        val: fields[i],
-                        text: fields[i]
-                    }).appendTo($('#sltDisplayFields'));
-
-                    $('<option>', {
-                        val: fields[i],
-                        text: fields[i]
-                    }).appendTo($('#sltFilterFields'));
-                }
-            }
+            label.BindFields($('#sltDisplayFields'), fields);
+            label.BindFields($('#sltFilterFields'), fields);
+            label.BindFields($('#sltFillDataSource'), fields);
+            label.BindFields($('#sltFormatFields'), fields);
         });
         $(sltSource).change();
     });
 };
+
+//筛选数据源
+label.BindFields = function (sltFields, fields) {
+    if (fields != null) {
+        for (var i = 0; i < fields.length; i++) {
+            $('<option>', {
+                val: fields[i],
+                text: fields[i]
+            }).appendTo($(sltFields));
+        }
+    }
+}
 
 
 
