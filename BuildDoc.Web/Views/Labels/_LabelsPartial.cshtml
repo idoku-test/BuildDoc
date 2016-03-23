@@ -1,0 +1,35 @@
+﻿@model IList<string>
+
+    <!-- 正常显示 -->
+<tr>
+    <th style="width:50px">序号</th>
+    <th style="width:120px">标签名</th>
+    <th style="width:80px">标签类型</th>
+    <th style="width:160px" class="wBreak">配置信息</th>
+    <th style="width:80px" class="wBreak">控件信息</th>
+    <th style="width:50px">操作</th>
+</tr>
+@foreach (var item in Model)
+{
+    <tr>
+        <td style="width:50px">序号</td>
+        <td style="width:120px" title="labelName">@item</td>
+        <td style="width:80px">标签类型</td>
+        <td style="width:160px" class="wBreak">配置信息</td>
+        <td style="width:80px" class="wBreak">控件信息</td>
+        <td style="width:50px">操作</td>
+    </tr>
+}
+
+<!-- mode为提供复制的模版,此模版复制后id修改为trLabel_(id) -->
+@*<tr id="model" style="display:none">
+        <td id="tdCONFIG_CONTENT" style="display:none"></td>
+        <td id="tdLabelType" style="display:none"></td>
+        <td id="tdNumber"></td>
+        <td id="tdLabelName" style="word-break: break-all; word-wrap: break-word;"></td>
+        <td id="tdLabelTypeName"></td>
+        <td style="word-break: break-all; word-wrap: break-word;" id="tdConfigInfo"></td>
+        <td style="word-break: break-all; word-wrap: break-word;" id="tdControlInfo"></td>
+        <td id="tdOpreation" style="word-break: break-all; word-wrap: break-word;"></td>
+    </tr>*@
+<!-- trLabel_ -->

@@ -13,10 +13,21 @@ namespace BuildDoc.Web.Controllers
         //
         // GET: /Documents/
         public ActionResult Index()
-        {
-           
-
+        {           
             return View();
+        }
+
+        public JsonResult GetRemarks()
+        {
+            string path = ConfigurationManager.AppSettings["DocPath"]; ;
+            string virtualPah = Server.MapPath(path);
+
+            string docPath = Path.Combine(virtualPah, "test19.doc");
+            IBuildWord bword = new BuildWord();
+            bword.Load(docPath);
+            var marks = bword.GetAllMarks();
+
+            return Json(marks, JsonRequestBehavior.AllowGet);
         }
 	}
 }

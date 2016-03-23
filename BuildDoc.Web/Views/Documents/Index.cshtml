@@ -1,19 +1,458 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/docs/documents.js"></script>
 
-<script type="text/javascript">
-    $(function () {
-        documents.GetRemarks();
-    });
-</script>
 
-<div id="dataLabelList" style="overflow-y: auto;max-height: 600px;">
-   
+
+<style>
+    .wBreak {
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+
+    .ui-autocomplete {
+        max-height: 200px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        padding-right: 5px;
+        z-index: 9999999;
+    }
+    /* IE 6 doesn't support max-height
+    * we use height instead, but this forces the menu to always be this tall
+    */
+    * html .ui-autocomplete {
+        height: 200px;
+    }
+
+    .formula_operator {
+        height: 260px;
+    }
+
+        .formula_operator li {
+            width: 100px;
+            float: left;
+        }
+
+            .formula_operator li input {
+                width: 50px;
+                margin: 15px;
+            }
+
+    #formual_operands li {
+        text-align: left;
+    }
+
+        #formual_operands li:hover {
+            background-color: #ffdf7e;
+        }
+</style>
+
+<table id="remarks" style=" width: 100%;" border="0" cellpadding="0" cellspacing="0" class="table table2">
+    <!-- 正常显示 -->
+    <tr>
+        <th style="width:50px">序号</th>
+        <th style="width:120px">标签名</th>
+        <th style="width:80px">标签类型</th>
+        <th style="width:160px" class="wBreak">配置信息</th>
+        <th style="width:80px" class="wBreak">控件信息</th>
+        <th style="width:50px">操作</th>
+    </tr>    
+</table>
+
+<div>
+    <!-- label type ----- begin -->
+    <div class="search" style="margin-top:10px;">
+        <ul class="oh">
+            <li style="width:35%"><p class="tc">标签名</p><input id="LabelName" type="text" class="fl box_text" style="width:50%;" /></li>
+            <li style="width:45%">
+                <p class="tc">标签类型</p>
+                @Html.EnumDropDownList("LabelType", BuildDoc.LabelType.TextLabel, null, true, new { })
+            </li>
+            @*<li style="width:20%;"><a class="fl mblue_bg white tc" href="javascript:StructureClass.AlertDataLabel()">类似于</a></li>*@
+            @*<li style="width:15%;*width:14%;"><a class="fl gray_bg white tc">取消</a></li>*@
+        </ul>
+    </div>
+    <!-- label type ----- end -->
+    <!-- label value ----- begin -->
+    <div class="oh" style=" border-bottom: 1px solid #ccc; margin-top: 0;">
+        <h2 class="fl" style="line-height: 40px; ">取值方式</h2>
+    </div>
+
+    <div id="div_Lable" class="Vsearch" style="padding-top:10px;">
+        <div id="LabelType_Label">
+            <div id="AllTypeLabel">
+                <ul class="oh">
+                    @Html.EnumDropDownList("DataMethod", BuildDoc.GetDataMethod.Const, null, true, new { })
+                    @* 常量 *@
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Const">
+                        <p class="tc">
+                            值:
+                        </p>
+                        <textarea class="fl box_text" style="width:270px; height:40px"></textarea>
+                    </li>
+
+                    @* 公式 *@
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Formula" style="height: 54px; width: 370px;">
+                        <p class="tc" style="padding-top:30px">
+                            值:
+                        </p><span class="red">注意：@@符号后请保留空格,如：“@@建筑面积 ”</span>
+                        <input id="txtLabelFormula" class="fl box_text" style="width:270px " title="" /><span class="red">*</span>
+                        @*<span><a onclick="AlertDiv('#alert_FormulaFormart', 999999)">选择</a></span>*@
+                    </li>
+
+                    @* 数据源 *@
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
+                        <p class="tc">
+                            数据源:
+                        </p><select id="sltDataSource" class="box_text fl"></select><span class="red">*</span>
+                    </li>
+
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
+                        <p class="tc">
+                            显示字段:
+                        </p><select id="sltDisplayFields" class="box_text fl"><option value="">请先选择数据源</option></select><span class="red">*</span>
+                    </li>
+
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
+                        <p class="tc">
+                            筛选字段:
+                        </p><select id="sltFilterFields" class="box_text fl">
+                            <option value="">请先选择数据源</option>
+                        </select>
+                    </li>
+
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
+                        <p class="tc">
+                            筛选操作:
+                        </p><select class="box_text fl">
+                            <option value="">-请选择-</option>
+                            <option value="=">等于</option>
+                            <option value=">">大于</option>
+                            <option value="<">小于</option>
+                            <option value="!=">不等于</option>
+                        </select>
+                    </li>
+
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
+                        <p class="tc">
+                            筛选值:
+                        </p><input type="text" class="fl box_text" />
+                    </li>
+
+                    @* 表格标签 *@
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
+                        <p class="tc">
+                            填充方式:
+                        </p><select class="box_text fl">
+                            <option value="OnlyFillByRow">横向</option>
+                            <option value="OnlyFillByColumn">纵向</option>
+                        </select>
+                    </li>
+
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source" style="line-height:25px">
+                        <p class="tc">
+                            从第
+                        </p><input type="text" value="0" class="fl box_text" />条数据开始
+                    </li>
+
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source" style="line-height:25px">
+                        <p class="tc">
+                            到第
+                        </p><input value="0" class="fl box_text" />条数据结束
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- label value ----- end -->
+    <!-- label contition --- begin  -->
+    <div id="div_ConditionLabel">
+        <div class="project_detail1_T" style="margin-top:0;">
+            <h4>条件</h4>
+            <a class=" Abutton fr mblue_bg white br2 tc" id="btnAddCondition">添加条件</a>
+        </div>
+        <div class="alert_tab" style="height:120px; margin-top:0; margin-bottom:10px; background-color :#FFF;">
+            <table id="conditions" class="tableA table3" border="0" cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <th>条件</th>
+                        <th>配置</th>
+                        <th>操作</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- label contition --- end  -->
+    <!-- label format ----- begin -->
+    <div id="div_FormatInfo" class="Vsearch">
+        <ul class="oh">
+            <li>
+                <p>
+                    <strong>  数据处理</strong>&nbsp;&nbsp;&nbsp;类型:
+                </p>@Html.EnumDropDownList("FormatType", BuildDoc.FormatType.Date, null, true, new { })
+            </li>
+            <li>
+                <p>
+                    匹配值:
+                </p><input type="text" class="fl box_text" />
+            </li>
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
+                <p>
+                    日期格式化:
+                </p><input type="text" id="DateFormatString" class="fl box_text" readonly="true" title="点击选择" onclick="AlertDiv('#alert_dataFormart', 999999)" /><span class="red">*</span>
+
+            </li>
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
+                <p>是否大写</p><input type="checkbox" id="IsUpperDate" class="fl" style="margin-top:7px; margin-left:5px;" />
+            </li>
+
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
+                <p>
+                    小数点位数
+                </p><input type="text" id="DecimalCount" class="fl box_text" />
+            </li>
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
+                <p>  除数</p><input type="text" id="Dividend" class="fl box_text" />
+            </li>
+
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Date @BuildDoc.FormatType.Number">
+                <p>转换之后参与计算</p><input type="checkbox" id="IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
+            </li>
+
+
+
+            <li name="FormatInfo" format="@BuildDoc.FormatType.Ammount">
+                <input type="radio" id="FormatInfo_UpperNumber2_IsThousand" name="FormatInfo_UpperNumber2_IsThousand" value="true" /> 千分位
+                <input type="radio" name="FormatInfo_UpperNumber2_IsThousand" value="false" checked="checked" alt="1" /> 大写
+            </li>
+
+            <li name="FormatInfo" format="@BuildDoc.FormatType.ValueToText">
+                <p>
+                    数据源:
+                </p><select id="sltFormatFields" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+            </li>
+
+        </ul>
+    </div>
+    <!-- label format --------end -->
+    <!-- label control ---- begin -->
+    <div id="div_Control">
+        <div class="project_detail1_T" style="border-bottom:1px solid #ccc; margin-top:0;">
+            <h4 style="font-size: 16px;">控件显示</h4>
+        </div>
+        <div class="Vsearch" style="padding:10px 0 5px;">
+
+            <ul class="oh">
+                <li>
+                    <p class="tc">  类型:</p>
+                    @Html.EnumDropDownList("ControlType", BuildDoc.ControlType.Text, null, true, new { })
+                </li>
+                <li name="LabelControl" control="@BuildDoc.ControlType.Text">
+                    <p class="tc"> 格式要求</p><select id="Control_Text_ValidateString" class="box_text fl">
+                        <option value="1">整数</option>
+                        <option value="2">小数及整数</option>
+                    </select>
+                    @*<input type="text" id="Control_Text_ValidateString" class="fl box_text" />*@
+                </li>
+
+                <li name="LabelControl" control="@BuildDoc.ControlType.Date">
+                    <p class="tc">
+                        最小日期
+                    </p><input type="text" id="Control_Date_MinDate" onclick="WdatePicker()" class="fl box_text" />
+                </li>
+
+                <li name="LabelControl" control="@BuildDoc.ControlType.Date">
+                    <p class="tc">
+                        最大日期
+                    </p><input type="text" id="Control_Date_MaxDate" onclick="WdatePicker()" class="fl box_text" />
+                </li>
+
+                <li name="LabelControl" control="@BuildDoc.ControlType.Dropdown">
+                    <p class="tc">
+                        填充方式:
+                    </p>
+                    @Html.EnumDropDownList("FillType", BuildDoc.FillType.Custom, null, true, new { })
+                </li>
+
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.Custom">
+                    <p class="tc">
+                        选项：
+                    </p><input type="text" class="fl box_text" style="width:180px" /><span class="red">*</span>
+                </li>
+
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.Custom">
+                    <p class="tc">
+                        分隔符：
+                    </p><input type="text" id="Control_Dropdown_FillType_Custom_Separtor" class="fl box_text" />
+                </li>
+
+
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.DataSource">
+                    <p class="tc">
+                        数据源:
+                    </p><select id="sltFillDataSource" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+                </li>
+
+
+                <li name="LabelControl" control="@BuildDoc.ControlType.Dropdown">
+                    <p class="tc">是否多选:</p>  <input type="checkbox" id="ControlIsMultiMode" style="margin-top: 7px; margin-left: 5px;" class="fl" />
+                </li>
+
+                <li>
+                    <p class="tc">是否必填</p><input type="checkbox" id="ControlRequired" class="fl" style="margin-top: 7px; margin-left: 5px;" />
+                </li>
+            </ul>
+
+
+
+
+        </div>
+    </div>
+    <!-- label control ---- end -->
+
+
+
 </div>
- 
 
+@*弹出设置公式的窗口*@
+<div class="alert" id="alert_Formula">
+    <div class="alertZ"></div>
+    <div class="alertC" style="width: 600px;">
+        <div class="alertCT oh">
+            <p class="fl f16">设置公式</p>
+            <i class="icon alert_close fr Animate_rotateIn" onclick=" AlertClose($('#alert_Formula'))"></i>
+        </div>
+        <div class="alertCB">
+            <div id="dformula">
+                <table class="tableA table3 table" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td style="width:190px">请输入@标签<input type="text" id="txtOperand" style="width:90%"></td>
+                        <td rowspan="2"><input type="button" id="btnAddOperand" value=">>" title="添加标签" /></td>
+                        <td>公式<br /><textarea id="txtFormula" style="width:90%" rows="3"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="alert_tab" style="height:260px;">
+                                <ul id="formual_operands"></ul>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <ul id="formula_operator" class="formula_operator">
+                                    <li><input type="button" value="+" /></li>
+                                    <li><input type="button" value="-" /></li>
+                                    <li><input type="button" value="*" /></li>
+                                    <li><input type="button" value="/" /></li>
+                                    <li><input type="button" value="(" /></li>
+                                    <li><input type="button" value=")" /></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+        </div>
+        <div class="alertCM">
+            <div class="button">
+                <a class="fr gray_bg white tc br2" onclick="AlertClose($('#alert_Formula'))">取消</a>
+                <a class="fr mblue_bg white tc br2" id="btnSetFormulaSave">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*设置条件的成立条件*@
+<div class="alert" id="alert_ConditionSet">
+    <div class="alertZ"></div>
+    <div class="alertC" style="width: 400px; top: -83px; left: 591.5px;">
+        <div class="alertCT oh">
+            <p class="fl f16">设置条件</p>
+            <i class="icon alert_close fr Animate_rotateIn" onclick="AlertClose(this)"></i>
+        </div>
+        <div class="alertCB">
+            <div class="Vsearch" style="margin:10px 0;">
+                <ul class="oh">
+                    <li style="width:50%">请先输入"@@"符号</li>
+                    <li style="width:20%">
+                        <a id="btnAddConditionSet" style="text-decoration:underline">添加条件</a>
+                </ul>
+                <table style="width:100%" id="condtionSetExps">
+                   
+                </table>
+            </div>
+        </div>
+        <div class="alertCM">
+            <div class="button">
+                <a class="fr gray_bg white tc br2" onclick=" AlertClose($('#alert_ConditionSet'));">取消</a>
+                <a class="fr mblue_bg white tc br2" id="btnConditionSetClear">清空</a>
+                <a class="fr mblue_bg white tc br2" id="btnConditionSetSave">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<table id="docMould" style="display:none">
+    <!-- 为书签提供复制的模版 -->
+    <tr name="remarkMould" style="display:none">      
+        <td title="number"></td>
+        <td title="labelName" style="word-break: break-all; word-wrap: break-word;"></td>
+        <td title="labelType"></td>
+        <td title="configInfo" style="word-break: break-all; word-wrap: break-word;"></td>
+        <td title="controlInfo" style="word-break: break-all; word-wrap: break-word;"></td>
+        <td title="operate" style="word-break: break-all; word-wrap: break-word;">
+            <a href="#" onclick="$(this).closest('tr').remove()">删除</a>
+        </td>
+    </tr>
+    <!-- 为书签提供复制的模版 -->
+
+    <!-- 为条件标签提供复制的模版 -->
+    <tr name="conditionMould" style="display:none">
+        <td title="number" style="display:none"></td>
+        <td title="conditionStr" style="background-color:#FFF;"></td>
+        <td title="conditionConfig">查看配置详情</td>
+        <td title="conditionOprate" style="background-color:#FFF;">
+            <a href="#" onclick="$(this).closest('tr').remove()">删除</a>
+        </td>
+        @*<td title="ConditionConfig" style="display:none"></td>*@
+    </tr>
+    <!-- 为条件标签提供复制的模版 -->
+
+    <!-- 为条件标签表达式提供复制的模版 -->
+    <tr name="conditionSetExpMould" style="display:none">
+        <td title="number"></td>
+        <td>
+            <select name="sltConditionSetJoin" class="box_text fl" style="display:none">
+            <option value="&&">并且</option>
+            <option value="||">或者</option>
+            </select>
+        </td>
+        <td><input name="txtConditionSetRemark" type="text" class="autocomplate box_text fl" style="width:80px;" /></td>
+        <td>
+            <select name="sltConditionSetOperate" class="box_text fl" style="width:70px">
+                <option value="==">等于</option>
+                <option value=">">大于</option>
+                <option value=">=">大于等于</option>
+                <option value="<">小于</option>
+                <option value="<=">小于等于</option>
+                <option value="!=">不等于</option>
+            </select>
+        </td>
+        <td><input type="text" name="txtConditionSetValue" style="width:70px" class="fl box_text" /></td>
+        <td><a class="iblock" onclick="$(this).closest('tr').remove()"> <i class="icon_s I_delete Animate_swing fl" style="margin-left:0"></i></a></td>
+    </tr>
+    <!-- 为条件标签表达式提供复制的模版 -->
+</table>

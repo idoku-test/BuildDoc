@@ -23,6 +23,9 @@ namespace BuildDoc.Web.Controllers
             var marks = bword.GetAllMarks();
 
             //标签类型
+            if (Request.IsAjaxRequest()) {
+                return View("_LabelsPartial", marks);
+            }
             
             return View(marks);
         }

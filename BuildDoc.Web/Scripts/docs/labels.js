@@ -51,7 +51,11 @@ $(function () {
             fields.push($(this).text());
         })
         var feditor = new formualEditor(fields);
+    });
 
+    //设置条件
+    $('#AddConditionRow').click(function () {
+        
     });
 
     label.BindDataSource($('#sltDataSource'));     
@@ -94,5 +98,23 @@ label.BindFields = function (sltFields, fields) {
     }
 }
 
+//添加条件
+label.AddConditionRow = function (table, info) {
+    var mould = table.find("tr").last();
+    //条件
+    mould.find("td:eq(1)").click(function () {
 
+    });
 
+    //配置
+    mould.find("td:eq(2)").click(function () {
+
+    });
+}
+
+//弹出设置条件等式的界面
+label.AlertCondition = function () {
+    AlertDiv('#alert_Condition');
+    var fields = new Array("估价目的", "估价对象类型");
+   
+}

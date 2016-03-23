@@ -180,6 +180,7 @@
     <Content Include="Views\Labels\Index.cshtml" />
     <Content Include="Views\Documents\Index.cshtml" />
     <Content Include="Views\Labels\_ConditionPartial.cshtml" />
+    <Content Include="Views\Labels\_LabelsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildDoc.Entities\BuildDoc.Entities.csproj">
