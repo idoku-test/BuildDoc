@@ -126,11 +126,11 @@ document.AddConditionRow = function (num, condition) {
     }
     mould.find("[title='number']").text(num);
     mould.find("[title='conditionStr']").html(condition.ConditionStr).click(function () {
-        document.AlertCondition(condition.ConditionStr);
+        document.AlertCondition(condition.ConditionStr, num);
     });
 
-    mould.find("[title='conditionConfig']").text(condition.LabelType).click(function () {
-        document.AlertCondition(condition.ConditionStr);
+    mould.find("[title='conditionConfig']").click(function () {
+        //document.AlertCondition(condition.ConditionStr, num);
     });
 
     $('#conditions tr:last').after(mould);
@@ -170,7 +170,30 @@ document.AddConditionSetExpRow = function (conditionSetExp, expLogic) {
 
 //保存条件公式
 document.SaveConditionSet = function () {
+    var conditionStr = "";
+    var reg = /^(-?\d+)(\.\d+)?$/;   //判断字符串是否为数字
+    $.each($('#condtionSetExps tr:visible'), function (i, exp) {
+        var quote = "";
+        if (!reg.test($.trim($(exp).find("[name='txtConditionSetValue']").val())) ||
+            $.trim($(exp).find("[name='txtConditionSetValue']").val()) == "0") {
+            quote = "'";
+        }
+        //是否存在多个条件
+        if ($(exp).find("[name='sltConditionSetJoin']").is(":visible") > 0) {
+            conditionStr += " " + $(exp).find("[name='sltConditionSetJoin']").val() + " ";
+        }
+        //左分量（书签）
+        conditionStr += quote + $(exp).find("[name='txtConditionSetRemark']").val() + quote;
+        //运算符
+        conditionStr += " " + $(exp).find("[name='sltConditionSetOperate']").val() + " ";
+        //右分量（值）
+        conditionStr += quote + $(exp).find("[name='txtConditionSetValue']").val() + quote;
+    });
+    //将条件字符串保存到条件下
+    var num = $('#hidConditionNum').val();
+    $('#conditions tr:eq(' + num + ')').find("[title='conditionStr']").text(conditionStr);
 
+    AlertClose($('#alert_ConditionSet'));
 }
 
 document.BindDataSource = function (sltSource) {
@@ -212,8 +235,10 @@ document.BindFields = function (sltFields, fields) {
 
 
 //弹出设置条件等式的界面
-document.AlertCondition = function (conditionStr) {
+document.AlertCondition = function (conditionStr,num) {
     AlertDiv('#alert_ConditionSet');
+    //条件序号
+    $('#hidConditionNum').val(num);
     var fields = new Array("估价目的", "估价对象类型");
     $.each(document.remarks, function (i, remark) {
         fields.push(remark.LabelName);
