@@ -192,6 +192,52 @@
         </div>
     </div>
     <!-- label contition --- end  -->
+
+    <!-- label relate --- begin -->
+    <div id="div_relate">
+        <div class="project_detail1_T" style="margin-top:0;">
+            <h4 style="font-size:16px;">关联标签</h4>
+            <a class=" Abutton fr green_bg white br2 tc" id="btnAddRelate">添加关联标签</a>
+        </div>
+        <div class="alert_tab" style="height:120px; margin-top:0; margin-bottom:10px; background-color :#FFF;" name="relateField">
+            <table class="tableA table3" border="0" cellpadding="0" cellspacing="0" id="relates">
+                <tbody>
+                    <tr>
+
+                        <th>序号</th>
+                        <th>关联标签名</th>
+                        <th>需显示的字段</th>
+                        <th>操作</th>
+                    </tr>                  
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <!-- label relate --- end -->
+
+    <!-- label tablefill --- begin -->
+    <div id="div_Table">
+        <div class="project_detail1_T" style="margin-top:0;">
+            <h4 style="font-size:16px;">填充字段</h4>
+            <a class=" Abutton fr green_bg white br2 tc" id="btnAddTableField">添加字段</a>
+        </div>
+        <div class="alert_tab" style="height:120px; margin-top:0; margin-bottom:10px; background-color :#FFF;">
+            <table class="tableA table3" border="0" cellpadding="0" cellspacing="0" id="tableFields">
+                <tbody>
+                    <tr>
+                        <th>序号</th>
+                        <th>字段名</th>
+                        <th>数据处理</th>
+                        <th>操作</th>
+                    </tr>                   
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
     <!-- label format ----- begin -->
     <div id="div_FormatInfo" class="Vsearch">
         <ul class="oh">
@@ -403,9 +449,61 @@
     </div>
 </div>
 
+@*条件的配置*@
+<div class="alert" id="alert_ConfigCondition">
+    <div class="alertZ"></div>
+    <div class="alertC" style="width: 600px;">
+        <div class="alertCT oh">
+            <p class="fl f16">设置条件字段</p>
+            <i class="icon alert_close fr Animate_rotateIn" onclick="StructureClass.CloseConfigConditionDailog()"></i>
+        </div>
+        <div class="alertCB">
+            <div class="Vsearch">
+                <ul class="oh">
+                    <li>
+                        <p class="tc">
+                            标签类型:
+                        </p> <select id="sltConditionLabelType" class="box_text fl valid">
+                            <option value="TextLabel">文本替换</option>
+                            <option value="DocLabel">文档替换</option>
+                            <option value="ImageLabel">图片填充</option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="alertCM">
+            <div class="button">
+                <a class="fr gray_bg white tc br2" onclick="StructureClass.CloseConfigConditionDailog()">取消</a>
+                <a class="fr mblue_bg white tc br2" id="btnConditionConfigSave">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
 
+@*表格字段的配置*@
+<div class="alert" id="alert_ConfigTableField">
+    <div class="alertZ"></div>
+    <div class="alertC" style="width: 600px;">
+        <div class="alertCT oh">
+            <p class="fl f16">设置字段配置</p>
+            <i class="icon alert_close fr Animate_rotateIn" ></i>
+        </div>
+        <div class="alertCB" id="tableFieldContent">
+            <div class="Vsearch">
+                <ul class="oh" id="conditionLabel"></ul>
+            </div>
+        </div>
+        <div class="alertCM">
+            <div class="button">
+                <a class="fr gray_bg white tc br2" onclick="StructureClass.CloseConfigTableFieldDailog()">取消</a>
+                <a class="fr mblue_bg white tc br2" id="btnTableFieldConfigSave">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-
+@*文档配置模版*@
 <table id="docMould" style="display:none">
     <!-- 为书签提供复制的模版 -->
     <tr name="remarkMould" style="display:none">      
@@ -431,6 +529,29 @@
         @*<td title="ConditionConfig" style="display:none"></td>*@
     </tr>
     <!-- 为条件标签提供复制的模版 -->
+
+    <!-- 为关联标签提供复制的模版 -->
+    <tr name="relateMould" style="display:none">
+        <td title="number" style="background-color:#FFF;"></td>
+        <td title="labelName" style="background-color:#FFF;"><input type="text" style="width:98%" /></td>
+        <td title="fieldName" style="background-color:#FFF;"><input type="text" style="width:98%" /></td>
+        <td title="oprate" style="background-color:#FFF;">
+            <a href="#" onclick="$(this).closest('tr').remove()">删除</a>
+        </td>
+    </tr>
+    <!-- 为关联标签提供复制的模版 -->
+
+    <!-- 为表格标签提供复制的模版 -->
+    <tr name="tableMould" style="display:none">
+        <td title="number" style="background-color:#FFF;"></td>
+        <td title="field" style="background-color:#FFF;"><input type="text" style="width:98%" class="autocomplate box_text fl" /></td>
+        <td title="config" style="background-color:#FFF;">查看数据处理详情</td>
+        <td title="configStr" style="background-color:#FFF; display:none"></td>
+        <td title="oprate" style="background-color:#FFF;">
+            <a href="#" onclick="$(this).closest('tr').remove()">删除</a>
+        </td>
+    </tr>
+    <!-- 为表格标签提供复制的模版 -->
 
     <!-- 为条件标签表达式提供复制的模版 -->
     <tr name="conditionSetExpMould" style="display:none">

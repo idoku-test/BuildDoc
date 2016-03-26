@@ -72,6 +72,16 @@ $(function () {
         document.SaveConditionSet();
     });
 
+    //关联标签
+    $('#btnAddRelate').click(function () {
+        document.AddRelateRow(0, null);
+    });
+
+    //表格标签
+    $('#btnAddTableField').click(function () {
+        document.AddTableFieldRow(0, null);
+    });
+
 
     document.BindDataSource($('#sltDataSource'));
 });
@@ -111,6 +121,45 @@ document.AddRemarkRow = function (num,remark) {
 
     $('#remarks tr:last').after(mould);
 
+}
+
+//添加关联标签行
+document.AddRelateRow = function (num, relate) {
+    var mould = $('#docMould').find("[name='relateMould']").clone();
+    mould.css("display", "");
+    //行赋值
+    if (num <= 0) {
+        num = $('#relates tr').length;
+        relate = [];
+        relate.LabelName = "";
+        relate.FieldName = "";
+    }
+    mould.find("[title='number']").text(num);
+    mould.find("[title='labelName']").val(relate.LabelName);       
+    mould.find("[title='conditionConfig']").val(relate.FieldName);
+
+    $('#relates tr:last').after(mould);
+}
+
+//添加表格标签行
+document.AddTableFieldRow = function (num, field) {
+    var mould = $('#docMould').find("[name='tableMould']").clone();
+    mould.css("display", "");
+    //行赋值
+    if (num <= 0) {
+        num = $('#tableFields tr').length;
+        field = [];
+        field.FormatInfo = "";
+        field.FieldName = "";
+    }
+    mould.find("[title='number']").text(num);
+    mould.find("[title='configStr']").val(field.FormatInfo);
+    mould.find("[title='config']").val(field.FieldName).click(function () {
+        document.AlertTableFieldConfig(num, "");
+    });
+
+
+    $('#tableFields tr:last').after(mould);
 }
 
 //添加条件行
@@ -196,6 +245,7 @@ document.SaveConditionSet = function () {
     AlertClose($('#alert_ConditionSet'));
 }
 
+//绑定数据源
 document.BindDataSource = function (sltSource) {
     $.getJSON("/DataSource/GetDataSource", function (datas) {
         document.datasource = datas;
@@ -232,7 +282,18 @@ document.BindFields = function (sltFields, fields) {
     }
 }
 
+//弹出表格标签配置界面
+document.AlertTableFieldConfig = function (num, config) {
+    AlertDiv('#alert_ConfigTableField');
 
+    //为配置添加数据处理div_FormatInfo
+    $('#tableFieldContent').append($('#div_FormatInfo').show());
+    
+    if (config != "") {
+        $('#FormatType').val(config.FormatType).change();
+
+    }    
+}
 
 //弹出设置条件等式的界面
 document.AlertCondition = function (conditionStr,num) {
@@ -251,4 +312,23 @@ document.AlertCondition = function (conditionStr,num) {
         document.AddConditionExpRow(conditionExp,reg.source);
     })
     
+}
+
+
+//清空控件
+document.ClearControl = function (container) {
+    $.each($(container).find("input,select"), function (n, obj) {
+        if ($(this).is("select")) {
+            $(obj).val('');
+        }
+        else if ($(this).is("input:checkbox")) {
+            $(obj).attr("checked", false);
+        }
+        else if ($(this).is("input:radio")) {
+            $("input[name='" + $(obj).attr("id") + "'][alt='1']").click();
+        }
+        else {
+            $(obj).val("");
+        }
+    });
 }
