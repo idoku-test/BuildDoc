@@ -9,6 +9,14 @@ $(function () {
 
     $('[name="GetDataMethod"]').hide();
 
+    //标签类型切换
+    $('#LabelType').change(function () {        
+        var val = $(this).val();
+        $('[id^="div_"][labeltype!="' + val + '"]').hide();
+        $('[id^="div_"][labeltype*="' + val + '"]').show();        
+    });
+    $('#LabelType').change();
+
     //数据源切换
     $('#DataMethod').change(function () {
         var val = $(this).val();
@@ -94,8 +102,7 @@ document.GetRemarks = function () {
         dataType:"json",
         success: function (datas) {
             document.remarks = new Array();
-            if (datas) {
-             
+            if (datas) {             
                 $.each(datas, function (i, remark) {
                     var bookInfo = [];
                     bookInfo.LabelName = remark;
@@ -331,4 +338,79 @@ document.ClearControl = function (container) {
             $(obj).val("");
         }
     });
+}
+
+//获取动态json属性
+document.GetDynamicJson = function (key) {
+    $.each("", function (i, obj) {
+
+    });
+}
+
+//获取文本标签配置
+document.GetTextConfig = function () {    
+    var config = {};
+    var getDataMethod = $('#DataMethod').val();
+    config.GetDataMethod = getDataMethod;
+    if (GetDataMethod == "Source" || GetDataMethod == "MultiSource") {
+       // config.GetDataMethod = 
+    }
+
+}
+
+//保存配置
+document.SaveConfig = function () {
+
+    var remark = {};
+    remark.LabelName = $.trim($("#LabelName").val());
+    remark.LabelType = $("#LabelType").val();
+    //标签保存
+    $('[id^="div_"][labeltype*="' + val + '"]').each(function () {
+         var property  = $(this).attr("")
+    });
+
+    
+}
+
+//保存配置 
+document.Save = function () {
+    $.each(document.remarks, function (i, remark) {
+        //没有配置采用默认
+        if (remark.Conifg == undefined) {
+            remark.LabelType = "TextLabel";
+            remark.Config = {
+                GetDataMethod: "Const", Value: ""
+            };
+            remark.Control = {
+                ControlType: "Text",
+                Required: "false",
+                ValidateString:""
+            };
+        }       
+    });
+
+    var remarkContents = JSON.stringify(document.remarks);
+    //提交配置
+    $.ajax({
+        url: "SaveRemarks",
+        cache: false,
+        type: "POST",
+        dataType: 'json',
+        data: { remarkContents: remarkContents },
+        success: function (data) {
+            if (data.IsSuccess) {
+                AlertTips('保存成功', 'right', 3);
+                $("#dropStructure").change();
+            }
+            else {
+                AlertTips('保存失败', 'error', 3);
+            }
+        }
+    });
+   
+}
+
+//获取
+document.GetData = function ($container) {
+
 }
