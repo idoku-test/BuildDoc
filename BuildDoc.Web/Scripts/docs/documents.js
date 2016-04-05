@@ -9,6 +9,11 @@ $(function () {
 
     $('[name="GetDataMethod"]').hide();
 
+    //标签行点击
+    $(document).on('click', '#remarks tr[name="remarkMould"]', function () {
+        document.GetRemarkInfo(null, $(this).find("[title='labelName']").html());
+    });
+
     //标签类型切换
     $('#LabelType').change(function () {        
         var val = $(this).val();
@@ -20,8 +25,14 @@ $(function () {
     //数据源切换
     $('#DataMethod').change(function () {
         var val = $(this).val();
+        //数据源切换
         $('[name="GetDataMethod"][method="' + val + '"]').show();
         $('[name="GetDataMethod"][method!="' + val + '"]').hide();
+
+        //格式化切换        
+        $('[id="div_FormatInfo"][method!="' + val + '"]').hide();
+        $('[id="div_FormatInfo"][method*="' + val + '"]').show();
+     
     });
     $('#DataMethod').change();
 
@@ -59,8 +70,8 @@ $(function () {
         AlertDiv('#alert_Formula');
         var fields = [];
 
-        $('#grid').find("td[title=\"labelName\"]").each(function () {
-            fields.push($(this).text());
+        $.each(document.remarks, function (i, remark) {
+            fields.push(remark.LabelName);
         })
         var feditor = new formualEditor(fields);
     });
@@ -115,6 +126,11 @@ document.GetRemarks = function () {
             }
         }
     });
+}
+
+//获取书签信息
+document.GetRemarkInfo = function (config, labelName) {
+    $('#LabelName').val(labelName);
 }
 
 //解析json配置--为表格增加标签行

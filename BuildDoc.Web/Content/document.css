@@ -1,0 +1,840 @@
+/*********Consign*****************/
+.Consign {
+    width: 100%;
+    height: auto;
+}
+
+.Consign1 {
+    width: 98%;
+    height: auto;
+    padding: 10px 1% 0;
+}
+
+    .Consign1 .search ul li .box_text {
+        width: 40%;
+    }
+
+    .Consign1 .search ul li p {
+        width: 40%;
+        padding-right: 1%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .Consign1 .search ul li {
+        margin-bottom: 15px;
+    }
+
+    .Consign1 .search {
+        height: auto;
+    }
+
+.Consign2 {
+    width: 98%;
+    height: auto;
+    padding: 10px 1%;
+    overflow: hidden;
+}
+
+    .Consign2 .search {
+        padding-bottom: 20px;
+    }
+
+        .Consign2 .search ul li .box_text {
+            width: 50%;
+        }
+
+    .Consign2 .page {
+        padding-top: 20px;
+    }
+
+.Consign2_tab {
+    width: 100%;
+    height: auto;
+}
+
+    .Consign2_tab table {
+        width: 49%;
+    }
+/*********Consign*****************/
+/*********Drafts*****************/
+
+.Drafts {
+    width: 100%;
+    height: auto;
+}
+
+.Drafts1 {
+    width: 98%;
+    height: 27px;
+    padding: 10px 1%;
+}
+
+    .Drafts1 .search ul li .box_text {
+        width: 60%;
+    }
+
+.Drafts2 {
+    width: 100%;
+    height: auto;
+}
+
+.Drafts2_T {
+    width: 100%;
+    height: 25px;
+    padding-bottom: 15px;
+}
+
+    .Drafts2_T input {
+        margin-top: 8px;
+        margin-right: 10px;
+        *margin-top: 5px;
+    }
+
+    .Drafts2_T a {
+        margin-right: 10px;
+    }
+
+        .Drafts2_T a:hover {
+            background-color: #509ee1;
+        }
+
+.Drafts2_B {
+    width: 96%;
+    height: auto;
+    padding: 16px 2%;
+    margin-bottom: 20px;
+}
+
+.Drafts2 b {
+    font-weight: normal;
+}
+
+.Drafts3 {
+    width: 100%;
+    height: auto;
+}
+
+    .Drafts3 ul {
+        padding: 10px;
+        width: 180px;
+        height: auto;
+    }
+
+        .Drafts3 ul li {
+            width: 180px;
+            height: auto;
+        }
+
+            .Drafts3 ul li a {
+                width: 180px;
+                height: 20px;
+                padding: 10px 0;
+                display: block;
+                border-bottom: 1px solid #eee;
+            }
+
+                .Drafts3 ul li a:hover {
+                    color: #03b1dd;
+                }
+
+            .Drafts3 ul li p {
+                width: 150px;
+                height: 20px;
+                line-height: 20px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            .Drafts3 ul li a span {
+                width: 30px;
+                height: 20px;
+                line-height: 20px;
+            }
+/*********Drafts*****************/
+/*********Inquiry*****************/
+
+.Inquiry {
+    width: 100%;
+    height: auto;
+}
+
+.Inquiry1 {
+    width: 100%;
+    padding: 10px 0;
+}
+
+    .Inquiry1 p {
+        width: 90px;
+        height: 27px;
+        line-height: 27px;
+        padding-right: 5%;
+    }
+
+    .Inquiry1 .box_text {
+        width: 67%;
+    }
+
+.Inquiry2 {
+    width: 100%;
+    height: auto;
+    padding: 10px 0 10px;
+}
+
+.Inquiry2_R1 {
+    width: 100%;
+    height: 600px;
+    background-color: #999;
+}
+
+.Inquiry2_R2 {
+    width: 66%;
+    height: auto;
+}
+
+    .Inquiry2_R2 h2 {
+        line-height: 30px;
+        padding-top: 20px;
+    }
+
+    .Inquiry2_R2 p {
+        width: 95%;
+        height: auto;
+        line-height: 25px;
+        border: 1px solid #ccc;
+        padding: 10px 2%;
+    }
+
+    .Inquiry2_R2 a {
+        margin: 15px 1% 0 0;
+    }
+
+.Inquiry2 #dynLabels p {
+    height: auto;
+}
+
+    .Inquiry2 #dynLabels p select.box_text {
+        width: 73%;
+    }
+
+.Inquiry2_L {
+    width: 30%;
+    height: auto;
+    padding: 0 2%;
+}
+
+    .Inquiry2_L .control, .Inquiry2_L p {
+        width: 100%;
+        height: 27px;
+        line-height: 27px;
+        margin-bottom: 14px;
+    }
+
+        .Inquiry2_L .control span, .Inquiry2_L p span {
+            width: 80px;
+            height: 27px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .Inquiry2_L .control .box_text, .Inquiry2_L p .box_text {
+            width: 73%;
+            box-sizing: border-box;
+        }
+
+        .Inquiry2_L .control b, .Inquiry2_L p b {
+            padding: 0 1%;
+            font-weight: normal;
+        }
+
+        .Inquiry2_L .control a, .Inquiry2_L p a {
+            width: 18%;
+            margin-left: 2%;
+        }
+
+        .Inquiry2_L .control i, .Inquiry2_L p i {
+            width: 18%;
+            margin-left: 2%;
+            color: #999;
+        }
+
+            .Inquiry2_L .control i input, .Inquiry2_L p i input {
+                margin-right: 5px;
+            }
+
+        .Inquiry2_L .control .onError {
+            margin-left: 80px;
+            width: 242px;
+        }
+
+.Wdata1 .control .onError {
+    margin-left: 74px;
+    width: 316px;
+}
+/*********Inquiry*****************/
+/*********project_detail*****************/
+
+.project_detail {
+    width: 100%;
+    height: auto;
+}
+
+.project_detail1 {
+    width: 98%;
+    height: auto;
+    padding: 0px 1% 10px;
+    overflow: hidden;
+}
+
+table.project_detail1_tab td {
+    text-align: left;
+    padding-left: 0;
+}
+
+table.project_detail1_tab th {
+    font-weight: bold;
+    text-align: left;
+    font-size: 14px;
+}
+
+table.project_detail1_tab tr.alt td {
+    background: #fff;
+}
+
+table.project_detail1_tab tr.over td {
+    background: #fff;
+}
+
+.project_detail1 .button {
+    margin-top: 30px;
+}
+
+.project_detail1_T {
+    width: 100%;
+    height: 40px;
+    margin-top: 10px;
+}
+
+    .project_detail1_T h4 {
+        float: left;
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+    }
+
+    .project_detail1_T a.blue {
+        height: 40px;
+        line-height: 40px;
+        float: left;
+        margin-left: 10px;
+    }
+
+        .project_detail1_T a.blue:hover {
+            color: #333;
+            text-decoration: none;
+        }
+
+    .project_detail1_T .Abutton {
+        margin-left: 10px;
+        margin-top: 6px;
+    }
+
+.project_detail1 td a.white {
+    width: 40px;
+}
+
+.project_detail1 td a.blue:hover {
+    color: #333;
+}
+
+.project_detail1 td b {
+    margin-left: 10px;
+}
+
+    .project_detail1 td b.red {
+        margin-left: 0px;
+    }
+
+.time_line1 {
+    width: 10%;
+    height: 30px;
+    line-height: 30px;
+    left: 50%;
+    margin-left: -5%;
+    *margin-left: -7%;
+}
+
+.time_line2 {
+    width: 100%;
+    height: auto;
+    background: url(../image/line.jpg) repeat-y center;
+}
+
+    .time_line2 ul li {
+        width: 50%;
+        height: auto;
+        padding: 10px 0;
+    }
+
+        .time_line2 ul li.fl {
+            margin-left: 1px;
+            *margin-left: -2px;
+        }
+
+            .time_line2 ul li.fl .time_re2 {
+                right: -15px;
+            }
+
+            .time_line2 ul li.fl .time_re1 i {
+                right: -20px;
+                top: 10px;
+            }
+
+        .time_line2 ul li.fr {
+            margin-right: 1px;
+        }
+
+            .time_line2 ul li.fr .time_re2 {
+                left: -15px;
+            }
+
+            .time_line2 ul li.fr .time_re1 i {
+                left: -20px;
+                top: 10px;
+            }
+
+.time_re {
+    width: 100%;
+    height: auto;
+}
+
+.time_re1 {
+    width: 88%;
+    height: auto;
+    line-height: 25px;
+    background-color: #eee;
+    padding: 10px 2%;
+}
+
+.time_re1T {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+    .time_re1T p {
+        width: auto;
+        margin-right: 140px;
+    }
+
+        .time_re1T p span {
+            width: 100%;
+            height: auto;
+        }
+
+    .time_re1T b {
+        width: 130px;
+        height: 25px;
+    }
+
+.time_re1B {
+    width: 100%;
+    height: auto;
+    padding-top: 5px;
+}
+
+.time_re2 {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    top: 5px;
+}
+
+.tl_sq {
+    background-color: #fb7a74;
+}
+
+.tl_cl {
+    background-color: #49c6c0;
+}
+
+.tl_th {
+    background-color: #b6bcca;
+}
+
+.tl_hf {
+    background-color: #959ead;
+}
+
+.tl_tx {
+    background-color: #eda618;
+}
+
+.tl_xg {
+    background-color: #9085ca;
+}
+
+.tl_xz {
+    background-color: #3dbbeb;
+}
+
+.tl_ts {
+    background-color: #7c97cc;
+}
+/*********project_detail*****************/
+/*********project_ingg*****************/
+
+.project_ingg {
+    width: 100%;
+    height: auto;
+}
+
+.project_ing1 {
+    width: 98%;
+    height: auto;
+    padding: 10px 1%;
+    overflow: hidden;
+}
+
+    .project_ing1 .search {
+        padding-bottom: 20px;
+    }
+
+        .project_ing1 .search ul li .box_text {
+            width: 60%;
+            min-width: 90px;
+        }
+
+        .project_ing1 .search ul li span {
+            width: auto;
+            height: 27px;
+            line-height: 27px;
+            margin: 0 0 0 10%;
+            cursor: pointer;
+            float: left;
+        }
+
+        .project_ing1 .search ul li i {
+            margin-top: 10px;
+            margin-left: 5px;
+        }
+
+    .project_ing1 .page {
+        padding-top: 20px;
+    }
+
+.project_ing1_tab {
+    width: 100%;
+    height: auto;
+}
+
+    .project_ing1_tab td a {
+        width: 60px;
+        height: 20px;
+        line-height: 20px;
+        margin-bottom: 5px;
+    }
+
+        .project_ing1_tab td a.white {
+            width: 70px;
+        }
+
+#project_ing1_tab_end {
+    width: 150px;
+}
+/*********project_ingg*****************/
+/*********Wdata*****************/
+
+.Wdata {
+    width: 100%;
+    height: auto;
+}
+
+.Wdata1 {
+    width: 96%;
+    height: auto;
+    padding: 0 2%;
+}
+
+    .Wdata1 p {
+        width: 50%;
+        height: 57px;
+        line-height: 27px;
+        float: left;
+    }
+
+        .Wdata1 p span {
+            width: 75px;
+            height: 27px;
+        }
+
+        .Wdata1 p .box_text {
+            width: 65%;
+        }
+
+        .Wdata1 p b {
+            padding: 0 1%;
+            font-weight: normal;
+        }
+
+        .Wdata1 p a {
+            width: 18%;
+            margin-left: 2%;
+        }
+
+        .Wdata1 p i {
+            width: 18%;
+            margin-left: 2%;
+            color: #999;
+        }
+
+            .Wdata1 p i input {
+                margin-right: 5px;
+            }
+
+.Wdata2 {
+    width: 96%;
+    height: auto;
+    padding: 0 2%;
+}
+
+    .Wdata2 p {
+        width: 33%;
+        height: 27px;
+        line-height: 27px;
+        padding: 10px 0;
+        float: left;
+    }
+
+        .Wdata2 p span {
+            width: 55px;
+            height: 27px;
+        }
+
+        .Wdata2 p .box_text {
+            width: 60%;
+        }
+
+        .Wdata2 p b {
+            padding: 0 1%;
+            font-weight: normal;
+        }
+
+        .Wdata2 p a {
+            width: 18%;
+            margin-left: 2%;
+        }
+
+        .Wdata2 p i {
+            width: 18%;
+            margin-left: 2%;
+            color: #999;
+        }
+
+            .Wdata2 p i input {
+                margin-right: 5px;
+            }
+
+.Wdata3 {
+    width: 96%;
+    height: auto;
+    padding: 0 2%;
+}
+
+    .Wdata3 ul {
+        overflow: hidden;
+    }
+
+        .Wdata3 ul li {
+            width: 16%;
+            height: auto;
+            border: 1px dashed #ccc;
+            margin: 10px 2%;
+            padding: 10px 2%;
+            float: left;
+        }
+
+            .Wdata3 ul li p {
+                width: 100%;
+                height: 20px;
+                line-height: 20px;
+            }
+
+            .Wdata3 ul li a {
+                width: 100%;
+                height: 25px;
+                line-height: 25px;
+                margin-top: 10px;
+            }
+
+                .Wdata3 ul li a:hover {
+                    background-color: #509ee1;
+                }
+
+            .Wdata3 ul li.hover {
+                border: 1px solid #a8bdcf;
+            }
+
+/*********Wdata*****************/
+
+/*********新增独立样式*****************/
+.tsts {
+    width: 100%;
+    height: 27px;
+    line-height: 27px;
+    margin: 20px 0;
+}
+
+    .tsts span.fl {
+        width: 80px;
+        height: 27px;
+    }
+
+    .tsts ul {
+        overflow: hidden;
+        padding-left: 68px;
+    }
+
+        .tsts ul li {
+            float: left;
+            margin-left: 2px;
+            height: 22px;
+        }
+
+            .tsts ul li:first-child {
+                width: 114px;
+            }
+
+            .tsts ul li:last-child {
+                width: 116px;
+            }
+
+.search ul.tsts2 li span, .search ul.tsts3 li span {
+    float: none;
+}
+
+.tsts2 li .onError {
+    width: 202px;
+}
+
+.tsts2 li:first-child .onError, .tsts3 li:first-child .onError {
+    margin-left: 48px;
+}
+
+.tsts2 li:nth-child(2) .onError {
+    margin-left: 72px;
+}
+
+.tsts3 li .onError {
+    width: 145px;
+}
+
+.tsts3 li:nth-child(2) .onError {
+    margin-left: 60px;
+}
+.table2 .more_link{
+    color:blue;
+
+}
+/*********新增独立样式*****************/
+
+/*** 列表浮动框 ********************************************/
+.admin_tips_wrapper {
+    width: 300px;
+    position: absolute;
+    z-index: 9999;
+    *zoom: 1;
+}
+
+.admin_tips_wrapper1 {
+    width: 450px;
+    position: absolute;
+    z-index: 9999;
+    *zoom: 1;
+}
+.admin_tips_wrapper2 {
+    width: 700px;
+    position: absolute;
+    z-index: 9999;
+    *zoom: 1;
+}
+
+.admin_tips_box {
+    padding: 4px 8px;
+    border: 1px solid #fdba44;
+    background-color: #fff9e2;
+    position: relative;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+    .admin_tips_box .m_trig {
+        width: 0;
+        height: 0;
+        line-height: 0;
+        border-width: 0 8px 8px;
+        border-style: dashed dashed solid;
+        border-color: transparent transparent #fdba44;
+        position: absolute;
+        left: 55%;
+        top: -8px;
+    }
+
+    .admin_tips_box .c_trig {
+        width: 0;
+        height: 0;
+        line-height: 0;
+        border-width: 0 8px 8px;
+        border-style: dashed dashed solid;
+        border-color: transparent transparent #fff9e2;
+        position: absolute;
+        left: 55%;
+        top: -7px;
+    }
+
+    .admin_tips_box .close {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        background: url(../image/admin_close_2.png) no-repeat 0 0;
+        position: absolute;
+        right: 10px;
+        top: 2px;
+    }
+
+    .admin_tips_box .triangle {
+        background: url(../image/admin_tips_arrow.png) no-repeat;
+        width: 17px;
+        height: 8px;
+        position: absolute;
+        right: 35%;
+        top: -8px;
+    }
+
+.admin_tips_content {
+    padding-top: 10px;
+    max-height:240px;
+    overflow-y:scroll;
+   padding-bottom:10px;
+}
+
+    .admin_tips_content li {
+        padding: 8px 4px;
+        font-size: 12px;
+        color: #515151;
+        border-bottom: 1px solid #f7e3c1;
+    }
+
+        .admin_tips_content li.last {
+            border-bottom: 0;
+        }
+
+.admin_warn {
+    margin-left: 2px;
+    font-size: 12px;
+    color: #ff0000;
+}
