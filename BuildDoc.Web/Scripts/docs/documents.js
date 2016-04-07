@@ -462,7 +462,7 @@ document.GetConfig = function (remark) {
             var getDataMethod = $("#ImageLabel_GetDataMethod").val();
             config.Config.GetDataMethod = getDataMethod;
             break;
-        default:
+        case '':
             var lstCondition = [];
             if ($("#tbCondition tr:visible").length <= 1) {
                 flagStr = "未设置条件";
@@ -486,11 +486,12 @@ document.GetConfig = function (remark) {
                     lstCondition.push(condition);
                 });
             }
-            //config.LabelName = $("#LabelName").val();
-            //config.LabelType = $("#LabelType").val();
             config.Config = lstCondition;
-
             break;
+        default:
+            //出错
+            break;
+           
     }
 }
 
