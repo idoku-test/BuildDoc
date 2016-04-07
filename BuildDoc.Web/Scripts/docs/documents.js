@@ -392,16 +392,6 @@ document.ClearControl = function (container) {
     });
 }
 
-//获取文本标签配置
-document.GetTextConfig = function () {    
-    var config = {};
-    var getDataMethod = $('#DataMethod').val();
-    config.GetDataMethod = getDataMethod;
-    if (GetDataMethod == "Source" || GetDataMethod == "MultiSource") {
-       // config.GetDataMethod = 
-    }
-
-}
 
 //保存配置
 document.Save = function () {
@@ -462,7 +452,7 @@ document.GetConfig = function (remark) {
             var getDataMethod = $("#ImageLabel_GetDataMethod").val();
             config.Config.GetDataMethod = getDataMethod;
             break;
-        case '':
+        case 'ConditionLabel':
             var lstCondition = [];
             if ($("#tbCondition tr:visible").length <= 1) {
                 flagStr = "未设置条件";
@@ -495,6 +485,20 @@ document.GetConfig = function (remark) {
     }
 }
 
+//获取文本标签配置
+document.GetTextConfig = function () {
+    var config = {};
+
+    config.GetDataMethod = $('#DataMethod').val();;
+
+    config = document.GetConfigJson("DataMethod", config);
+
+    config.FormatInfo = document.GetFormatConfig();
+
+    config.Relate = document.GetRelateConfig();
+
+    return config;
+}
 
 //获取常量配置
 document.GetFormatConfig = function () {    
