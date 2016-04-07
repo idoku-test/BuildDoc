@@ -17,21 +17,50 @@ $(function () {
     //标签类型切换
     $('#LabelType').change(function () {        
         var val = $(this).val();
-        $('[id^="div_"][labeltype!="' + val + '"]').hide();
-        $('[id^="div_"][labeltype*="' + val + '"]').show();        
+        //标签属性控制
+        $.each($('[id^="div_"]'), function () {
+            $(this).show();
+            if ($(this).is('[labeltype]') && $(this).attr("labeltype") != val) {
+                $(this).hide();
+            }
+        });        
+        
+        //数据源切换控制
+        if (val == 'TextLabel') {
+            //文本标签可选其他数据源            
+            $('#DataMethod').show();
+        } else {
+            //非文本标签只能设置数据源
+            $('#DataMethod').val("Source");
+            $('#DataMethod').hide();           
+        }
+
+        $('#DataMethod').change();
     });
     $('#LabelType').change();
 
     //数据源切换
     $('#DataMethod').change(function () {
         var val = $(this).val();
+        var labelType = $('#LabelType').val();
         //数据源切换
-        $('[name="GetDataMethod"][method="' + val + '"]').show();
-        $('[name="GetDataMethod"][method!="' + val + '"]').hide();
+        $.each($('[name="GetDataMethod"]'), function () {
+            $(this).show();
+            //隐藏其他类型数据源
+            if ($(this).attr("method") != val) {
+                $(this).hide();
+            }
+            //隐藏标签类型控制数据源
+            if ($(this).is('[labeltype]') && $(this).attr("labeltype") != labelType) {
+                $(this).hide();
+            }
+        });       
 
         //格式化切换        
         $('[id="div_FormatInfo"][method!="' + val + '"]').hide();
         $('[id="div_FormatInfo"][method*="' + val + '"]').show();
+
+       
      
     });
     $('#DataMethod').change();
@@ -101,8 +130,15 @@ $(function () {
         document.AddTableFieldRow(0, null);
     });
 
+    //暂存
+    $('#btnSave').click(function () {
+        document.Save();
+    })
 
+
+    //版定数据源
     document.BindDataSource($('#sltDataSource'));
+
 });
 
 //获取书签
@@ -356,13 +392,6 @@ document.ClearControl = function (container) {
     });
 }
 
-//获取动态json属性
-document.GetDynamicJson = function (key) {
-    $.each("", function (i, obj) {
-
-    });
-}
-
 //获取文本标签配置
 document.GetTextConfig = function () {    
     var config = {};
@@ -375,21 +404,162 @@ document.GetTextConfig = function () {
 }
 
 //保存配置
-document.SaveConfig = function () {
+document.Save = function () {
 
     var remark = {};
     remark.LabelName = $.trim($("#LabelName").val());
     remark.LabelType = $("#LabelType").val();
     //标签保存
-    $('[id^="div_"][labeltype*="' + val + '"]').each(function () {
-         var property  = $(this).attr("")
-    });
-
-    
+    document.GetConfig(remark);
 }
 
-//保存配置 
-document.Save = function () {
+//获取标签配置
+document.GetConfig = function (remark) {
+    var config = {};
+    switch (remark.LabelType) {
+        case "TextLabel":
+            config.GetDataMethod = $('#DataMethod').val();
+            config = document.GetConfigJson("DataMethod", config);
+            break;
+        case "DocLabel":
+            config.Config = {};
+            config.Config = StructureClass.DynamicAddJson("DocLabel_", config.Config);
+            var getDataMethod = $("#DocLabel_GetDataMethod").val();
+            config.Config.GetDataMethod = getDataMethod;
+            break;
+        case "TableLabel":
+            config.Config = {};
+            config.Config = StructureClass.DynamicAddJson("TableLabel_", config.Config);
+            //config.Config.ColumnInfo =eval($("#ColumnInfo").val());
+            var lstFiled = [];
+            if ($("#tbTableField tr:visible:gt(0)").length <= 0) {
+                flagStr = "该标签未绑定填充字段";
+                flag = false;
+            } else {
+                $.each($("#tbTableField tr:visible:gt(0)"), function (i, obj) {
+                    var configStr = $.trim($(obj).find("#tbConfigStr").html());
+                    var field = {};
+                    field.FieldName = $.trim($(obj).find("#tbField").val());
+                    field.ColumnIndex = i;
+                    field.FormatInfo = {};
+                    // $.parseJSON($(obj).find("#tbConditionConfig").html())
+                    if (field.FieldName == "") {
+                        flagStr = "表格标签" + (i + 1) + "未设置字段名";
+                        flag = false;
+                        return false;
+                    }
+                    if (configStr != "") {
+                        field.FormatInfo = $.parseJSON(configStr);
+                    }
+                    lstFiled.push(field);
+                });
+            }
+            config.Config.ColumnInfo = lstFiled;
+            break;
+        case "ImageLabel":
+            config.Config = {};
+            config.Config = StructureClass.DynamicAddJson("ImageLabel_", config.Config);
+            var getDataMethod = $("#ImageLabel_GetDataMethod").val();
+            config.Config.GetDataMethod = getDataMethod;
+            break;
+        default:
+            var lstCondition = [];
+            if ($("#tbCondition tr:visible").length <= 1) {
+                flagStr = "未设置条件";
+                flag = false;
+            }
+            else {
+                $.each($("#tbCondition tr:visible:gt(0)"), function (i, obj) {
+                    var conditionConfigStr = $.trim($(obj).find("#tbConditionConfig").html());
+                    if (conditionConfigStr == "") {
+                        flagStr = "条件" + (i + 1) + "未设置条件配置";
+                        flag = false;
+                        return false;
+                    }
+                    var condition = $.parseJSON($(obj).find("#tbConditionConfig").html());
+                    condition.Condition = $(obj).find("#tbCondition").html();
+                    if (condition.Condition == "") {
+                        flagStr = "条件" + (i + 1) + "未设置条件";
+                        flag = false;
+                        return false;
+                    }
+                    lstCondition.push(condition);
+                });
+            }
+            //config.LabelName = $("#LabelName").val();
+            //config.LabelType = $("#LabelType").val();
+            config.Config = lstCondition;
+
+            break;
+    }
+}
+
+
+//获取常量配置
+document.GetFormatConfig = function () {    
+    var format = {};
+    format.FormatType = $('#FormatType').val();
+    //获取format配置
+    format = document.GetConfigJson("FormatInfo", format);
+    return format;
+}
+
+//获取关联配置
+document.GetRelateConfig = function () {
+    var relates = [];
+    $.each($('#relates tr:visable'), function (i, obj) {
+        var relate = {};
+        relate.LabelName = $(obj).find("[title='labelName']").find('input').val();
+        relate.FieldName = $(obj).find("[title='fieldName']").find('input').val();
+        if (relate.LabelName != "" && relate.FieldName != "") {
+            relates.push(relate);
+        }
+    });
+    return relates;
+}
+
+//获取控件配置
+document.GetControlConfig = function () {
+    var control = {};
+    control.ControlType = $('#ControlType').val();
+    control = document.GetConfigJson("LabelControl", control);
+    if (control.FillType == "DropDown") {
+        control = document.GetConfigJson("LabelFill", control);
+    }
+    return control;
+}
+
+//获取配置项
+//获取筛选属性的输入配置项
+document.GetConfigJson = function (filterCtrl,config) {
+    //遍历
+    $('[name="' + filterCtrl + '"]').find('input,select').each(function (i,obj) {
+        var key = $(this).attr("key");
+        var config = "config." + key + "=";
+        if ($(this).is("select")) {
+            var value = $(obj).val();
+            value = value == "-请选择-" ? "" : value;
+            config += "\"" + value + "\"";
+        }
+        else if ($(this).is("input:checkbox")) {
+            config += "\"" + $(obj).is(":checked") + "\"";
+        }
+        else if ($(this).is("input:radio")) {
+            config += "\"" + $(":radio[name='" + $(this).attr("id") + "']:checked").val() + "\"";
+        }
+        else if ($(this).hasClass("autocomplate")) {
+            config += "\"" + $(obj).attr("val") + "\"";
+        }
+        else {
+            config += "\"" + $(obj).val() + "\"";
+        }
+    });
+    return config;
+}
+ 
+
+//提交配置 
+document.Submit = function () {
     $.each(document.remarks, function (i, remark) {
         //没有配置采用默认
         if (remark.Conifg == undefined) {

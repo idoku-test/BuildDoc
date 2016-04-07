@@ -78,78 +78,82 @@
     </div>
     <!-- label type ----- end -->
     <!-- label value ----- begin -->    
-    <div id="div_Lable" style="padding-top:10px;" labeltype="@BuildDoc.LabelType.TextLabel,@BuildDoc.LabelType.TableLabel,@BuildDoc.LabelType.DocLabel,@BuildDoc.LabelType.ImageLabel">
+    <div id="div_Lable" style="padding-top:10px;" >
         <div class="oh" style=" border-bottom: 1px solid #ccc; margin-top: 0;">
             <h2 class="fl" style="line-height: 40px; ">取值方式</h2>
         </div>
         <div id="LabelType_Label">
             <div id="AllTypeLabel">
                 <ul class="oh">
-                    @Html.EnumDropDownList("DataMethod", BuildDoc.GetDataMethod.Const, null, true, new { tag = "GetDataMethod" })
+                    @Html.EnumDropDownList("DataMethod", BuildDoc.GetDataMethod.Const, null, true, new { })
                     @* 常量 *@
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Const">
                         <p class="tc">
                             值:
                         </p>
-                        <textarea id="txtConstValue" class="fl box_text" style="width:270px; height:40px"></textarea>
+                        <textarea id="txtConstValue" key="Value" method="@BuildDoc.GetDataMethod.Const" class="fl box_text" style="width:270px; height:40px"></textarea>
                     </li>
                     @* 公式 *@
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Formula" style="height: 54px; width: 370px;">
                         <p class="tc" style="padding-top:30px">
                             值:
                         </p><span class="red">注意：@@符号后请保留空格,如：“@@建筑面积 ”</span>
-                        <input id="txtLabelFormula" class="fl box_text" style="width:270px " title="" /><span class="red">*</span>
+                        <input id="txtLabelFormula" key="Value" method="@BuildDoc.GetDataMethod.Formula" class="fl box_text" style="width:270px " title="" /><span class="red">*</span>
                         @*<span><a onclick="AlertDiv('#alert_FormulaFormart', 999999)">选择</a></span>*@
                     </li>
                     @* 数据源 *@
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
                         <p class="tc">
                             数据源:
-                        </p><select id="sltDataSource" class="box_text fl"></select><span class="red">*</span>
+                        </p><select id="sltDataSource" key="DataSourceName" class="box_text fl"></select><span class="red">*</span>
                     </li>
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
                         <p class="tc">
                             显示字段:
-                        </p><select id="sltDisplayFields" class="box_text fl"><option value="">请先选择数据源</option></select><span class="red">*</span>
+                        </p>
+                        <select id="sltDisplayFields" key="FieldName" class="box_text fl">
+                        <option value="">请先选择数据源</option>
+                        </select><span class="red">*</span>
                     </li>
-                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
-                        <p class="tc">
-                            筛选字段:
-                        </p><select id="sltFilterFields" class="box_text fl">
-                            <option value="">请先选择数据源</option>
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source ">
+                        <p class=" tc">
+                        筛选字段:
+                        </p>
+                        <select id="sltFilterFields" key="FilterFieldName" class="box_text fl">
+                                    <option value="">请先选择数据源</option>
                         </select>
                     </li>
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
                         <p class="tc">
                             筛选操作:
-                        </p><select class="box_text fl" id="sltFilterOperate">
-                            <option value="">-请选择-</option>
-                            <option value="=">等于</option>
-                            <option value=">">大于</option>
-                            <option value="<">小于</option>
-                            <option value="!=">不等于</option>
-                        </select>
+                        </p><select class="box_text fl" id="sltFilterOperate" key="FilterOperation">
+                                <option value="">-请选择-</option>
+                                <option value="=">等于</option>
+                                <option value=">">大于</option>
+                                <option value="<">小于</option>
+                                <option value="!=">不等于</option>
+                            </select>
                     </li>
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
                         <p class="tc">
                             筛选值:
-                        </p><input id="txtFilterValue" type="text" class="fl box_text" />
+                        </p><input id="txtFilterValue" key="FilterValue" type="text" class="fl box_text" />
                     </li>
                     @* 表格标签 *@
-                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source" labeltype="@BuildDoc.LabelType.TableLabel">
                         <p class="tc">
                             填充方式:
-                        </p><select id="sltTableFillType"  class="box_text fl">
+                        </p><select id="sltTableFillType" class="box_text fl">
                             <option value="OnlyFillByRow">横向</option>
                             <option value="OnlyFillByColumn">纵向</option>
                         </select>
                     </li>
-                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source" style="line-height:25px">
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source" labeltype="@BuildDoc.LabelType.TableLabel" style="line-height:25px">
                         <p class="tc">
                             从第
                         </p><input id="txtFrom" type="text" value="0" class="fl box_text" />条数据开始
                     </li>
-                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source" style="line-height:25px">
+                    <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source" labeltype="@BuildDoc.LabelType.TableLabel" style="line-height:25px">
                         <p class="tc">
                             到第
                         </p><input id="txtTo" value="0" class="fl box_text" />条数据结束
@@ -324,8 +328,8 @@
 
         </div>
     </div>
-    <!-- label control ---- end -->
-
+    <!-- label control ---- end -->    
+    <a id="btnSave" class="Abutton fl mblue_bg white br2 tc" style="margin-left:10px;">暂存</a>
 </div>
 @*弹出设置公式的窗口*@
 <div class="alert" id="alert_Formula">
