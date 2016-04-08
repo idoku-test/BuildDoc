@@ -75,9 +75,17 @@ $(function () {
 
     //控件类型
     $('#ControlType').change(function () {
-        var val = $(this).val();
-        $('[name="LabelControl"][control="' + val + '"]').show();
-        $('[name="LabelControl"][control!="' + val + '"]').hide();
+        var ctrlType = $(this).val();
+        
+        $.each($('[name="LabelControl"]'), function () {
+            $(this).show();
+            //隐藏控件控制数据源
+            if ($(this).is('[control]') && $(this).attr("control") != ctrlType) {
+                $(this).hide();
+            }
+        });
+
+
         $('#FillType').change();
     });
     $('#ControlType').change();
@@ -400,83 +408,46 @@ document.Save = function () {
     remark.LabelName = $.trim($("#LabelName").val());
     remark.LabelType = $("#LabelType").val();
     //标签保存
-    document.GetConfig(remark);
+    document.GetRemarkConfig(remark);
+
+    var ety = {};
+    ety.DATA_LABEL_ID = 0;   
+    ety.CONFIG_CONTENT = JSON.stringify(remark);
+    ety.LABEL_NAME = remark.LabelName;
+    ety.DATA_SOURCE_NAME = "";
+
+    $.ajax({
+        url: "/Labels/Save",
+        cache: false,
+        type: "POST",
+        dataType: 'json',
+        data: ety,
+        success: function (data) {
+        }
+    });
 }
 
 //获取标签配置
-document.GetConfig = function (remark) {
-    var config = {};
+document.GetRemarkConfig = function (remark) {
+    remark.Config = {};
     switch (remark.LabelType) {
-        case "TextLabel":
-            config.GetDataMethod = $('#DataMethod').val();
-            config = document.GetConfigJson("DataMethod", config);
+        case "TextLabel":            
+            remark.Config = document.GetValueConfig(remark.Config);
+            remark.Relate = document.GetRelateConfig();
+            remark.Control = document.GetControlConfig();
             break;
-        case "DocLabel":
-            config.Config = {};
-            config.Config = StructureClass.DynamicAddJson("DocLabel_", config.Config);
-            var getDataMethod = $("#DocLabel_GetDataMethod").val();
-            config.Config.GetDataMethod = getDataMethod;
+        case "DocLabel":         
+            remark.Config = document.GetValueConfig(remark.Config);
             break;
-        case "TableLabel":
-            config.Config = {};
-            config.Config = StructureClass.DynamicAddJson("TableLabel_", config.Config);
-            //config.Config.ColumnInfo =eval($("#ColumnInfo").val());
-            var lstFiled = [];
-            if ($("#tbTableField tr:visible:gt(0)").length <= 0) {
-                flagStr = "该标签未绑定填充字段";
-                flag = false;
-            } else {
-                $.each($("#tbTableField tr:visible:gt(0)"), function (i, obj) {
-                    var configStr = $.trim($(obj).find("#tbConfigStr").html());
-                    var field = {};
-                    field.FieldName = $.trim($(obj).find("#tbField").val());
-                    field.ColumnIndex = i;
-                    field.FormatInfo = {};
-                    // $.parseJSON($(obj).find("#tbConditionConfig").html())
-                    if (field.FieldName == "") {
-                        flagStr = "表格标签" + (i + 1) + "未设置字段名";
-                        flag = false;
-                        return false;
-                    }
-                    if (configStr != "") {
-                        field.FormatInfo = $.parseJSON(configStr);
-                    }
-                    lstFiled.push(field);
-                });
-            }
-            config.Config.ColumnInfo = lstFiled;
+        case "TableLabel":          
+            remark.Config = document.GetValueConfig(remark.Config);
+            remark.Config.ColumnInfo = document.GetColumnInfo();
             break;
-        case "ImageLabel":
-            config.Config = {};
-            config.Config = StructureClass.DynamicAddJson("ImageLabel_", config.Config);
-            var getDataMethod = $("#ImageLabel_GetDataMethod").val();
-            config.Config.GetDataMethod = getDataMethod;
+        case "ImageLabel":           
+            remark.Config = document.GetValueConfig(remark.Config);
             break;
         case 'ConditionLabel':
-            var lstCondition = [];
-            if ($("#tbCondition tr:visible").length <= 1) {
-                flagStr = "未设置条件";
-                flag = false;
-            }
-            else {
-                $.each($("#tbCondition tr:visible:gt(0)"), function (i, obj) {
-                    var conditionConfigStr = $.trim($(obj).find("#tbConditionConfig").html());
-                    if (conditionConfigStr == "") {
-                        flagStr = "条件" + (i + 1) + "未设置条件配置";
-                        flag = false;
-                        return false;
-                    }
-                    var condition = $.parseJSON($(obj).find("#tbConditionConfig").html());
-                    condition.Condition = $(obj).find("#tbCondition").html();
-                    if (condition.Condition == "") {
-                        flagStr = "条件" + (i + 1) + "未设置条件";
-                        flag = false;
-                        return false;
-                    }
-                    lstCondition.push(condition);
-                });
-            }
-            config.Config = lstCondition;
+            remark.Config = document.GetValueConfig(remark.Config);
             break;
         default:
             //出错
@@ -485,19 +456,36 @@ document.GetConfig = function (remark) {
     }
 }
 
-//获取文本标签配置
-document.GetTextConfig = function () {
-    var config = {};
 
-    config.GetDataMethod = $('#DataMethod').val();;
+//获取文本配置
+document.GetValueConfig = function (config) {
+    var getDataMethod = $('#DataMethod').val();
+    config.GetDataMethod = getDataMethod;
+    switch (getDataMethod) {
+        case "Const":
+            document.GetConfigJson("GetDataMethod", "method", "Const", config);
+            break;
+        case "Formula":
+            document.GetConfigJson("GetDataMethod", "method", "Formula", config);
+            config.FormatInfo = document.GetFormatConfig();
+            break;
+        case "Source":
+            document.GetConfigJson("GetDataMethod", "method", "Source", config);
+            config.FormatInfo = document.GetFormatConfig();
+            break;
+        default:
+            //报错
+    }
+    
 
-    config = document.GetConfigJson("DataMethod", config);
+}
 
-    config.FormatInfo = document.GetFormatConfig();
-
-    config.Relate = document.GetRelateConfig();
-
-    return config;
+//获取条件配置
+document.GetConditionConfig = function (conifg) {
+    var conditions = [];
+    $.each($('#conditions'), function (i, obj) {
+        var conditionConfigStr = $(obj).find("").find()
+    })
 }
 
 //获取常量配置
@@ -512,7 +500,8 @@ document.GetFormatConfig = function () {
 //获取关联配置
 document.GetRelateConfig = function () {
     var relates = [];
-    $.each($('#relates tr:visable'), function (i, obj) {
+    $.each($('#relates tr:visible'), function (i, obj) {
+      
         var relate = {};
         relate.LabelName = $(obj).find("[title='labelName']").find('input').val();
         relate.FieldName = $(obj).find("[title='fieldName']").find('input').val();
@@ -523,41 +512,65 @@ document.GetRelateConfig = function () {
     return relates;
 }
 
+//获取填充字段配置
+document.GetColumnInfo = function () {
+    var cols = [];
+    $.each($('#tableFields tr:visable'), function (i, obj) {
+        var formatStr = $(obj).find("[title='configStr']").text();
+        var field = {};       
+        filed.FIeldName = $(obj).find("[title='field']").find('input').val();
+        filed.ColumnIndex = i;
+        if (formatStr != "") {
+            field.FormatInfo = $.parseJSON(formatStr);
+        }
+        cols.push(field);
+    });
+    return cols;
+}
+
 //获取控件配置
 document.GetControlConfig = function () {
     var control = {};
     control.ControlType = $('#ControlType').val();
-    control = document.GetConfigJson("LabelControl", control);
-    if (control.FillType == "DropDown") {
-        control = document.GetConfigJson("LabelFill", control);
+    control = document.GetConfigJson("LabelControl", "control", control.ControlType, control);
+    if (control.ControlType == "DropDown") {
+        control = document.GetConfigJson("LabelFill", "fill", control.FillType, control);
     }
     return control;
 }
 
 //获取配置项
 //获取筛选属性的输入配置项
-document.GetConfigJson = function (filterCtrl,config) {
-    //遍历
-    $('[name="' + filterCtrl + '"]').find('input,select').each(function (i,obj) {
-        var key = $(this).attr("key");
-        var config = "config." + key + "=";
-        if ($(this).is("select")) {
-            var value = $(obj).val();
-            value = value == "-请选择-" ? "" : value;
-            config += "\"" + value + "\"";
+document.GetConfigJson = function (ctrl, filter, value, config) {
+    //遍历显示控件
+    $('[name="' + ctrl + '"]:visible').each(function (i, continer) {
+        //[' + filter + '="' + value + '"]        
+        if ($(this).is(filter) && $(this).attr(filter) != value) {
+            return;
         }
-        else if ($(this).is("input:checkbox")) {
-            config += "\"" + $(obj).is(":checked") + "\"";
-        }
-        else if ($(this).is("input:radio")) {
-            config += "\"" + $(":radio[name='" + $(this).attr("id") + "']:checked").val() + "\"";
-        }
-        else if ($(this).hasClass("autocomplate")) {
-            config += "\"" + $(obj).attr("val") + "\"";
-        }
-        else {
-            config += "\"" + $(obj).val() + "\"";
-        }
+        $(this).find(':input').each(function (i, obj) {
+            var key = $(this).attr("key");
+            var configStr = "config." + key + "=";
+            if ($(this).is("select")) {
+                var value = $(obj).val();
+                value = value == "-请选择-" ? "" : value;
+                configStr += "\"" + value + "\"";
+            }
+            else if ($(this).is("input:checkbox")) {
+                configStr += "\"" + $(obj).is(":checked") + "\"";
+            }
+            else if ($(this).is("input:radio")) {
+                configStr += "\"" + $(":radio[name='" + $(this).attr("id") + "']:checked").val() + "\"";
+            }
+            else if ($(this).hasClass("autocomplate")) {
+                configStr += "\"" + $(obj).attr("val") + "\"";
+            }
+            else {
+                configStr += "\"" + $(obj).val() + "\"";
+            }
+            //执行设置config属性
+            eval(configStr);
+        });
     });
     return config;
 }

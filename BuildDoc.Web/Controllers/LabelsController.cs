@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BuildDoc.Entities;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -30,7 +31,7 @@ namespace BuildDoc.Web.Controllers
             return View(marks);
         }
 
-        public ActionResult Condition()
+        public ActionResult Save(DataLabelModel model)
         {
 
             return View();

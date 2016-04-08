@@ -278,7 +278,8 @@
                     @Html.EnumDropDownList("ControlType", BuildDoc.ControlType.Text, null, true, new { })
                 </li>
                 <li name="LabelControl" control="@BuildDoc.ControlType.Text">
-                    <p class="tc"> 格式要求</p><select id="Control_Text_ValidateString" class="box_text fl">
+                    <p class="tc"> 格式要求</p>
+                    <select key="ValidateString" class="box_text fl">
                         <option value="1">整数</option>
                         <option value="2">小数及整数</option>
                     </select>
@@ -287,12 +288,12 @@
                 <li name="LabelControl" control="@BuildDoc.ControlType.Date">
                     <p class="tc">
                         最小日期
-                    </p><input type="text" id="Control_Date_MinDate" onclick="WdatePicker()" class="fl box_text" />
+                    </p><input type="text" key="MinDate" onclick="WdatePicker()" class="fl box_text" />
                 </li>
                 <li name="LabelControl" control="@BuildDoc.ControlType.Date">
                     <p class="tc">
                         最大日期
-                    </p><input type="text" id="Control_Date_MaxDate" onclick="WdatePicker()" class="fl box_text" />
+                    </p><input type="text" key="MaxDate" onclick="WdatePicker()" class="fl box_text" />
                 </li>
                 <li name="LabelControl" control="@BuildDoc.ControlType.Dropdown">
                     <p class="tc">
@@ -303,25 +304,25 @@
                 <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.Custom">
                     <p class="tc">
                         选项：
-                    </p><input type="text" class="fl box_text" style="width:180px" /><span class="red">*</span>
+                    </p><input type="text" key="InputValue" class="fl box_text" style="width:180px" /><span class="red">*</span>
                 </li>
                 <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.Custom">
                     <p class="tc">
                         分隔符：
-                    </p><input type="text" id="Control_Dropdown_FillType_Custom_Separtor" class="fl box_text" />
+                    </p><input type="text" key="Separtor" class="fl box_text" />
                 </li>
 
                 <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.DataSource">
                     <p class="tc">
                         数据源:
-                    </p><select id="sltFillDataSource" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+                    </p><select id="sltFillDataSource" key="DataSource" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
                 </li>
 
                 <li name="LabelControl" control="@BuildDoc.ControlType.Dropdown">
-                    <p class="tc">是否多选:</p>  <input type="checkbox" id="ControlIsMultiMode" style="margin-top: 7px; margin-left: 5px;" class="fl" />
+                    <p class="tc">是否多选:</p>  <input type="checkbox" key="IsMultiMode" style="margin-top: 7px; margin-left: 5px;" class="fl" />
                 </li>
-                <li>
-                    <p class="tc">是否必填</p><input type="checkbox" id="ControlRequired" class="fl" style="margin-top: 7px; margin-left: 5px;" />
+                <li name="LabelControl">
+                    <p class="tc">是否必填</p><input type="checkbox" key="Required" class="fl" style="margin-top: 7px; margin-left: 5px;" />
                 </li>
             </ul>
 
