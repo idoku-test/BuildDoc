@@ -5,7 +5,7 @@ document.datasource = new Array();
 
 $(function () {
 
-    document.GetRemarks();
+    document.GetRemarks();     
 
     $('[name="GetDataMethod"]').hide();
 
@@ -152,8 +152,8 @@ $(function () {
 //获取书签
 document.GetRemarks = function () {
     $.ajax({
-        url: "GetRemarks",
-        type: "post",
+        url: "/Documents/GetRemarks",
+        type: "GET",
         dataType:"json",
         success: function (datas) {
             document.remarks = new Array();
@@ -202,11 +202,28 @@ document.AddRelateRow = function (num, relate) {
         relate.FieldName = "";
     }
     mould.find("[title='number']").text(num);
-    mould.find("[title='labelName']").val(relate.LabelName);       
-    mould.find("[title='conditionConfig']").val(relate.FieldName);
-
+    var labelCtrl = mould.find("[title='labelName']").find('input');
+    labelCtrl.val(relate.LabelName);
+    var filedCtrl = mould.find("[title='fieldName']").find('input');
+    filedCtrl.val(relate.FieldName);
+    document.AutoReMarks(labelCtrl);
+    document.AutoReMarks(filedCtrl);
     $('#relates tr:last').after(mould);
 }
+
+//自动完成书签
+document.AutoReMarks = function (control) {
+    var source = [];    
+    $.each(document.remarks, function (i, remark) {
+        source.push(remark.LabelName);
+    })
+    $(control).autocomplete({
+        minLength: 0,        
+        source: source
+    }).click(function () {
+        $(this).autocomplete("search", $(this).val());
+    });
+};
 
 //添加表格标签行
 document.AddTableFieldRow = function (num, field) {
@@ -544,7 +561,7 @@ document.GetControlConfig = function () {
 document.GetConfigJson = function (ctrl, filter, value, config) {
     //遍历显示控件
     $('[name="' + ctrl + '"]:visible').each(function (i, continer) {
-        //[' + filter + '="' + value + '"]        
+        //筛选属性值
         if ($(this).is(filter) && $(this).attr(filter) != value) {
             return;
         }

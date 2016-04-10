@@ -3,11 +3,19 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+ 
+@section scripts{
+  <script src="~/Scripts/jquery-ui/jquery-ui.js"></script>
+<link href="~/Scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
+
 <script src="~/Scripts/docs/documents.js"></script>
 <script src="~/Scripts/docs/formula_editor.js"></script>
 @*<link href="~/Content/layout.css" rel="stylesheet" />*@
-<link href="~/Content/document.css" rel="stylesheet" />
+<link href="~/Content/document.css" rel="stylesheet" />  
+
+}
+
+
 <style>
     .wBreak {
         word-break: break-all;
@@ -52,6 +60,11 @@
             background-color: #ffdf7e;
         }
 </style>
+
+ 
+
+ 
+
 <table id="remarks" style=" width: 100%;" border="0" cellpadding="0" cellspacing="0" class="table table2">
     <!-- 正常显示 -->
     <tr>
