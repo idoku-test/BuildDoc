@@ -636,16 +636,17 @@ document.Selector = function (ctrl, attribute, value) {
         $(this).show();
         return;
     }
-
     var val = $(ctrl).attr(attribute);
-        if (val.startsWith("!")) {
+    if (val.startsWith("!")) {
+        $(ctrl).show();
             var val = val.slice(1, val.length);
             if (val == value) {
-                $(this).hide();
+                $(ctrl).hide();
             }
         } else {
+            $(ctrl).hide();
             if (val == value) {
-                $(this).show();
+                $(ctrl).show();
             }
         }
 }
