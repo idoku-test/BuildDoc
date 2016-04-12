@@ -6,14 +6,13 @@
 *****/
 
  
-    function formualEditor(operands) {
-        
+    function formualEditor(operands) {        
         this.operands = operands;
         this.formual = "";
         this.container = arguments[1] || "dformual";
         this.init();
-        if (operands.length > 10) {
-            //this.enableautocomplete();
+        if (operands.length > 1) { //test use 1
+            this.enableautocomplete();
         }    
 
         //扩展方法
@@ -49,8 +48,9 @@
     //编辑器初始化
     formualEditor.prototype.init = function () {
         $('#formual_operands').empty();
+        var self = this;
         $.each(this.operands, function (i, operaton) {
-            $('#formual_operands').append("<li>@" + operaton + "</li>");
+            $('#formual_operands').append("<li>" + operaton + "</li>");
         });
         //初始事件
         this.event();
@@ -77,6 +77,7 @@
             $('#txtFormula').insertAtCaret($(this).val() + " ");
         });
     
+       //
     }
 
     //返回公式值
@@ -85,15 +86,13 @@
     };
 
     //自动查询开启
-    //formualEditor.prototype.enableautocomplete = function () {
-    //    $('#formual_operand').autocomplete({
-    //        source: this.operands,
-    //        minLength:0
-    //    });
-    //}
-
-    ; (function () {
-
-    })();
-   
+    formualEditor.prototype.enableautocomplete = function () {               
+        $('#txtOperand').autocomplete({
+            minLength: 0,
+            source: this.operands
+        }).click(function () {
+            $(this).autocomplete("search", $(this).val());
+        });
+    }
+ 
 

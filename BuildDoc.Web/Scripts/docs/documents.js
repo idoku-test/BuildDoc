@@ -2,6 +2,9 @@
 document.remarks = new Array();
 document.datasource = new Array();
 
+    String.prototype.startsWith = function (prefix) {
+        return this.slice(0, prefix.length) === prefix;
+    };
 
 $(function () {
 
@@ -19,10 +22,7 @@ $(function () {
         var val = $(this).val();
         //标签属性控制
         $.each($('[id^="div_"]'), function () {
-            $(this).show();
-            if ($(this).is('[labeltype]') && $(this).attr("labeltype") != val) {
-                $(this).hide();
-            }
+            document.Selector($(this), "labeltype", val);
         });        
         
         //数据源切换控制
@@ -45,22 +45,12 @@ $(function () {
         var labelType = $('#LabelType').val();
         //数据源切换
         $.each($('[name="GetDataMethod"]'), function () {
-            $(this).show();
-            //隐藏其他类型数据源
-            if ($(this).attr("method") != val) {
-                $(this).hide();
-            }
-            //隐藏标签类型控制数据源
-            if ($(this).is('[labeltype]') && $(this).attr("labeltype") != labelType) {
-                $(this).hide();
-            }
-        });       
 
-        //格式化切换        
-        $('[id="div_FormatInfo"][method!="' + val + '"]').hide();
-        $('[id="div_FormatInfo"][method*="' + val + '"]').show();
+            document.Selector($(this), "method", val);            
 
-       
+            document.Selector($(this), "labeltype", labelType);
+             
+        });                     
      
     });
     $('#DataMethod').change();
@@ -103,14 +93,15 @@ $(function () {
     $('#FillType').change();
 
     //设置公式
-    $('#txtLabelFormula').click(function () {
+    $('#txtLabelFormula').click(function () {              
         AlertDiv('#alert_Formula');
         var fields = [];
-
         $.each(document.remarks, function (i, remark) {
-            fields.push(remark.LabelName);
-        })
+            fields.push("@" + remark.LabelName);
+        });
         var feditor = new formualEditor(fields);
+                        
+       
     });
 
     //条件条件
@@ -299,6 +290,13 @@ document.AddConditionSetExpRow = function (conditionSetExp, expLogic) {
 
     $('#condtionSetExps').append(mould);
 
+    //条件字段自动完成
+    mould.find("[name='txtConditionSetRemark']").autocomplete({
+        source: document.remarks,
+        minLength:0
+    }).click(function () {
+        $(this).autocomplete("search", $(this).val());
+    });;
 }
 
 //保存条件公式
@@ -631,7 +629,30 @@ document.Submit = function () {
    
 }
 
-//获取
+//选择属性-值显示
+document.Selector = function (ctrl, attribute, value) {    
+    var hasAttr = $(ctrl).is('[' + attribute + ']');    
+    if (!hasAttr) {    
+        $(this).show();
+        return;
+    }
+
+    var val = $(ctrl).attr(attribute);
+        if (val.startsWith("!")) {
+            var val = val.slice(1, val.length);
+            if (val == value) {
+                $(this).hide();
+            }
+        } else {
+            if (val == value) {
+                $(this).show();
+            }
+        }
+}
+
+    //获取
 document.GetData = function ($container) {
 
 }
+
+

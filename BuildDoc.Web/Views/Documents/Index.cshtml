@@ -12,10 +12,6 @@
 <script src="~/Scripts/docs/formula_editor.js"></script>
 @*<link href="~/Content/layout.css" rel="stylesheet" />*@
 <link href="~/Content/document.css" rel="stylesheet" />  
-
-}
-
-
 <style>
     .wBreak {
         word-break: break-all;
@@ -60,6 +56,10 @@
             background-color: #ffdf7e;
         }
 </style>
+}
+
+
+
 
  
 
@@ -91,7 +91,7 @@
     </div>
     <!-- label type ----- end -->
     <!-- label value ----- begin -->    
-    <div id="div_Lable" style="padding-top:10px;" >
+    <div id="div_Lable" style="padding-top:10px;" labeltype="!@BuildDoc.LabelType.ConditionLabel">
         <div class="oh" style=" border-bottom: 1px solid #ccc; margin-top: 0;">
             <h2 class="fl" style="line-height: 40px; ">取值方式</h2>
         </div>
@@ -125,27 +125,27 @@
                             显示字段:
                         </p>
                         <select id="sltDisplayFields" key="FieldName" class="box_text fl">
-                        <option value="">请先选择数据源</option>
+                            <option value="">请先选择数据源</option>
                         </select><span class="red">*</span>
                     </li>
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source ">
                         <p class=" tc">
-                        筛选字段:
+                            筛选字段:
                         </p>
                         <select id="sltFilterFields" key="FilterFieldName" class="box_text fl">
-                                    <option value="">请先选择数据源</option>
+                            <option value="">请先选择数据源</option>
                         </select>
                     </li>
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
                         <p class="tc">
                             筛选操作:
                         </p><select class="box_text fl" id="sltFilterOperate" key="FilterOperation">
-                                <option value="">-请选择-</option>
-                                <option value="=">等于</option>
-                                <option value=">">大于</option>
-                                <option value="<">小于</option>
-                                <option value="!=">不等于</option>
-                            </select>
+                            <option value="">-请选择-</option>
+                            <option value="=">等于</option>
+                            <option value=">">大于</option>
+                            <option value="<">小于</option>
+                            <option value="!=">不等于</option>
+                        </select>
                     </li>
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
                         <p class="tc">
@@ -354,10 +354,10 @@
             <i class="icon alert_close fr Animate_rotateIn" onclick=" AlertClose($('#alert_Formula'))"></i>
         </div>
         <div class="alertCB">
-            <div id="dformula">
+            <div id="dformula">                
                 <table class="tableA table3 table" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                        <td style="width:190px">请输入@标签<input type="text" id="txtOperand" style="width:90%"></td>
+                        <td style="width:190px">请输入@标签<input type="text" id="txtOperand"  style="width:90%"></td>
                         <td rowspan="2"><input type="button" id="btnAddOperand" value=">>" title="添加标签" /></td>
                         <td>公式<br /><textarea id="txtFormula" style="width:90%" rows="3"></textarea></td>
                     </tr>
