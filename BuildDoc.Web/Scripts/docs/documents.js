@@ -1,10 +1,7 @@
 ﻿var document = new Object();
 document.remarks = new Array();
-document.datasource = new Array();
 
-    String.prototype.startsWith = function (prefix) {
-        return this.slice(0, prefix.length) === prefix;
-    };
+document.datasource = new Array();
 
 $(function () {
 
@@ -21,7 +18,7 @@ $(function () {
     $('#LabelType').change(function () {        
         var val = $(this).val();
         //标签属性控制
-        $.each($('[id^="div_"]'), function () {
+        $.each($('#mark_main > [id^="div_"]'), function () {
             document.Selector($(this), "labeltype", val);
         });        
         
@@ -113,6 +110,16 @@ $(function () {
     $('#btnAddConditionSet').click(function () {
         document.AddConditionSetExpRow("", "");
     });
+
+    //设置条件配置标签类型
+    $("#sltConditionLabelType").change(function () {
+        var val = $(this).val();
+        $.each($('#conditionLabel >[id^="div_"]'), function () {
+            document.Selector($(this), "labeltype", val);
+        });
+
+        
+    });
     
     //保存条件公式
     $('#btnConditionSetSave').click(function () {
@@ -203,14 +210,17 @@ document.AddRelateRow = function (num, relate) {
 }
 
 //自动完成书签
-document.AutoReMarks = function (control) {
-    var source = [];    
-    $.each(document.remarks, function (i, remark) {
-        source.push(remark.LabelName);
-    })
+document.AutoReMarks = function (control) {   
     $(control).autocomplete({
         minLength: 0,        
-        source: source
+        source: function (request, response) {
+            response($.map(document.remarks, function (value, key) {
+                return {
+                    label: value.LabelName,
+                    value:value.labelName
+                }
+            }));
+        }
     }).click(function () {
         $(this).autocomplete("search", $(this).val());
     });
@@ -254,7 +264,7 @@ document.AddConditionRow = function (num, condition) {
     });
 
     mould.find("[title='conditionConfig']").click(function () {
-        //document.AlertCondition(condition.ConditionStr, num);
+        document.AlertConditionConfig(num);
     });
 
     $('#conditions tr:last').after(mould);
@@ -292,12 +302,7 @@ document.AddConditionSetExpRow = function (conditionSetExp, expLogic) {
     $('#condtionSetExps').append(mould);
 
     //条件字段自动完成
-    mould.find("[name='txtConditionSetRemark']").autocomplete({
-        source: document.remarks,
-        minLength: 0
-    }).click(function () {
-        $(this).autocomplete("search", $(this).val());
-    });;
+    document.AutoReMarks(mould.find("[name='txtConditionSetRemark']"));
 }
 
 
@@ -394,6 +399,16 @@ document.AlertCondition = function (conditionStr,num) {
     })
   
     
+}
+
+//弹出设置条件等式配置界面
+document.AlertConditionConfig = function (num) {
+    AlertDiv("#alert_ConfigCondition");
+    //插入标签
+    $('#conditionLabel').append($('#AllTypeLabel'));
+    //插入格式化
+    $('#conditionLabel').append($('#div_FormatInfo > li'));
+
 }
 
 
@@ -638,3 +653,6 @@ document.GetData = function ($container) {
 }
 
 
+String.prototype.startsWith = function (prefix) {
+    return this.slice(0, prefix.length) === prefix;
+};
