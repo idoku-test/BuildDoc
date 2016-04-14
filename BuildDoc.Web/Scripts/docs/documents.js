@@ -260,13 +260,14 @@ document.AddConditionRow = function (num, condition) {
     $('#conditions tr:last').after(mould);
 }
 
+
 //添加条件表达式行
 document.AddConditionSetExpRow = function (conditionSetExp, expLogic) {
     var mould = $('#docMould').find("[name='conditionSetExpMould']").clone();
     mould.css("display", "");
 
     //条件大于1，显示逻辑
-    if ($('#condtionSetExps tr:visible').length > 0) { 
+    if ($('#condtionSetExps tr:visible').length > 0) {
         mould.find("[name='sltConditionSetJoin']").show();
     }
 
@@ -293,11 +294,12 @@ document.AddConditionSetExpRow = function (conditionSetExp, expLogic) {
     //条件字段自动完成
     mould.find("[name='txtConditionSetRemark']").autocomplete({
         source: document.remarks,
-        minLength:0
+        minLength: 0
     }).click(function () {
         $(this).autocomplete("search", $(this).val());
     });;
 }
+
 
 //保存条件公式
 document.SaveConditionSet = function () {
@@ -381,38 +383,17 @@ document.AlertTableFieldConfig = function (num, config) {
 document.AlertCondition = function (conditionStr,num) {
     AlertDiv('#alert_ConditionSet');
     //条件序号
-    $('#hidConditionNum').val(num);
-    var fields = new Array("估价目的", "估价对象类型");
-    $.each(document.remarks, function (i, remark) {
-        fields.push(remark.LabelName);
-    });
+    $('#hidConditionNum').val(num);    
     //解析条件表达式
     var reg = /[&&,||]/;    
     var conditions = conditionStr.split(reg);
+    
     $(conditions, function (i, conditionExp) {
         //新增行
-        document.AddConditionExpRow(conditionExp,reg.source);
+        document.AddConditionSetExpRow(conditionExp, reg.source);
     })
+  
     
-}
-
-
-//清空控件
-document.ClearControl = function (container) {
-    $.each($(container).find("input,select"), function (n, obj) {
-        if ($(this).is("select")) {
-            $(obj).val('');
-        }
-        else if ($(this).is("input:checkbox")) {
-            $(obj).attr("checked", false);
-        }
-        else if ($(this).is("input:radio")) {
-            $("input[name='" + $(obj).attr("id") + "'][alt='1']").click();
-        }
-        else {
-            $(obj).val("");
-        }
-    });
 }
 
 
