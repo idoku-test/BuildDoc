@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+
+    <link href="Content/layout.css" rel="stylesheet" />
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="Scripts/jqAlertDialogs/jquery.alerts.js"></script>
+    <script src="Scripts/commom.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#btn1').click(function () {
+                AlertDiv('#alert_ConfigCondition');
+            });
+
+            $('#btn2').click(function () {
+                AlertDiv('#alert_Formula');
+            });
+          
+        })
+
+    </script>
+</head>
+<body>
+    <input type="button" id="btn1" value="1" />
+    
+
+
+    
+    <div class="alert" id="alert_ConfigCondition">
+        <div class="alertZ"></div>
+        <div class="alertC" style="width: 600px;">
+            <div class="alertCT oh">
+                <p class="fl f16">设置条件字段</p>
+                <i class="icon alert_close fr Animate_rotateIn" onclick="AlertClose($('#alert_ConfigCondition'))"></i>
+            </div>
+            <div class="alertCB">
+                <div class="Vsearch">
+                    <input type="button" id="btn2" value="2" />
+                    <ul class="oh" id="conditionLabel">
+                        <li>
+                            <p class="tc">
+                                标签类型:
+                            </p> <select id="sltConditionLabelType" class="box_text fl valid">
+                                <option value="TextLabel">文本替换</option>
+                                <option value="DocLabel">文档替换</option>
+                                <option value="ImageLabel">图片填充</option>
+                            </select>
+                        </li>
+                        <li>
+                            <select id="TextLabel_GetDataMethod" class="box_text fl">
+                                <option value="Const">默认取值</option>
+                                <option value="Formula">公式</option>
+                                <option value="Source">定向选取</option>
+                                <option value="MultiSource">优先选取</option>
+                                @*
+                                <option value="Dynamic">表单数据</option>*@
+                            </select>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+            <div class="alertCM">
+                <div class="button">
+                    <a class="fr gray_bg white tc br2" onclick="AlertClose($('#alert_ConfigCondition'))">取消</a>
+                    <a class="fr mblue_bg white tc br2" id="btnConditionConfigSave">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <div class="alert" id="alert_Formula">
+        <div class="alertZ"></div>
+        <div class="alertC" style="width: 600px;">
+            <div class="alertCT oh">
+                <p class="fl f16">设置公式</p>
+                <i class="icon alert_close fr Animate_rotateIn" onclick=" AlertClose($('#alert_Formula'))"></i>
+            </div>
+            <div class="alertCB">
+                <div id="dformula">
+                    <table class="tableA table3 table" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td style="width:190px">请输入@标签<input type="text" id="txtOperand" style="width:90%"></td>
+                            <td rowspan="2"><input type="button" id="btnAddOperand" value=">>" title="添加标签" /></td>
+                            <td>公式<br /><textarea id="txtFormula" style="width:90%" rows="3"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="alert_tab" style="height:260px;">
+                                    <ul id="formual_operands"></ul>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <ul id="formula_operator" class="formula_operator">
+                                        <li><input type="button" value="+" /></li>
+                                        <li><input type="button" value="-" /></li>
+                                        <li><input type="button" value="*" /></li>
+                                        <li><input type="button" value="/" /></li>
+                                        <li><input type="button" value="(" /></li>
+                                        <li><input type="button" value=")" /></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="alertCM">
+                <div class="button">
+                    <a class="fr gray_bg white tc br2" onclick="AlertClose($('#alert_Formula'))">取消</a>
+                    <a class="fr mblue_bg white tc br2" id="btnSetFormulaSave">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

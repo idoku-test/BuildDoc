@@ -4,10 +4,10 @@ document.remarks = new Array();
 document.datasource = new Array();
 
 $(function () {
-
+    document.init();
     document.GetRemarks();     
 
-    $('[name="GetDataMethod"]').hide();
+    //$('[name="GetDataMethod"]').hide();
 
     //标签行点击
     $(document).on('click', '#remarks tr[name="remarkMould"]', function () {
@@ -17,13 +17,11 @@ $(function () {
     //标签类型切换
     $('#LabelType').change(function () {        
         var val = $(this).val();
-        //标签属性控制
-        $.each($('#mark_main > [id^="div_"]'), function () {
-            document.Selector($(this), "labeltype", val);
-        });        
-        
+        //标签属性控制      
+        document.Selector($('#mark_main > [id^="div_"]'), "labeltype", val);                 
         //数据源切换控制
         if (val == 'TextLabel') {
+            $('#DataMethod').val("Const");
             //文本标签可选其他数据源            
             $('#DataMethod').show();
         } else {
@@ -31,7 +29,6 @@ $(function () {
             $('#DataMethod').val("Source");
             $('#DataMethod').hide();           
         }
-
         $('#DataMethod').change();
     });
     $('#LabelType').change();
@@ -40,39 +37,24 @@ $(function () {
     $('#DataMethod').change(function () {
         var val = $(this).val();
         var labelType = $('#LabelType').val();
-        //数据源切换
-        $.each($('[name="GetDataMethod"]'), function () {
-
-            document.Selector($(this), "method", val);            
-
-            document.Selector($(this), "labeltype", labelType);
-             
-        });                     
-     
+        //数据源切换        
+        document.Selector($('[name="GetDataMethod"]'), "labeltype", labelType);
+        document.Selector($('[name="GetDataMethod"]'), "method", val);        
     });
+
     $('#DataMethod').change();
 
     //数据类型
     $('#FormatType').change(function () {
         var val = $(this).val();
-        $('[name="FormatInfo"][format!="' + val + '"]').hide();
-        $('[name="FormatInfo"][format*="' + val + '"]').show();
+        document.Selector($('[name="FormatInfo"]'), "format", val);
     });
     $('#FormatType').change();
 
     //控件类型
     $('#ControlType').change(function () {
-        var ctrlType = $(this).val();
-        
-        $.each($('[name="LabelControl"]'), function () {
-            $(this).show();
-            //隐藏控件控制数据源
-            if ($(this).is('[control]') && $(this).attr("control") != ctrlType) {
-                $(this).hide();
-            }
-        });
-
-
+        var val = $(this).val();       
+        document.Selector($('[name="LabelControl"]'), "control", val);      
         $('#FillType').change();
     });
     $('#ControlType').change();
@@ -82,10 +64,8 @@ $(function () {
         var val = $(this).val();
         var control = $('#ControlType').val();
         //屏蔽填充方式不一致的选项
-        $('[name="LabelFill"][control!="' + control + '"]').hide();
-        $('[name="LabelFill"][control="' + control + '"][fill="' + val + '"]').show();
-        $('[name="LabelFill"][control="' + control + '"][fill!="' + val + '"]').hide();
-
+        document.Selector($('[name="LabelFill"]'), "control", control);
+        document.Selector($('[name="LabelFill"]'), "fill", val);
     });
     $('#FillType').change();
 
@@ -114,12 +94,24 @@ $(function () {
     //设置条件配置标签类型
     $("#sltConditionLabelType").change(function () {
         var val = $(this).val();
-        $.each($('#conditionLabel >[id^="div_"]'), function () {
-            document.Selector($(this), "labeltype", val);
-        });
 
-        
+        document.Selector($('#conditionLabel >[id^="div_"]'), "labeltype", val);
+        //数据源切换控制
+        if (val == 'TextLabel') {
+            $('#Condition_DataMethod').val("Const");
+            //文本标签可选其他数据源            
+            $('#Condition_DataMethod').show();
+        } else {
+            //非文本标签只能设置数据源
+            $('#Condition_DataMethod').val("Source");
+            $('#Condition_DataMethod').hide();
+        }
+        $('#Condition_DataMethod').change();
     });
+
+    
+
+   
     
     //保存条件公式
     $('#btnConditionSetSave').click(function () {
@@ -142,10 +134,47 @@ $(function () {
     })
 
 
-    //版定数据源
-    document.BindDataSource($('#sltDataSource'));
+    //绑定数据源
+    document.BindDataSource($('[name="sltDataSource"]'));
 
 });
+
+document.init = function () {    
+    //为条件标签 插入配置
+    var dataContiner = $('#div_DataLabel > ul > li').clone();
+    dataContiner.find("#DataMethod").attr("id", "Condition_DataMethod");
+    $('#conditionLabel').append(dataContiner);
+    //条件标签-数据源切换
+    $('#Condition_DataMethod').change(function () {
+        var val = $(this).val();
+        var labelType = $('#sltConditionLabelType').val();
+        //数据源切换
+        document.Selector($('#conditionLabel > [name="GetDataMethod"]'), "labeltype", labelType);
+        document.Selector($('#conditionLabel > [name="GetDataMethod"]'), "method", val);
+    });
+    //为条件标签 插入格式化
+    var formatContiner = $('#div_FormatInfo > ul > li').clone();
+    formatContiner.find("#FormatType").attr("id", "Condition_FormatType");    
+    $('#conditionLabel').append(formatContiner);
+    //条件标签-格式化切换
+    $('#Condition_FormatType').change(function () {
+        var val = $(this).val();
+        document.Selector($('#conditionLabel > [name="FormatInfo"]'), "format", val);
+    });
+
+
+    //为条件标签 插入格式化
+    formatContiner = $('#div_FormatInfo > ul > li').clone();
+    formatContiner.find("#FormatType").attr("id", "TableField_FormatType");
+    //为表格标签 插入格式化
+    $('#tableFieldLabel').append(formatContiner);
+    $('#TableField_FormatType').change(function () {
+        var val = $(this).val();
+        document.Selector($('#tableFieldLabel > [name="FormatInfo"]'), "format", val);
+    });
+
+
+}
 
 //获取书签
 document.GetRemarks = function () {
@@ -238,7 +267,10 @@ document.AddTableFieldRow = function (num, field) {
         field.FieldName = "";
     }
     mould.find("[title='number']").text(num);
-    mould.find("[title='configStr']").val(field.FormatInfo);
+
+    var filedCtrl = mould.find("[title='field']").find('input');
+    document.AutoReMarks(filedCtrl);
+    mould.find("[title='configStr']").val(field.FormatInfo);    
     mould.find("[title='config']").val(field.FieldName).click(function () {
         document.AlertTableFieldConfig(num, "");
     });
@@ -350,10 +382,10 @@ document.BindDataSource = function (sltSource) {
         $(sltSource).change(function () {
             var index = $(this).prop('selectedIndex');
             var fields = datas[index].Fields;
-            document.BindFields($('#sltDisplayFields'), fields);
-            document.BindFields($('#sltFilterFields'), fields);
-            document.BindFields($('#sltFillDataSource'), fields);
-            document.BindFields($('#sltFormatFields'), fields);
+            document.BindFields($('[name="sltDisplayFields"]'), fields);
+            document.BindFields($('[name="sltFilterFields"]'), fields);
+            document.BindFields($('[name="sltFillDataSource"]'), fields);
+            document.BindFields($('[name="sltFormatFields"]'), fields);
         });
         $(sltSource).change();
     });
@@ -374,13 +406,10 @@ document.BindFields = function (sltFields, fields) {
 //弹出表格标签配置界面
 document.AlertTableFieldConfig = function (num, config) {
     AlertDiv('#alert_ConfigTableField');
-
-    //为配置添加数据处理div_FormatInfo
-    $('#tableFieldContent').append($('#div_FormatInfo').show());
     
     if (config != "") {
         $('#FormatType').val(config.FormatType).change();
-
+        $('#Condition_DataMethod').change();
     }    
 }
 
@@ -403,12 +432,10 @@ document.AlertCondition = function (conditionStr,num) {
 
 //弹出设置条件等式配置界面
 document.AlertConditionConfig = function (num) {
-    AlertDiv("#alert_ConfigCondition");
-    //插入标签
-    $('#conditionLabel').append($('#AllTypeLabel'));
-    //插入格式化
-    $('#conditionLabel').append($('#div_FormatInfo > li'));
+    AlertDiv("#alert_ConfigCondition");   
 
+    $('#sltConditionLabelType').change();
+    $('#Condition_DataMethod').change();
 }
 
 
@@ -626,15 +653,17 @@ document.Submit = function () {
 }
 
 //选择属性-值显示
-document.Selector = function (ctrl, attribute, value) {    
-    var hasAttr = $(ctrl).is('[' + attribute + ']');    
-    if (!hasAttr) {    
-        $(this).show();
-        return;
-    }
-    var val = $(ctrl).attr(attribute);
-    if (val.startsWith("!")) {
-        $(ctrl).show();
+document.Selector = function (ctrls, attribute, value) {
+    $.each(ctrls, function () {
+        var ctrl = $(this);
+        var hasAttr = $(ctrl).is('[' + attribute + ']');
+        if (!hasAttr) {
+            $(this).show();
+            return;
+        }
+        var val = $(ctrl).attr(attribute);
+        if (val.startsWith("!")) {
+            $(ctrl).show();
             var val = val.slice(1, val.length);
             if (val == value) {
                 $(ctrl).hide();
@@ -645,6 +674,7 @@ document.Selector = function (ctrl, attribute, value) {
                 $(ctrl).show();
             }
         }
+    });
 }
 
     //获取

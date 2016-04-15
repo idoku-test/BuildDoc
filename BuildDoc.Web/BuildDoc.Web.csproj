@@ -130,6 +130,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AlertDemo.html" />
     <Content Include="Config\AOP.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -249,6 +250,14 @@
     <Content Include="Scripts\docs\documents.js" />
     <Content Include="Scripts\docs\formula_editor.js" />
     <Content Include="Scripts\docs\labels.js" />
+    <Content Include="Scripts\jqAlertDialogs\images\info.gif" />
+    <Content Include="Scripts\jqAlertDialogs\images\question.png" />
+    <Content Include="Scripts\jqAlertDialogs\images\title.gif" />
+    <Content Include="Scripts\jqAlertDialogs\images\title.jpg" />
+    <Content Include="Scripts\jqAlertDialogs\images\warning.png" />
+    <Content Include="Scripts\jqAlertDialogs\jquery.alerts.css" />
+    <Content Include="Scripts\jqAlertDialogs\jquery.alerts.js" />
+    <Content Include="Scripts\jqAlertDialogs\jquery.alerts.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery-ui\external\jquery\jquery.js" />
