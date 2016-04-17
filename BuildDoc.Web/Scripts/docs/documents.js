@@ -76,9 +76,7 @@ $(function () {
         $.each(document.remarks, function (i, remark) {
             fields.push("@" + remark.LabelName);
         });
-        var feditor = new formualEditor(fields);
-                        
-       
+        var feditor = new formualEditor(fields);                               
     });
 
     //条件条件
