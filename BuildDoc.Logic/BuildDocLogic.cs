@@ -65,6 +65,26 @@ namespace BuildDoc.Logic
             return result;
         }
 
-     
+        /// <summary>
+        /// 获得数据处理的数据源
+        /// </summary>
+        /// <returns></returns>
+        public IList<LabelDealWithModel> GetLabelDealSource()
+        {
+            List<LabelDealWithModel> list = null;
+            using (BaseDB dbHelper = new OmpdDBHelper())
+            {
+                try
+                {
+                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    list = dbHelper.ExecuteListProc<LabelDealWithModel>("PKG_UCS_DataSource.sp_label_deal_with_get", dic);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+            return list;
+        }
     }
 }

@@ -12,6 +12,8 @@ namespace BuildDoc.Logic
 
         #region data source
         IList<DataSourceDTO> GetDataSource(int type);
+
+        IList<LabelDealWithModel> GetLabelDealSource();
         #endregion
 
     }

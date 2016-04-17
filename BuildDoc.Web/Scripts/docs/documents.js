@@ -4,7 +4,7 @@ document.remarks = new Array();
 document.datasource = new Array();
 
 $(function () {
-    document.init();
+    document.init();    
     document.GetRemarks();     
 
     //$('[name="GetDataMethod"]').hide();
@@ -134,17 +134,20 @@ $(function () {
     })
 
 
-    //绑定数据源
-    document.BindDataSource($('[name="sltDataSource"]'));
+   
 
 });
 
+/*
+    初始化界面元素
+    绑定界面数据源
+*/
 document.init = function () {    
     //为条件标签 插入配置
     var dataContiner = $('#div_DataLabel > ul > li').clone();
     dataContiner.find("#DataMethod").attr("id", "Condition_DataMethod");
     $('#conditionLabel').append(dataContiner);
-    //条件标签-数据源切换
+    //条件标签-数据源类型切换
     $('#Condition_DataMethod').change(function () {
         var val = $(this).val();
         var labelType = $('#sltConditionLabelType').val();
@@ -152,6 +155,9 @@ document.init = function () {
         document.Selector($('#conditionLabel > [name="GetDataMethod"]'), "labeltype", labelType);
         document.Selector($('#conditionLabel > [name="GetDataMethod"]'), "method", val);
     });
+    //为条件标签 绑定数据源
+    
+
     //为条件标签 插入格式化
     var formatContiner = $('#div_FormatInfo > ul > li').clone();
     formatContiner.find("#FormatType").attr("id", "Condition_FormatType");    
@@ -173,7 +179,19 @@ document.init = function () {
         document.Selector($('#tableFieldLabel > [name="FormatInfo"]'), "format", val);
     });
 
+    //绑定数据源
+    document.initDataSource();
+}
 
+
+//初始化数据来源
+document.initDataSource = function () {
+    
+    document.BindDataSource($('#div_DataLabel').find('[name="sltDataSource"]'));
+    document.BindDataSource($('#alert_ConfigCondition').find('[name="sltDataSource"]'));
+    //绑定数据源
+    document.BindConstSource($('[name="sltFillDataSource"]'));
+    document.BindConstSource($('[name="sltFormatFields"]'));        
 }
 
 //获取书签
@@ -366,6 +384,20 @@ document.SaveConditionSet = function () {
     AlertClose($('#alert_ConditionSet'));
 }
 
+//绑定常量数据源
+document.BindConstSource = function (sltSource) {
+    $.getJSON("/DataSource/GetLabelDealSource", function (datas) {
+        document.datasource = datas;
+        //绑定数据源
+        for (var i = 0; i < datas.length; i++) {
+            $('<option>', {
+                val: datas[i].DATA_SOURCE_NAME,
+                text: datas[i].DATA_SOURCE_NAME
+            }).appendTo(sltSource);
+        };
+    });
+}
+ 
 //绑定数据源
 document.BindDataSource = function (sltSource) {
     $.getJSON("/DataSource/GetDataSource", function (datas) {
@@ -377,15 +409,13 @@ document.BindDataSource = function (sltSource) {
                 text: datas[i].DATA_SOURCE_NAME
             }).appendTo(sltSource);
         };
-        //取数据源字段
-        //
+        var closet = $(sltSource).closest('div');
+        
         $(sltSource).change(function () {
             var index = $(this).prop('selectedIndex');
             var fields = datas[index].Fields;
-            document.BindFields($('[name="sltDisplayFields"]'), fields);
-            document.BindFields($('[name="sltFilterFields"]'), fields);
-            document.BindFields($('[name="sltFillDataSource"]'), fields);
-            document.BindFields($('[name="sltFormatFields"]'), fields);
+            document.BindFields($(closet).find('[name="sltDisplayFields"]'), fields);
+            document.BindFields($(closet).find('[name="sltFilterFields"]'), fields);
         });
         $(sltSource).change();
     });
@@ -393,6 +423,7 @@ document.BindDataSource = function (sltSource) {
 
 //筛选数据源
 document.BindFields = function (sltFields, fields) {
+    $(sltFields).empty();
     if (fields != null) {
         for (var i = 0; i < fields.length; i++) {
             $('<option>', {
@@ -677,12 +708,7 @@ document.Selector = function (ctrls, attribute, value) {
     });
 }
 
-    //获取
-document.GetData = function ($container) {
-
-}
-
-
+ 
 String.prototype.startsWith = function (prefix) {
     return this.slice(0, prefix.length) === prefix;
 };

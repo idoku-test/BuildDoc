@@ -22,5 +22,14 @@ namespace BuildDoc.Web.Controllers
             var source = BuildWordInstance.GetDataSource(-1);
             return Json(source, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult GetLabelDealSource()
+        {
+            var source = BuildWordInstance.GetLabelDealSource();
+
+            return Json(source, JsonRequestBehavior.AllowGet);
+        }
+
+        
 	}
 }
