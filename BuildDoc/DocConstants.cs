@@ -185,6 +185,21 @@
         Dropdown
     }
 
+    public enum ControlFormatType
+    {
+        /// <summary>
+        /// 整数
+        /// </summary>
+        [Description("整数")]
+        Integer,
+
+        /// <summary>
+        /// 小数及整数
+        /// </summary>
+        [Description("小数及整数")]
+        Number,
+    }
+
     /// <summary>
     /// 控件填充类型
     /// </summary>

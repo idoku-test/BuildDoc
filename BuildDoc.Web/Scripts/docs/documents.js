@@ -46,7 +46,7 @@ $(function () {
 
     //数据类型
     $('#FormatType').change(function () {
-        var val = $(this).val();
+        var val = $(this).val();       
         document.Selector($('[name="FormatInfo"]'), "format", val);
     });
     $('#FormatType').change();
@@ -64,8 +64,9 @@ $(function () {
         var val = $(this).val();
         var control = $('#ControlType').val();
         //屏蔽填充方式不一致的选项
-        document.Selector($('[name="LabelFill"]'), "control", control);
         document.Selector($('[name="LabelFill"]'), "fill", val);
+        document.Selector($('[name="LabelFill"]'), "control", control);
+       
     });
     $('#FillType').change();
 
@@ -567,8 +568,7 @@ document.GetFormatConfig = function () {
 //获取关联配置
 document.GetRelateConfig = function () {
     var relates = [];
-    $.each($('#relates tr:visible'), function (i, obj) {
-      
+    $.each($('#relates tr:visible:gt(0)'), function (i, obj) {
         var relate = {};
         relate.LabelName = $(obj).find("[title='labelName']").find('input').val();
         relate.FieldName = $(obj).find("[title='fieldName']").find('input').val();
@@ -682,8 +682,12 @@ document.Submit = function () {
 }
 
 //选择属性-值显示
-document.Selector = function (ctrls, attribute, value) {
+document.Selector = function (ctrls, attribute, value) {  
     $.each(ctrls, function () {
+        if (value == "") {
+            $(this).hide();
+            return;
+        }
         var ctrl = $(this);
         var hasAttr = $(ctrl).is('[' + attribute + ']');
         if (!hasAttr) {
