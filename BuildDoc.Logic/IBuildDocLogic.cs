@@ -16,5 +16,8 @@ namespace BuildDoc.Logic
         IList<LabelDealWithModel> GetLabelDealSource();
         #endregion
 
+        #region label 
+        BaseResult SaveLabel(DataLabelModel model);
+        #endregion
     }
 }

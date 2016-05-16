@@ -1,7 +1,8 @@
 ﻿var document = new Object();
 document.remarks = new Array();
-
 document.datasource = new Array();
+
+var feditor = null;
 
 $(function () {
     document.init();    
@@ -73,12 +74,22 @@ $(function () {
     //设置公式
     $('#txtLabelFormula').click(function () {              
         AlertDiv('#alert_Formula');
+        
         var fields = [];
         $.each(document.remarks, function (i, remark) {
             fields.push("@" + remark.LabelName);
         });
-        var feditor = new formualEditor(fields);                               
+        feditor = new formualEditor(fields);                               
     });
+
+    //获取公司值
+    $('#btnSetFormulaSave').click(function () {
+        if (feditor != null) {
+            var formula = feditor.save();
+            $('#txtLabelFormula').val(formula);
+            AlertClose('#alert_Formula');
+        }
+    })
 
     //条件条件
     $('#btnAddCondition').click(function () {

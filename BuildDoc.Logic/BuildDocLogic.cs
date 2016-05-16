@@ -86,5 +86,39 @@ namespace BuildDoc.Logic
             }
             return list;
         }
+
+        /// <summary>
+        /// 保存标签信息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public BaseResult SaveLabel(DataLabelModel model)
+        {
+            BaseResult result = new BaseResult() { Succeeded = true };
+            using (BaseDB dbHelper = new OmpdDBHelper())
+            {
+                try
+                {
+                    Dictionary<string, object> dic = BaseDB.EntityToDictionary(model);
+                    if (model.DATA_LABEL_ID == 0)
+                    {
+                        model.CREATED_TIME = DateTime.Now;
+                        dbHelper.ExecuteNonQueryProc("PKG_UCS_DATA_LABEL.sp_data_label_add", dic);
+                    }
+                    else
+                    {
+                        model.MODIFIED_TIME = DateTime.Now;
+                        dbHelper.ExecuteNonQueryProc("PKG_UCS_DATA_LABEL.sp_data_label_modify", dic);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Succeeded = false;
+                    result.Errors.Add(ex.Message);
+                    throw;
+                }
+            }
+            return result;
+        }
     }
 }
