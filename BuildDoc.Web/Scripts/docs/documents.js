@@ -39,8 +39,12 @@ $(function () {
         var val = $(this).val();
         var labelType = $('#LabelType').val();
         //数据源切换        
-        document.Selector($('[name="GetDataMethod"]'), "labeltype", labelType);
-        document.Selector($('[name="GetDataMethod"]'), "method", val);        
+    
+        document.Selector($('[name="GetDataMethod"]'), "method", val);
+        document.Selector($('[name="GetDataMethod"][labeltype]'), "labeltype", labelType);
+        //格式化切换
+        document.Selector($('#div_FormatInfo'), "method", val);
+        
     });
 
     $('#DataMethod').change();
@@ -66,7 +70,7 @@ $(function () {
         var control = $('#ControlType').val();
         //屏蔽填充方式不一致的选项
         document.Selector($('[name="LabelFill"]'), "fill", val);
-        document.Selector($('[name="LabelFill"]'), "control", control);
+        document.Selector($('[name="LabelFill"][control]'), "control", control);
        
     });
     $('#FillType').change();
@@ -91,6 +95,11 @@ $(function () {
         }
     })
 
+    //保存条件配置
+    $('#btnConditionConfigSave').click(function () {
+
+    });
+
     //条件条件
     $('#btnAddCondition').click(function () {
         document.AddConditionRow(0, null);
@@ -100,6 +109,8 @@ $(function () {
     $('#btnAddConditionSet').click(function () {
         document.AddConditionSetExpRow("", "");
     });
+
+
 
     //设置条件配置标签类型
     $("#sltConditionLabelType").change(function () {
@@ -555,8 +566,7 @@ document.GetValueConfig = function (config) {
         default:
             //报错
     }
-    
-
+    return config;
 }
 
 //获取条件配置
@@ -572,7 +582,7 @@ document.GetFormatConfig = function () {
     var format = {};
     format.FormatType = $('#FormatType').val();
     //获取format配置
-    format = document.GetConfigJson("FormatInfo", format);
+    format = document.GetConfigJson("FormatInfo", "format", format.FormatType, format);
     return format;
 }
 
@@ -638,7 +648,7 @@ document.GetConfigJson = function (ctrl, filter, value, config) {
                 configStr += "\"" + $(obj).is(":checked") + "\"";
             }
             else if ($(this).is("input:radio")) {
-                configStr += "\"" + $(":radio[name='" + $(this).attr("id") + "']:checked").val() + "\"";
+                configStr += "\"" + $(":radio[name='" + key + "']:checked").val() + "\"";
             }
             else if ($(this).hasClass("autocomplate")) {
                 configStr += "\"" + $(obj).attr("val") + "\"";
@@ -714,7 +724,7 @@ document.Selector = function (ctrls, attribute, value) {
             }
         } else {
             $(ctrl).hide();
-            if (val == value) {
+            if (val.indexOf(value) > -1) {
                 $(ctrl).show();
             }
         }

@@ -246,35 +246,35 @@
                             <li name="FormatInfo">
                                 <p>
                                     匹配值:
-                                </p><input type="text" class="fl box_text" />
+                                </p><input type="text" key="FormatString" class="fl box_text" />
                             </li>
                             <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
                                 <p>
                                     日期格式化:
-                                </p><input type="text" id="DateFormatString" class="fl box_text" readonly="true" title="点击选择" onclick="AlertDiv('#alert_dataFormart', 999999)" /><span class="red">*</span>
+                                </p><input type="text" id="DateFormatString" key="DateFormatString" class="fl box_text" readonly="true" title="点击选择" onclick="AlertDiv('#alert_dataFormart', 999999)" /><span class="red">*</span>
                             </li>
                             <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
-                                <p>是否大写</p><input type="checkbox" id="IsUpperDate" class="fl" style="margin-top:7px; margin-left:5px;" />
+                                <p>是否大写</p><input type="checkbox" id="IsUpperDate" key="IsUpperDate" class="fl" style="margin-top:7px; margin-left:5px;" />
                             </li>
                             <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
                                 <p>
                                     小数点位数
-                                </p><input type="text" id="DecimalCount" class="fl box_text" />
+                                </p><input type="text" id="DecimalCount" key="DecimalCount" class="fl box_text" />
                             </li>
                             <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
-                                <p>  除数</p><input type="text" id="Dividend" class="fl box_text" />
+                                <p>  除数</p><input type="text" id="Dividend" key="Dividend" class="fl box_text" />
                             </li>
                             <li name="FormatInfo" format="@BuildDoc.FormatType.Date @BuildDoc.FormatType.Number">
-                                <p>转换之后参与计算</p><input type="checkbox" id="IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
+                                <p>转换之后参与计算</p><input type="checkbox" id="IsAfterCompute" key="IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
                             </li>
                             <li name="FormatInfo" format="@BuildDoc.FormatType.Ammount">
-                                <input type="radio" id="FormatInfo_UpperNumber2_IsThousand" name="FormatInfo_UpperNumber2_IsThousand" value="true" /> 千分位
-                                <input type="radio" name="FormatInfo_UpperNumber2_IsThousand" value="false" checked="checked" alt="1" /> 大写
+                                <input type="radio" name="isThousand" key="isThousand" value="true" /> 千分位
+                                <input type="radio" name="isThousand" key="isThousand" value="false" checked="checked" /> 大写
                             </li>
                             <li name="FormatInfo" format="@BuildDoc.FormatType.ValueToText">
                                 <p>
                                     数据源:
-                                </p><select name="sltFormatFields" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+                                </p><select name="sltFormatFields" key="DataSourceName" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
                             </li>
                         </ul>
                     </div>
