@@ -19,7 +19,7 @@ $(function () {
     $('#LabelType').change(function () {        
         var val = $(this).val();
         //标签属性控制      
-        document.Selector($('#mark_main > [id^="div_"]'), "labeltype", val);                 
+        document.Selector($('#mark_main > [id^="div_"]'), "labeltype", val);
         //数据源切换控制
         if (val == 'TextLabel') {
             $('#DataMethod').val("Const");
@@ -38,13 +38,15 @@ $(function () {
     $('#DataMethod').change(function () {
         var val = $(this).val();
         var labelType = $('#LabelType').val();
-        //数据源切换        
-    
+        //数据源切换            
         document.Selector($('[name="GetDataMethod"]'), "method", val);
         document.Selector($('[name="GetDataMethod"][labeltype]'), "labeltype", labelType);
         //格式化切换
-        document.Selector($('#div_FormatInfo'), "method", val);
-        
+        $('#FormatType').change();
+        if (labelType == 'TextLabel') {            
+            document.Selector($('#div_FormatInfo'), "method", val);
+          
+        }
     });
 
     $('#DataMethod').change();
@@ -97,12 +99,18 @@ $(function () {
 
     //保存条件配置
     $('#btnConditionConfigSave').click(function () {
-
+        var remark = {};
+        remark.LabelType = $('#sltConditionLabelType').val();
+        //标签保存
+        remark = document.GetRemarkConfig(remark, "conditionLabel");
+        var condNum = $('#hidConditionConfigNum').val();
+        $("#conditions [number='" + condNum + "']").find("[title=ConditionConfigStr]").html(JSON.stringify(remark));
+      
     });
 
     //条件条件
     $('#btnAddCondition').click(function () {
-        document.AddConditionRow(0, null);
+        document.AddConditionRow(null);
     });
 
     //设置条件公式
@@ -115,7 +123,6 @@ $(function () {
     //设置条件配置标签类型
     $("#sltConditionLabelType").change(function () {
         var val = $(this).val();
-
         document.Selector($('#conditionLabel >[id^="div_"]'), "labeltype", val);
         //数据源切换控制
         if (val == 'TextLabel') {
@@ -319,12 +326,13 @@ document.AddTableFieldRow = function (num, field) {
 }
 
 //添加条件行
-document.AddConditionRow = function (num, condition) {
+document.AddConditionRow = function (condition) {
     var mould = $('#docMould').find("[name='conditionMould']").clone();
     mould.css("display", "");
+    var num = Number($('#conditions tr:last').find('[title="number"]').text()) + 1;
+    mould.attr("number", num);
     //行赋值
-    if (num <= 0) {
-        num = $('#conditions tr').length;
+    if (!condition) {
         condition = [];
         condition.ConditionStr = "";
         condition.LabelType = "";
@@ -333,7 +341,7 @@ document.AddConditionRow = function (num, condition) {
     mould.find("[title='conditionStr']").html(condition.ConditionStr).click(function () {
         document.AlertCondition(condition.ConditionStr, num);
     });
-
+   
     mould.find("[title='conditionConfig']").click(function () {
         document.AlertConditionConfig(num);
     });
@@ -400,7 +408,7 @@ document.SaveConditionSet = function () {
     });
     //将条件字符串保存到条件下
     var num = $('#hidConditionNum').val();
-    $('#conditions tr:eq(' + num + ')').find("[title='conditionStr']").text(conditionStr);
+    $("#conditions [number='"+ num +"']").find("[title='conditionStr']").text(conditionStr);
 
     AlertClose($('#alert_ConditionSet'));
 }
@@ -485,11 +493,12 @@ document.AlertCondition = function (conditionStr,num) {
 //弹出设置条件等式配置界面
 document.AlertConditionConfig = function (num) {
     AlertDiv("#alert_ConfigCondition");   
-
     $('#sltConditionLabelType').change();
     $('#Condition_DataMethod').change();
+    $('#hidConditionConfigNum').val(num);
 }
 
+ 
 
 //保存配置
 document.Save = function () {
@@ -498,7 +507,7 @@ document.Save = function () {
     remark.LabelName = $.trim($("#LabelName").val());
     remark.LabelType = $("#LabelType").val();
     //标签保存
-    document.GetRemarkConfig(remark);
+    document.GetRemarkConfig(remark, "div_DataLabel");
 
     var ety = {};
     ety.DATA_LABEL_ID = 0;   
@@ -518,50 +527,52 @@ document.Save = function () {
 }
 
 //获取标签配置
-document.GetRemarkConfig = function (remark) {
+document.GetRemarkConfig = function (remark,continer) {
     remark.Config = {};
     switch (remark.LabelType) {
         case "TextLabel":            
-            remark.Config = document.GetValueConfig(remark.Config);
+            remark.Config = document.GetValueConfig(continer);
             remark.Relate = document.GetRelateConfig();
             remark.Control = document.GetControlConfig();
             break;
         case "DocLabel":         
-            remark.Config = document.GetValueConfig(remark.Config);
+            remark.Config = document.GetValueConfig(continer);
             break;
         case "TableLabel":          
-            remark.Config = document.GetValueConfig(remark.Config);
+            remark.Config = document.GetValueConfig(continer);
             remark.Config.ColumnInfo = document.GetColumnInfo();
             break;
         case "ImageLabel":           
-            remark.Config = document.GetValueConfig(remark.Config);
+            remark.Config = document.GetValueConfig(continer);
             break;
         case 'ConditionLabel':
-            remark.Config = document.GetValueConfig(remark.Config);
+            //            
             break;
         default:
             //出错
             break;
            
     }
+    return remark;
 }
 
 
 //获取文本配置
-document.GetValueConfig = function (config) {
-    var getDataMethod = $('#DataMethod').val();
+document.GetValueConfig = function (container) {
+    config = {};
+    var getDataMethod = $('#' + container + ' [name="DataMethod"]').val();
     config.GetDataMethod = getDataMethod;
     switch (getDataMethod) {
         case "Const":
-            document.GetConfigJson("GetDataMethod", "method", "Const", config);
+            document.GetConfigJson(container,"GetDataMethod", "method", "Const", config);
             break;
         case "Formula":
-            document.GetConfigJson("GetDataMethod", "method", "Formula", config);
-            config.FormatInfo = document.GetFormatConfig();
+            document.GetConfigJson(container,"GetDataMethod", "method", "Formula", config);
+            config.FormatInfo = document.GetFormatConfig(container);
             break;
         case "Source":
-            document.GetConfigJson("GetDataMethod", "method", "Source", config);
-            config.FormatInfo = document.GetFormatConfig();
+            document.GetConfigJson(container,"GetDataMethod", "method", "Source", config);
+            config.FormatInfo = document.GetFormatConfig(container);
             break;
         default:
             //报错
@@ -578,11 +589,11 @@ document.GetConditionConfig = function (conifg) {
 }
 
 //获取常量配置
-document.GetFormatConfig = function () {    
+document.GetFormatConfig = function (container) {
     var format = {};
     format.FormatType = $('#FormatType').val();
     //获取format配置
-    format = document.GetConfigJson("FormatInfo", "format", format.FormatType, format);
+    format = document.GetConfigJson(container, "FormatInfo", "format", format.FormatType, format);
     return format;
 }
 
@@ -620,18 +631,18 @@ document.GetColumnInfo = function () {
 document.GetControlConfig = function () {
     var control = {};
     control.ControlType = $('#ControlType').val();
-    control = document.GetConfigJson("LabelControl", "control", control.ControlType, control);
+    control = document.GetConfigJson("div_Control", "LabelControl", "control", control.ControlType, control);
     if (control.ControlType == "DropDown") {
-        control = document.GetConfigJson("LabelFill", "fill", control.FillType, control);
+        control = document.GetConfigJson("div_Control", "LabelFill", "fill", control.FillType, control);
     }
     return control;
 }
 
 //获取配置项
 //获取筛选属性的输入配置项
-document.GetConfigJson = function (ctrl, filter, value, config) {
+document.GetConfigJson = function (continer,ctrl, filter, value, config) {
     //遍历显示控件
-    $('[name="' + ctrl + '"]:visible').each(function (i, continer) {
+    $('#'+ continer +' [name="' + ctrl + '"]:visible').each(function (i, element) {
         //筛选属性值
         if ($(this).is(filter) && $(this).attr(filter) != value) {
             return;
@@ -705,10 +716,6 @@ document.Submit = function () {
 //选择属性-值显示
 document.Selector = function (ctrls, attribute, value) {  
     $.each(ctrls, function () {
-        if (value == "") {
-            $(this).hide();
-            return;
-        }
         var ctrl = $(this);
         var hasAttr = $(ctrl).is('[' + attribute + ']');
         if (!hasAttr) {
@@ -716,16 +723,20 @@ document.Selector = function (ctrls, attribute, value) {
             return;
         }
         var val = $(ctrl).attr(attribute);
-        if (val.startsWith("!")) {
+        if (val == "*") {
+            $(ctrl).show();
+        }
+        else if (val.startsWith("!")) {
             $(ctrl).show();
             var val = val.slice(1, val.length);
             if (val == value) {
                 $(ctrl).hide();
             }
         } else {
-            $(ctrl).hide();
-            if (val.indexOf(value) > -1) {
-                $(ctrl).show();
+            $(ctrl).show();
+          
+            if (value == "" || (val != "" && val.indexOf(value) == -1)) {
+                $(ctrl).hide();
             }
         }
     });
