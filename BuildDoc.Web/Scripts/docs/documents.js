@@ -1,15 +1,17 @@
 ﻿var document = new Object();
 document.remarks = new Array();
 document.datasource = new Array();
+//激活的标签类型
+//切换取值方式时需要判断标签类型
+document.ActiveLabelType = "";
 
 var feditor = null;
 
 $(function () {
-    document.init();    
-    document.GetRemarks();     
-
+    
+    document.GetRemarks();         
     //$('[name="GetDataMethod"]').hide();
-
+    document.InitDataSource();
     //标签行点击
     $(document).on('click', '#remarks tr[name="remarkMould"]', function () {
         document.GetRemarkInfo(null, $(this).find("[title='labelName']").html());
@@ -18,8 +20,10 @@ $(function () {
     //标签类型切换
     $('#LabelType').change(function () {        
         var val = $(this).val();
+        document.ActiveLabelType = val;
         //标签属性控制      
-        document.Selector($('#mark_main > [id^="div_"]'), "labeltype", val);
+        document.Selector($('#mark_main [id^="div_"]'), "labeltype", val);
+
         //数据源切换控制
         if (val == 'TextLabel') {
             $('#DataMethod').val("Const");
@@ -37,15 +41,13 @@ $(function () {
     //数据源切换
     $('#DataMethod').change(function () {
         var val = $(this).val();
-        var labelType = $('#LabelType').val();
+        var labelType = document.ActiveLabelType;
         //数据源切换            
         document.Selector($('[name="GetDataMethod"]'), "method", val);
         document.Selector($('[name="GetDataMethod"][labeltype]'), "labeltype", labelType);
-        //格式化切换
-        $('#FormatType').change();
+        
         if (labelType == 'TextLabel') {            
-            document.Selector($('#div_FormatInfo'), "method", val);
-          
+            document.Selector($('#div_FormatInfo'), "method", val);          
         }
     });
 
@@ -78,7 +80,7 @@ $(function () {
     $('#FillType').change();
 
     //设置公式
-    $('#txtLabelFormula').click(function () {              
+    $('[name="txtLabelFormula"]').click(function () {              
         AlertDiv('#alert_Formula');
         
         var fields = [];
@@ -88,7 +90,7 @@ $(function () {
         feditor = new formualEditor(fields);                               
     });
 
-    //获取公司值
+    //获取公式值
     $('#btnSetFormulaSave').click(function () {
         if (feditor != null) {
             var formula = feditor.save();
@@ -102,10 +104,10 @@ $(function () {
         var remark = {};
         remark.LabelType = $('#sltConditionLabelType').val();
         //标签保存
-        remark = document.GetRemarkConfig(remark, "conditionLabel");
+        remark = document.GetRemarkConfig(remark, "condtion_content");
         var condNum = $('#hidConditionConfigNum').val();
         $("#conditions [number='" + condNum + "']").find("[title=ConditionConfigStr]").html(JSON.stringify(remark));
-      
+        document.CloseConfigConditionDailog();
     });
 
     //条件条件
@@ -118,28 +120,6 @@ $(function () {
         document.AddConditionSetExpRow("", "");
     });
 
-
-
-    //设置条件配置标签类型
-    $("#sltConditionLabelType").change(function () {
-        var val = $(this).val();
-        document.Selector($('#conditionLabel >[id^="div_"]'), "labeltype", val);
-        //数据源切换控制
-        if (val == 'TextLabel') {
-            $('#Condition_DataMethod').val("Const");
-            //文本标签可选其他数据源            
-            $('#Condition_DataMethod').show();
-        } else {
-            //非文本标签只能设置数据源
-            $('#Condition_DataMethod').val("Source");
-            $('#Condition_DataMethod').hide();
-        }
-        $('#Condition_DataMethod').change();
-    });
-
-    
-
-   
     
     //保存条件公式
     $('#btnConditionSetSave').click(function () {
@@ -170,50 +150,67 @@ $(function () {
     初始化界面元素
     绑定界面数据源
 */
-document.init = function () {    
+document.GetConditionDataLabel = function () {   
+    //条件数据类型
+    $("#sltConditionLabelType").change(function () {
+        var val = $(this).val();        
+        document.ActiveLabelType = val;
+        document.Selector($('#condtion_content > [id^="div_"]'), "labeltype", val);
+        //数据源切换控制
+        if (val == 'TextLabel') {
+            $('#DataMethod').val("Const");
+            //文本标签可选其他数据源            
+            $('#DataMethod').show();
+        } else {
+            //非文本标签只能设置数据源
+            $('#DataMethod').val("Source");
+            $('#DataMethod').hide();
+        }
+        $('#DataMethod').change();
+    });
+    $("#sltConditionLabelType").change();
+
+
     //为条件标签 插入配置
-    var dataContiner = $('#div_DataLabel > ul > li').clone();
-    dataContiner.find("#DataMethod").attr("id", "Condition_DataMethod");
-    $('#conditionLabel').append(dataContiner);
-    //条件标签-数据源类型切换
-    $('#Condition_DataMethod').change(function () {
-        var val = $(this).val();
-        var labelType = $('#sltConditionLabelType').val();
-        //数据源切换
-        document.Selector($('#conditionLabel > [name="GetDataMethod"]'), "labeltype", labelType);
-        document.Selector($('#conditionLabel > [name="GetDataMethod"]'), "method", val);
-    });
-    //为条件标签 绑定数据源
+    var dataContiner = $('#div_DataLabel');
+    dataContiner.addClass("Vsearch");
+    $('#condtion_content').append(dataContiner);
     
-
     //为条件标签 插入格式化
-    var formatContiner = $('#div_FormatInfo > ul > li').clone();
-    formatContiner.find("#FormatType").attr("id", "Condition_FormatType");    
-    $('#conditionLabel').append(formatContiner);
-    //条件标签-格式化切换
-    $('#Condition_FormatType').change(function () {
-        var val = $(this).val();
-        document.Selector($('#conditionLabel > [name="FormatInfo"]'), "format", val);
-    });
-
-
-    //为条件标签 插入格式化
-    formatContiner = $('#div_FormatInfo > ul > li').clone();
-    formatContiner.find("#FormatType").attr("id", "TableField_FormatType");
-    //为表格标签 插入格式化
-    $('#tableFieldLabel').append(formatContiner);
-    $('#TableField_FormatType').change(function () {
-        var val = $(this).val();
-        document.Selector($('#tableFieldLabel > [name="FormatInfo"]'), "format", val);
-    });
-
-    //绑定数据源
-    document.initDataSource();
+    var formatContiner = $('#div_FormatInfo');
+    $('#condtion_content').append(formatContiner);
+    formatContiner.addClass("Vsearch");
 }
 
 
+//还原控件
+document.ResetDataLabel = function ()
+{
+    //为条件标签 插入配置
+    var dataContiner = $('#div_DataLabel');
+    $('#div_label').append(dataContiner);
+
+    //为条件标签 插入格式化
+    var formatContiner = $('#div_FormatInfo');
+    $('#div_label').append(formatContiner);
+
+    //回到主界面
+    $('#LabelType').change();
+        
+}
+
+//
+document.GetTableDataLabel = function () {
+
+}
+
+document.CloseConfigConditionDailog = function () {
+    AlertClose($("#alert_ConfigCondition"));
+    document.ResetDataLabel();
+}
+
 //初始化数据来源
-document.initDataSource = function () {
+document.InitDataSource = function () {
     
     document.BindDataSource($('#div_DataLabel').find('[name="sltDataSource"]'));
     document.BindDataSource($('#alert_ConfigCondition').find('[name="sltDataSource"]'));
@@ -319,6 +316,7 @@ document.AddTableFieldRow = function (num, field) {
     mould.find("[title='configStr']").val(field.FormatInfo);    
     mould.find("[title='config']").val(field.FieldName).click(function () {
         document.AlertTableFieldConfig(num, "");
+
     });
 
 
@@ -343,7 +341,10 @@ document.AddConditionRow = function (condition) {
     });
    
     mould.find("[title='conditionConfig']").click(function () {
-        document.AlertConditionConfig(num);
+        var configStr = mould.find("[title='ConditionConfigStr']").html();
+        
+        document.AlertConditionConfig(num, configStr);
+
     });
 
     $('#conditions tr:last').after(mould);
@@ -475,7 +476,7 @@ document.AlertTableFieldConfig = function (num, config) {
 
 //弹出设置条件等式的界面
 document.AlertCondition = function (conditionStr,num) {
-    AlertDiv('#alert_ConditionSet');
+    AlertDiv('#alert_ConditionSet');  
     //条件序号
     $('#hidConditionNum').val(num);    
     //解析条件表达式
@@ -491,14 +492,27 @@ document.AlertCondition = function (conditionStr,num) {
 }
 
 //弹出设置条件等式配置界面
-document.AlertConditionConfig = function (num) {
-    AlertDiv("#alert_ConfigCondition");   
-    $('#sltConditionLabelType').change();
-    $('#Condition_DataMethod').change();
+document.AlertConditionConfig = function (num, configStr) {  
+    AlertDiv("#alert_ConfigCondition");
+    document.GetConditionDataLabel();   
     $('#hidConditionConfigNum').val(num);
+    //条件配置赋值
+    if (configStr == "") {
+        $('#sltConditionLabelType').change();
+        $('#Condition_DataMethod').change();
+    } else {
+        var bookmark = $.parseJSON(configStr);
+        $('#sltConditionLabelType').val(bookmark.LabelType).change();
+        if (bookmark.Config) {
+            var config = bookmark.Config;
+            document.SetConfigJson("condtion_content", config);
+            if (config.FormatInfo) {
+                document.SetConfigJson("condtion_content", config.FormatInfo)
+            }
+        }
+    }
 }
 
- 
 
 //保存配置
 document.Save = function () {
@@ -555,7 +569,6 @@ document.GetRemarkConfig = function (remark,continer) {
     }
     return remark;
 }
-
 
 //获取文本配置
 document.GetValueConfig = function (container) {
@@ -673,7 +686,52 @@ document.GetConfigJson = function (continer,ctrl, filter, value, config) {
     });
     return config;
 }
- 
+
+//设置配置项
+document.SetRemarkConfig = function (remark, continer) {
+    switch (remark.LabelType) {
+        case "TextLabel":
+            remark.Config = document.SetConfigJson(remark, continer);
+
+            break;
+        case "DocLabel":
+
+            break;
+        case "TableLabel":
+
+            break;
+        case "ImageLabel":
+
+            break;
+        case 'ConditionLabel':
+            //            
+            break;
+        default:
+            //出错
+            break;
+
+    }
+
+}
+
+//设置配置项 
+document.SetConfigJson = function (continer, config){
+    for (var c in config)
+    {
+        var obj = $("#" + continer + " [key='" + c + "']:visible");
+        if (obj.length == 0)
+            continue;
+        if (obj.is("select"))
+            obj.val(config[c]).change();
+        else if (obj.is("input:checkbox")) {           
+                 obj.prop("checked",config[c])
+        } else if (obj.is("input:radio")) {
+            obj.filter("[value='" + config[c] + "']").prop("checked", true);
+        } else {
+            obj.val(config[c]);
+        }
+    }
+}
 
 //提交配置 
 document.Submit = function () {
