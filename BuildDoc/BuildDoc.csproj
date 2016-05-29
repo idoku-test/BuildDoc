@@ -44,6 +44,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +68,7 @@
     <Compile Include="DocMerger.cs" />
     <Compile Include="DocStructure.cs" />
     <Compile Include="DocTemplateType.cs" />
+    <Compile Include="FileServerHelper.cs" />
     <Compile Include="FormatInfo.cs" />
     <Compile Include="IBuildWord.cs" />
     <Compile Include="IDocStructure.cs" />
@@ -95,6 +97,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{731b583c-f2e4-471f-a22b-5d5e1eda8462}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileServerInterface\FileServerInterface.csproj">
+      <Project>{bc23049e-f00f-4e91-987b-da40e2ede8d8}</Project>
+      <Name>FileServerInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

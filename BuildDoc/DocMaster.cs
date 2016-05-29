@@ -220,9 +220,16 @@ namespace BuildDoc
         private void InitData(string jsonStructure, Dictionary<string, string> inputParams)
         {
             MotherSetDTO motherSet = BuildWordInstance.GetMotherSet((int)this.masterID);
-            this.FileID = motherSet.FILE_ID.Value;
-            this.DocTemplateType = new DocTemplateType(motherSet.TEMPLATE_TYPE.Value, this.InstanceID, inputParams);
-            //var fileStream = 
+            if (motherSet != null)
+            {
+                this.FileID = motherSet.FILE_ID.Value;
+                this.DocTemplateType = new DocTemplateType(motherSet.TEMPLATE_TYPE.Value, this.InstanceID, inputParams);
+                var fileStream = FileServerHelper.GetFileStream(motherSet.FILE_ID.Value);
+                if (fileStream != null)
+                    this.buildWord = new BuildWord(fileStream);
+                if(jsonStructure==null)
+                    
+            }
         }
 
         /// <summary>
