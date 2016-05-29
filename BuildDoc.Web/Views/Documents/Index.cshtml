@@ -2,13 +2,13 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 @section scripts{
     <script src="~/Scripts/jquery-ui/jquery-ui.js"></script>
     <link href="~/Scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
     <script src="~/Scripts/docs/documents.js"></script>
     <script src="~/Scripts/docs/formula_editor.js"></script>
     <link href="~/Content/layout.css" rel="stylesheet" />
+
     <link href="~/Content/document.css" rel="stylesheet" />
     <style>
         .wBreak {
@@ -56,9 +56,12 @@
     </style>
 }
 
+<div class="main_Econ">
+    <div class="box b_shadow br4 white_bg">
 
-
-
+        <div class="bot_B oh">
+            <div class="E_contact fl" style="width:50%;">
+                <div id="dataLabelList" style="overflow-y: auto;max-height: 600px;">
 <table id="remarks" style=" width: 100%;" border="0" cellpadding="0" cellspacing="0" class="table table2">
     <!-- 正常显示 -->
     <tr>
@@ -70,7 +73,11 @@
         <th style="width:50px">操作</th>
     </tr>
 </table>
-<div id="mark_main">
+                </div>
+            </div>
+
+            <div id="mark_main" class="E_contact fr" style="width:46%;border:1px solid #ccc; padding:0 1% 10px;">
+
     <!-- label type ----- begin -->
     <div class="search" style="margin-top:10px;">
         <ul class="oh">
@@ -84,15 +91,20 @@
         </ul>
     </div>
     <!-- label type ----- end -->
-    <!-- label value ----- begin -->
-    <div id="div_Lable" style="padding-top:10px;" labeltype="!@BuildDoc.LabelType.ConditionLabel">
+
         <div class="oh" style=" border-bottom: 1px solid #ccc; margin-top: 0;">
+                    <div class="oh" style=" border-bottom: 1px solid #ccc; margin-top: 0;">
             <h2 class="fl" style="line-height: 40px; ">取值方式</h2>
         </div>
-        <div id="div_DataLabel">         
+                </div>
+
+                <!-- label value ----- begin -->
+                <div id="div_label">
+                    <div id="div_DataLabel" class="Vsearch" style="padding-top:10px;" labeltype="!@BuildDoc.LabelType.ConditionLabel">
                 <ul class="oh">
-                    <li>
-                        @Html.EnumDropDownList("DataMethod", BuildDoc.GetDataMethod.Const, null, true, new { })
+                            <li name="GetDataMethod" method="*">
+                                <p class="tc">取值方式</p>
+                                @Html.EnumDropDownList("DataMethod", BuildDoc.GetDataMethod.Const, null, true, new { key = "GetDataMethod", @class = "fl box_text" })
                     </li>
                     @* 常量 *@
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Const">
@@ -106,8 +118,8 @@
                         <p class="tc" style="padding-top:30px">
                             值:
                         </p><span class="red">注意：@@符号后请保留空格,如：“@@建筑面积 ”</span>
-                        <input id="txtLabelFormula" key="Value" method="@BuildDoc.GetDataMethod.Formula" class="fl box_text" style="width:270px " title="" /><span class="red">*</span>
-                        @*<span><a onclick="AlertDiv('#alert_FormulaFormart', 999999)">选择</a></span>*@
+                                <input id="txtLabelFormula" name="txtLabelFormula" key="Value" method="@BuildDoc.GetDataMethod.Formula" class="fl box_text" style="width:270px " title="" /><span class="red">*</span>
+                                <span><a onclick="AlertDiv('#alert_FormulaFormart', 999999)">点击参考</a></span>
                     </li>
                     @* 数据源 *@
                     <li name="GetDataMethod" method="@BuildDoc.GetDataMethod.Source">
@@ -168,7 +180,51 @@
                     </li>
                 </ul>             
         </div>
+                    <!-- label format ----- begin -->
+                    <div id="div_FormatInfo" labeltype="@BuildDoc.LabelType.TextLabel" method="@BuildDoc.GetDataMethod.Formula @BuildDoc.GetDataMethod.Source">
+                        <ul class="oh">
+                            <li name="FormatInfo" format="*">
+                                <p>
+                                    <strong>  数据处理</strong>&nbsp;&nbsp;&nbsp;类型:
+                                </p>@Html.EnumDropDownList("FormatType", typeof(BuildDoc.FormatType), null, "-请选择-", true, new { key = "FormatType" })
+                            </li>
+                            <li name="FormatInfo" format="">
+                                <p>
+                                    匹配值:
+                                </p><input type="text" key="FormatString" class="fl box_text" />
+                            </li>
+                            <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
+                                <p>
+                                    日期格式化:
+                                </p><input type="text" id="DateFormatString" key="DateFormatString" class="fl box_text" readonly="true" title="点击选择" onclick="AlertDiv('#alert_dataFormart', 999999)" /><span class="red">*</span>
+                            </li>
+                            <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
+                                <p>是否大写</p><input type="checkbox" id="IsUpperDate" key="IsUpperDate" class="fl" style="margin-top:7px; margin-left:5px;" />
+                            </li>
+                            <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
+                                <p>
+                                    小数点位数
+                                </p><input type="text" id="DecimalCount" key="DecimalCount" class="fl box_text" />
+                            </li>
+                            <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
+                                <p>  除数</p><input type="text" id="Dividend" key="Dividend" class="fl box_text" />
+                            </li>
+                            <li name="FormatInfo" format="@BuildDoc.FormatType.Date @BuildDoc.FormatType.Number">
+                                <p>转换之后参与计算</p><input type="checkbox" id="IsAfterCompute" key="IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
+                            </li>
+                            <li name="FormatInfo" format="@BuildDoc.FormatType.Ammount">
+                                <input type="radio" name="isThousand" key="isThousand" value="true" /> 千分位
+                                <input type="radio" name="isThousand" key="isThousand" value="false" checked="checked" /> 大写
+                            </li>
+                            <li name="FormatInfo" format="@BuildDoc.FormatType.ValueToText">
+                                <p>
+                                    数据源:
+                                </p><select name="sltFormatFields" key="DataSourceName" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+                            </li>
+                        </ul>
     </div>
+                    <!-- label format --------end -->
+                </div>
     <!-- label value ----- end -->
     <!-- label contition --- begin  -->
     <div id="div_ConditionLabel" labeltype="@BuildDoc.LabelType.ConditionLabel">
@@ -228,50 +284,7 @@
             </table>
         </div>
     </div>
-    <!-- label format ----- begin -->
-    <div id="div_FormatInfo" labeltype="@BuildDoc.LabelType.TextLabel" method="@BuildDoc.GetDataMethod.Formula @BuildDoc.GetDataMethod.Source">
-        <ul class="oh">
-            <li>
-                <p>
-                 <strong>  数据处理</strong>&nbsp;&nbsp;&nbsp;类型:
-                </p>@Html.EnumDropDownList("FormatType", BuildDoc.FormatType.Date, null, true, new { })
-            </li>
-            <li>
-                <p>
-                    匹配值:
-                </p><input type="text" class="fl box_text" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
-                <p>
-                    日期格式化:
-                </p><input type="text" id="DateFormatString" class="fl box_text" readonly="true" title="点击选择" onclick="AlertDiv('#alert_dataFormart', 999999)" /><span class="red">*</span>
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Date">
-                <p>是否大写</p><input type="checkbox" id="IsUpperDate" class="fl" style="margin-top:7px; margin-left:5px;" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
-                <p>
-                    小数点位数
-                </p><input type="text" id="DecimalCount" class="fl box_text" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Number @BuildDoc.FormatType.Upper">
-                <p>  除数</p><input type="text" id="Dividend" class="fl box_text" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Date @BuildDoc.FormatType.Number">
-                <p>转换之后参与计算</p><input type="checkbox" id="IsAfterCompute" class="fl" style="margin-top:7px; margin-left:5px;" />
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.Ammount">
-                <input type="radio" id="FormatInfo_UpperNumber2_IsThousand" name="FormatInfo_UpperNumber2_IsThousand" value="true" /> 千分位
-                <input type="radio" name="FormatInfo_UpperNumber2_IsThousand" value="false" checked="checked" alt="1" /> 大写
-            </li>
-            <li name="FormatInfo" format="@BuildDoc.FormatType.ValueToText">
-                <p>
-                    数据源:
-                </p><select name="sltFormatFields" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
-            </li>
-        </ul>
-    </div>
-    <!-- label format --------end -->
+
     <!-- label control ---- begin -->
     <div id="div_Control" labeltype="@BuildDoc.LabelType.TextLabel">
         <div class="project_detail1_T" style="border-bottom:1px solid #ccc; margin-top:0;">
@@ -285,7 +298,9 @@
                 </li>
                 <li name="LabelControl" control="@BuildDoc.ControlType.Text">
                     <p class="tc"> 格式要求</p>
+                                @*@Html.EnumDropDownList("ControlType", BuildDoc.ControlType.Text, null, true, new { })*@
                     <select key="ValidateString" class="box_text fl">
+                                    <option value="">-请选择-</option>
                         <option value="1">整数</option>
                         <option value="2">小数及整数</option>
                     </select>
@@ -329,13 +344,15 @@
                     <p class="tc">是否必填</p><input type="checkbox" key="Required" class="fl" style="margin-top: 7px; margin-left: 5px;" />
                 </li>
             </ul>
-
         </div>
     </div>
     <!-- label control ---- end -->
     <a id="btnSave" class="Abutton fl mblue_bg white br2 tc" style="margin-left:10px;">暂存</a>
-</div>
 
+            </div>
+        </div>
+    </div>
+</div>
 @*设置条件的成立条件*@
 <div class="alert" id="alert_ConditionSet">
     <div class="alertZ"></div>
@@ -364,16 +381,15 @@
         </div>
     </div>
 </div>
-
 @*条件的配置*@
 <div class="alert" id="alert_ConfigCondition">
     <div class="alertZ"></div>
     <div class="alertC" style="width: 600px;">
         <div class="alertCT oh">
             <p class="fl f16">设置条件字段</p>
-            <i class="icon alert_close fr Animate_rotateIn" onclick="AlertClose($('#alert_ConfigCondition'))"></i>
+            <i class="icon alert_close fr Animate_rotateIn" onclick="document.CloseConfigConditionDailog()"></i>
         </div>
-        <div class="alertCB">
+        <div class="alertCB" id="condtion_content">
             <div class="Vsearch">
                 <ul class="oh" id="conditionLabel">
                     <li>
@@ -386,12 +402,12 @@
                         </select>
                     </li>                   
                 </ul>
-
             </div>
         </div>
         <div class="alertCM">
             <div class="button">
-                <a class="fr gray_bg white tc br2" onclick="AlertClose($('#alert_ConfigCondition'))">取消</a>
+                <input type="hidden" id="hidConditionConfigNum" value="0" />
+                <a class="fr gray_bg white tc br2" onclick="document.CloseConfigConditionDailog()">取消</a>
                 <a class="fr mblue_bg white tc br2" id="btnConditionConfigSave">确定</a>
             </div>
         </div>
@@ -418,7 +434,6 @@
         </div>
     </div>
 </div>
-
 @*弹出设置公式的窗口*@
 <div class="alert" id="alert_Formula">
     <div class="alertZ"></div>
@@ -460,7 +475,7 @@
         <div class="alertCM">
             <div class="button">
                 <a class="fr gray_bg white tc br2" onclick="AlertClose($('#alert_Formula'))">取消</a>
-                <a class="fr mblue_bg white tc br2" id="btnSetFormulaSave">确定</a>
+                <a class="fr mblue_bg white tc br2" id="btnSetFormulaSave" name="btnSetFormualSave">确定</a>
             </div>
         </div>
     </div>
@@ -480,14 +495,14 @@
     </tr>
     <!-- 为书签提供复制的模版 -->
     <!-- 为条件标签提供复制的模版 -->
-    <tr name="conditionMould" style="display:none">
-        <td title="number" style="display:none"></td>
+    <tr name="conditionMould" number="0" style="display:none">
+        <td title="number" style="display:none">0</td>
         <td title="conditionStr" style="background-color:#FFF;"></td>
         <td title="conditionConfig">查看配置详情</td>
         <td title="conditionOprate" style="background-color:#FFF;">
             <a href="#" onclick="$(this).closest('tr').remove()">删除</a>
         </td>
-        @*<td title="ConditionConfig" style="display:none"></td>*@
+        <td title="ConditionConfigStr" style="display:none"></td>
     </tr>
     <!-- 为条件标签提供复制的模版 -->
     <!-- 为关联标签提供复制的模版 -->

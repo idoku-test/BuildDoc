@@ -232,6 +232,8 @@
     <Content Include="Content\image\star_icon.gif" />
     <Content Include="Content\image\up.jpg" />
     <Content Include="Content\layout.css" />
+    <Content Include="Content\project_Eon.css" />
+    <Content Include="Content\project_on.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

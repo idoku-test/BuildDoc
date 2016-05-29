@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BuildDoc.Logic
 {
-    public class BuildDocLogic:IBuildDocLogic
+    public class BuildDocLogic : IBuildDocLogic
     {
 
         private static IBuildDocLogic _instance;
@@ -39,32 +39,33 @@ namespace BuildDoc.Logic
                     Dictionary<string, object> dic = new Dictionary<string, object>();
                     dic.Add("i_Type", type);
                     result = dbHelper.ExecuteListProc<DataSourceDTO>("PKG_UCS_DataSource.sp_Data_Source_get", dic);
-                   
+
                     //提取sql中的参数
                     Regex reg = new Regex(@"(?<=as\b).*?(?=,)");
-                 
+
                     foreach (var info in result)
                     {
                         var fields = new List<string>();
                         if (reg.IsMatch(info.SQL_CONTENT))
-                        { 
+                        {
                             var matches = reg.Matches(info.SQL_CONTENT);
                             foreach (Match mc in matches)
                             {
-                                if(!fields.Contains(mc.Value))
-                                    fields.Add(mc.Value.Replace("\"",""));
+                                if (!fields.Contains(mc.Value))
+                                    fields.Add(mc.Value.Replace("\"", ""));
                             }
                             info.Fields = fields;
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    
+
                 }
             }
             return result;
         }
+
 
         /// <summary>
         /// 获得数据处理的数据源
@@ -87,9 +88,42 @@ namespace BuildDoc.Logic
             }
             return list;
         }
+
         #endregion
 
-
+        /// <summary>
+        /// 保存标签信息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public BaseResult SaveLabel(DataLabelModel model)
+        {
+            BaseResult result = new BaseResult() { Succeeded = true };
+            using (BaseDB dbHelper = new OmpdDBHelper())
+            {
+                try
+                {
+                    Dictionary<string, object> dic = BaseDB.EntityToDictionary(model);
+                    if (model.DATA_LABEL_ID == 0)
+                    {
+                        model.CREATED_TIME = DateTime.Now;
+                        dbHelper.ExecuteNonQueryProc("PKG_UCS_DATA_LABEL.sp_data_label_add", dic);
+                    }
+                    else
+                    {
+                        model.MODIFIED_TIME = DateTime.Now;
+                        dbHelper.ExecuteNonQueryProc("PKG_UCS_DATA_LABEL.sp_data_label_modify", dic);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Succeeded = false;
+                    result.Errors.Add(ex.Message);
+                    throw;
+                }
+            }
+            return result;
+        }
 
         #region motherSet
         public IList<MotherSetDTO> GetMotherSetByCustomer(int customerId, int type)
@@ -135,5 +169,11 @@ namespace BuildDoc.Logic
             return result;
         }
         #endregion
+
+
     }
 }
+
+
+
+       

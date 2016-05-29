@@ -59,11 +59,13 @@
     //初始化事件
     formualEditor.prototype.event = function () {
         //选择分量
+        $('#formual_operands li').unbind('click');
         $('#formual_operands li').click(function () {
             $('#txtOperand').val($(this).text());
         });
 
         //选择操作
+        $('#btnAddOperand').unbind('click');
         $('#btnAddOperand').click(function () {
             if ($.trim($("#txtOperand").val()) != "") {
                 $('#txtFormula').insertAtCaret($('#txtOperand').val());
@@ -73,6 +75,7 @@
         });    
 
         //选择运算符
+        $('.formula_operator input').unbind('click');
         $('.formula_operator input').click(function () {
             $('#txtFormula').insertAtCaret($(this).val() + " ");
         });
@@ -84,6 +87,8 @@
     formualEditor.prototype.save = function () {
         return $('#txtFormula').val();
     };
+
+    
 
     //自动查询开启
     formualEditor.prototype.enableautocomplete = function () {               

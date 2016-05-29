@@ -21,5 +21,8 @@ namespace BuildDoc.Logic
 
         MotherSetDTO GetMotherSet(int motherId);
         #endregion
+        #region label 
+        BaseResult SaveLabel(DataLabelModel model);
+        #endregion
     }
 }

@@ -50,6 +50,30 @@ namespace BuildDoc.Web
                     Selected = (value.Equals(selectedValue))
                 };
             return htmlHelper.DropDownList(name, items, optionLabel, htmlAttributes);
-        } 
+        }
+
+        public static MvcHtmlString EnumDropDownList(this HtmlHelper helper, string name, Type type, object selected, string optionLabel,bool isEnumValue, object htmlAttributes)
+        {
+            if (!type.IsEnum)
+                throw new ArgumentException("Type is not an enum.");
+
+            if (selected != null && selected.GetType() != type)
+                throw new ArgumentException("Selected object is not " + type.ToString());
+            var values = Enum.GetValues(type).Cast<object>();
+
+            var items =
+               from value in values
+               let fi = value.GetType().GetField(value.ToString())
+               let attribute = fi.GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault()
+               let text = attribute == null ? value.ToString() : ((DescriptionAttribute)attribute).Description
+               select new SelectListItem
+               {
+                   Text = text,
+                   Value = isEnumValue ? value.ToString() : Convert.ToInt32(value).ToString(),
+                   Selected = (value.Equals(selected))
+               };
+
+            return System.Web.Mvc.Html.SelectExtensions.DropDownList(helper, name, items, optionLabel, htmlAttributes);
+        }         
     }
 }

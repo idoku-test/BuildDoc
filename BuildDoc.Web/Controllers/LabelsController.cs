@@ -1,4 +1,5 @@
 ﻿using BuildDoc.Entities;
+using BuildDoc.Logic;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,6 +12,11 @@ namespace BuildDoc.Web.Controllers
 {
     public class LabelsController : Controller
     {
+        private IBuildDocLogic BuildWordInstance
+        {
+            get { return BuildDocLogic.CreateInstance(); }
+        }
+
         //
         // GET: /Labels/
         public ActionResult Index()
@@ -33,8 +39,13 @@ namespace BuildDoc.Web.Controllers
 
         public ActionResult Save(DataLabelModel model)
         {
-
-            return View();
+            model.CREATED_BY = 1236;
+            model.MODIFIED_BY = 1236;
+            model.MODIFIED_TIME = DateTime.Now;
+            model.CREATED_TIME = DateTime.Now;
+            model.CUSTOMER_ID = 1;
+            var result = BuildWordInstance.SaveLabel(model);
+            return Json(new { IsSuccess = true, Message = "添加成功" }, "Text/html", JsonRequestBehavior.AllowGet);
         }
 
 	}
