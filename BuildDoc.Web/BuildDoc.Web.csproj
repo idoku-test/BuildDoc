@@ -123,6 +123,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LabelsController.cs" />
     <Compile Include="Controllers\MothersController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Extensions\HtmlDropDownExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -250,6 +251,7 @@
     <Content Include="Scripts\docs\documents.js" />
     <Content Include="Scripts\docs\formula_editor.js" />
     <Content Include="Scripts\docs\labels.js" />
+    <Content Include="Scripts\docs\reports.js" />
     <Content Include="Scripts\jqAlertDialogs\images\info.gif" />
     <Content Include="Scripts\jqAlertDialogs\images\question.png" />
     <Content Include="Scripts\jqAlertDialogs\images\title.gif" />
@@ -309,6 +311,7 @@
     <Content Include="Views\Documents\Index.cshtml" />
     <Content Include="Views\Labels\_ConditionPartial.cshtml" />
     <Content Include="Views\Labels\_LabelsPartial.cshtml" />
+    <Content Include="Views\Report\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildDoc.Entities\BuildDoc.Entities.csproj">

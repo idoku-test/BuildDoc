@@ -83,6 +83,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BuildDoc.Entities\BuildDoc.Entities.csproj">
+      <Project>{0c1c0dd2-38fa-4693-8dd1-e7f9e71f4ba0}</Project>
+      <Name>BuildDoc.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildDoc.Logic\BuildDoc.Logic.csproj">
+      <Project>{f777968c-9e52-4374-b1eb-6ecd88b8e3c0}</Project>
+      <Name>BuildDoc.Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{731b583c-f2e4-471f-a22b-5d5e1eda8462}</Project>
       <Name>Common</Name>

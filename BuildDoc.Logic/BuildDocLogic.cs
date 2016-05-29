@@ -23,6 +23,7 @@ namespace BuildDoc.Logic
             return _instance;
         }
 
+        #region data source
         /// <summary>
         /// 获得数据源
         /// </summary>
@@ -86,5 +87,53 @@ namespace BuildDoc.Logic
             }
             return list;
         }
+        #endregion
+
+
+
+        #region motherSet
+        public IList<MotherSetDTO> GetMotherSetByCustomer(int customerId, int type)
+        {
+            IList<MotherSetDTO> result = null;
+            using (BaseDB dbHelper = new OmpdDBHelper())
+            {
+                try
+                {
+                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    dic.Add("i_customer_ID", customerId);
+                    dic.Add("i_document_type", type);
+                    result = dbHelper.ExecuteListProc<MotherSetDTO>("pkg_redas_mother_set.sp_mother_set_getByCustomer", dic);
+
+                }
+                catch
+                {
+                    result = new List<MotherSetDTO>();
+                }
+            }
+            return result;
+        }
+
+        public MotherSetDTO GetMotherSet(int motherId)
+        {
+            MotherSetDTO result = null;
+            using (BaseDB dbHelper = new OmpdDBHelper())
+            {
+                try
+                {
+                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    dic.Add("i_MOTHER_SET_ID", motherId);
+                    List<MotherSetDTO> list = null;
+                    list = dbHelper.ExecuteListProc<MotherSetDTO>("pkg_redas_mother_set.sp_mother_set_get", dic);
+                    if (list.Count > 0)
+                        result = list[0];
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+            return result;
+        }
+        #endregion
     }
 }
