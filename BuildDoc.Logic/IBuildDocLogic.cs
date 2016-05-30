@@ -16,6 +16,11 @@ namespace BuildDoc.Logic
         IList<LabelDealWithModel> GetLabelDealSource();
         #endregion
 
+        #region mother set
+        IList<MotherSetDTO> GetMotherSetByCustomer(int customerId, int type);
+
+        MotherSetDTO GetMotherSet(int motherId);
+        #endregion
         #region label 
         BaseResult SaveLabel(DataLabelModel model);
         #endregion

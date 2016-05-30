@@ -37,12 +37,14 @@
       <HintPath>..\SharedBinaries\Aspose\Aspose.Words.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.JScript" />
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -66,6 +68,7 @@
     <Compile Include="DocMerger.cs" />
     <Compile Include="DocStructure.cs" />
     <Compile Include="DocTemplateType.cs" />
+    <Compile Include="FileServerHelper.cs" />
     <Compile Include="FormatInfo.cs" />
     <Compile Include="IBuildWord.cs" />
     <Compile Include="IDocStructure.cs" />
@@ -83,9 +86,21 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BuildDoc.Entities\BuildDoc.Entities.csproj">
+      <Project>{0c1c0dd2-38fa-4693-8dd1-e7f9e71f4ba0}</Project>
+      <Name>BuildDoc.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildDoc.Logic\BuildDoc.Logic.csproj">
+      <Project>{f777968c-9e52-4374-b1eb-6ecd88b8e3c0}</Project>
+      <Name>BuildDoc.Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{731b583c-f2e4-471f-a22b-5d5e1eda8462}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileServerInterface\FileServerInterface.csproj">
+      <Project>{bc23049e-f00f-4e91-987b-da40e2ede8d8}</Project>
+      <Name>FileServerInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

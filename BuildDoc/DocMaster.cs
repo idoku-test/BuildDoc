@@ -7,12 +7,19 @@ namespace BuildDoc
     using System.IO;
     using Newtonsoft.Json.Linq;
     using System.Text.RegularExpressions;
+    using BuildDoc.Entities;
+    using BuildDoc.Logic;
 
     /// <summary>
     /// 文档操作主类
     /// </summary>
     public class DocMaster
     {
+        private IBuildDocLogic BuildWordInstance
+        {
+            get { return BuildDocLogic.CreateInstance(); }
+        }
+             
         /// <summary>
         /// 文档生成接口
         /// </summary>
@@ -212,152 +219,17 @@ namespace BuildDoc
         /// <param name="inputParams">输入参数</param>
         private void InitData(string jsonStructure, Dictionary<string, string> inputParams)
         {
-
-            //try
-            //{
-            //    Dictionary<BlockType, List<Structure>> structureCofing;
-            //    using (BaseDB dbHelper = new OmpdDBHelper())
-            //    {
-            //        Dictionary<string, object> dic = new Dictionary<string, object>();
-            //        dic.Add("I_MOTHER_SET_ID", this.masterID);
-            //        DataTable dt = dbHelper.ExecuteDataTableProc("pkg_redas_build_doc.sp_mother_set_get", dic);
-            //        if (dt != null && dt.Rows.Count > 0)
-            //        {
-            //            decimal templateTypeID = decimal.Parse(dt.Rows[0]["TEMPLATE_TYPE"].ToString());
-            //            this.FileID = decimal.Parse(dt.Rows[0]["FILE_ID"].ToString());
-            //            this.DocTemplateType = new DocTemplateType(templateTypeID, this.InstanceID, inputParams);
-            //            var fileStream = FileHelper.GetFileStream(this.FileID);
-            //            if (fileStream != null)
-            //            {
-            //                this.buildWord = new BuildWord(fileStream);
-            //            }
-            //            if (jsonStructure == null)
-            //            {
-            //                structureCofing = this.GetStructureDictionary(dt.Rows[0]["SET_CONTENT"].ToString());
-            //            }
-            //            else
-            //            {
-            //                structureCofing = this.GetStructureDictionary(jsonStructure);
-            //            }
-
-            //            this.StructureInfoList = this.GetStructureInfoList(structureCofing);
-            //        }
-            //    }
-
-            //    if (!string.IsNullOrEmpty(this.resultJson))
-            //    {
-            //        JArray ary = JArray.Parse(this.resultJson);
-            //        decimal id;
-            //        StructureType type;
-            //        foreach (var v in ary)
-            //        {
-            //            id = v["ID"].Value<decimal>();
-            //            type = (StructureType)Enum.Parse(typeof(StructureType), v["StructureType"].Value<string>());
-
-            //            //if (this.structureID == id && type == StructureType.Config)
-            //            if (!this.InputValue.ContainsKey(v["LabelName"].Value<string>()))
-            //            {
-            //                this.InputValue.Add(v["LabelName"].Value<string>(), v["Value"].Value<string>());
-            //            }
-            //        }
-            //    }
-
-            //    // 应用替换值
-            //    if (this.InputValue != null && this.InputValue.Count > 0)
-            //    {
-            //        this.LabelList.ForEach(label =>
-            //        {
-            //            if (label is TextLabel)
-            //            {
-            //                var textLabel = label as TextLabel;
-            //                var input = this.InputValue.FirstOrDefault(t => t.Key == label.LabelName);
-            //                if (!string.IsNullOrEmpty(input.Key))
-            //                {
-            //                    textLabel.IsInput = true;
-            //                    textLabel.Value = input.Value;
-            //                }
-            //            }
-            //        });
-            //    }
-            //    var aaa = this.LabelList.Where(t => t.RelateValue == null);
-
-            //    var inside = this.LabelList.Where(t => !t.RelateValue.Contains('@')).ToList();
-            //    var outside = this.LabelList.Where(t => t.RelateValue.Contains('@')).ToList();
-
-            //    var tmpList = new List<BaseLabel>();
-            //    while (true)
-            //    {
-            //        bool isBreak = true;
-            //        foreach (var oItem in outside)
-            //        {
-            //            foreach (var iItem in inside)
-            //            {
-            //                if (iItem is TextLabel)
-            //                {
-            //                    var textLabel = iItem as TextLabel;
-            //                    //var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
-
-            //                    var value = textLabel.GetValue();
-            //                    if (!textLabel.IsAfterCompute)
-            //                        value = textLabel.InnerValue;
-
-            //                    bool pass = oItem.Replace(iItem.LabelName, value);
-            //                    if (!tmpList.Contains(oItem) && !oItem.RelateValue.Contains("@"))
-            //                        tmpList.Add(oItem);
-            //                    if (isBreak && pass)
-            //                        isBreak = false;
-            //                }
-            //            }
-            //        }
-            //        foreach (var item in tmpList)
-            //        {
-            //            inside.Add(item);
-            //            outside.Remove(item);
-            //        }
-            //        tmpList.Clear();
-            //        if (isBreak)
-            //            break;
-            //    }
-
-            //    //处理构建里无匹配的标签
-            //    this.LabelList.ForEach(label =>
-            //    {
-            //        if (label is ConditionLabel)
-            //        {
-            //            var cl = label as ConditionLabel;
-            //            cl.LabelList.ForEach(l =>
-            //            {
-            //                string key = DocHelper.PatternString(l.Condition);
-            //                var findLable = inside.FirstOrDefault(i => i.LabelName == key);
-            //                if (findLable != null && findLable is TextLabel)
-            //                {
-            //                    try
-            //                    {
-            //                        var textLabel = findLable as TextLabel;
-            //                        var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
-            //                        l.Condition = l.Condition.Replace("@" + key, value);
-            //                    }
-            //                    catch { }
-            //                }
-            //                if (DocHelper.CalcByJs(l.Condition) && l.BaseLabel is TextLabel)
-            //                {
-            //                    var tl = l.BaseLabel as TextLabel;
-            //                    tl.ReplaceWithConst(inside);
-            //                }
-            //            });
-            //        }
-
-            //        if (label is TextLabel)
-            //        {
-            //            var tl = label as TextLabel;
-            //            tl.ReplaceWithConst(inside);
-            //        }
-            //    });
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw ex;
-            //}
+            MotherSetDTO motherSet = BuildWordInstance.GetMotherSet((int)this.masterID);
+            if (motherSet != null)
+            {
+                this.FileID = motherSet.FILE_ID.Value;
+                this.DocTemplateType = new DocTemplateType(motherSet.TEMPLATE_TYPE.Value, this.InstanceID, inputParams);
+                var fileStream = FileServerHelper.GetFileStream(motherSet.FILE_ID.Value);
+                if (fileStream != null)
+                    this.buildWord = new BuildWord(fileStream);
+                if(jsonStructure==null)
+                    
+            }
         }
 
         /// <summary>
