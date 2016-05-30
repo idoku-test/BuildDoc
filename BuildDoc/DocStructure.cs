@@ -7,10 +7,16 @@
     using System.IO;
     using System.Data;
     using Newtonsoft.Json.Linq;
+    using BuildDoc.Logic;
 
 
     public class DocStructure : IDocStructure
     {
+        private IBuildDocLogic BuildWordInstance
+        {
+            get { return BuildDocLogic.CreateInstance(); }
+        }
+
         public BlockType BlockType { get; set; }
         public string DocName;
         public decimal FileID;
@@ -43,26 +49,18 @@
             string error = "";
             try
             {
-                //using (BaseDB dbHelper = new OmpdDBHelper())
-                //{
-                //    Dictionary<string, object> dicParms = new Dictionary<string, object>();
-                //    dicParms.Add("i_structure_id", structureID);
-                //    DataTable dt = dbHelper.ExecuteDataTableProc("pkg_redas_build_doc.sp_doc_structure_get", dicParms);
-                //    if (dt != null && dt.Rows.Count > 0)
-                //    {
-                //        error = "构件'" + dt.Rows[0]["STRUCTURE_NAME"].ToString() + "'文件不存在";
-                //        this.DocName = dt.Rows[0]["STRUCTURE_NAME"].ToString();
-                //        this.FileID = decimal.Parse(dt.Rows[0]["FILE_ID"].ToString());
-                //        this.Json = dt.Rows[0]["SET_CONTENT"].ToString();
-                //        this.NewSection = dt.Rows[0]["IS_NEW_SECTION"].ToString() == "1";
-                //        // this.NewSection = false;
-                //        //this.DocTemplateType = new DocTemplateType(decimal.Parse(dt.Rows[0]["TEMPLATE_TYPE"].ToString()));  
-                //        //this.LabelList = this.GetLabelList();
-
-                //        this.buildWord = new BuildWord(FileHelper.GetFileStream(this.FileID));
-                //        //this.InitLabel(null);
-                //    }
-                //}
+                var structure = BuildWordInstance.GetStructure((int)structureID);
+                    if (structure!= null)
+                    {
+                        error = "构件'" + structure.STRUCTURE_NAME + "'文件不存在";
+                        this.DocName = structure.STRUCTURE_NAME;
+                        this.FileID = structure.FILE_ID.Value;
+                        this.Json = structure.SET_CONTENT;
+                        this.NewSection = (int)structure.IS_NEW_SECTION == 1;
+                        this.buildWord = new BuildWord(FileServerHelper.GetFileStream(this.FileID));
+                        //this.InitLabel(null);
+                    }
+              
             }
             catch
             {

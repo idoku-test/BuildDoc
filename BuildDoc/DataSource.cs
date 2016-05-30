@@ -1,5 +1,6 @@
 namespace BuildDoc
 {
+    using BuildDoc.Logic;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -12,6 +13,11 @@ namespace BuildDoc
     /// </summary>
     public class DataSource
     {
+        private IBuildDocLogic BuildWordInstance
+        {
+            get { return BuildDocLogic.CreateInstance(); }
+        }
+
         /// <summary>
         /// 模板类型
         /// </summary>
@@ -115,13 +121,9 @@ namespace BuildDoc
                 dt = this.docTemplateType.CacheData.Tables[cacheKey];
                 if (dt == null && this.sql.IndexOf("@") == -1)
                 {
-                    // 根据m_SQL获取
-                    //using (BaseDB dbHelper = this.CreateDBHelper())
-                    //{
-                    //    dt = dbHelper.ExecuteDataTable(this.sql, null);
-                    //    dt.TableName = cacheKey;
-                    //    this.docTemplateType.CacheData.Tables.Add(dt);
-                    //}
+                    dt = BuildWordInstance.GetDataSource(this.DBName, this.sql);
+                    dt.TableName = cacheKey;
+                    this.docTemplateType.CacheData.Tables.Add(dt);
                 }
             }
             catch
@@ -133,25 +135,7 @@ namespace BuildDoc
             return dt;
         }
 
-        /// <summary>
-        /// 创建数据访问类
-        /// </summary>
-        /// <returns>数据访问类</returns>
-        //private BaseDB CreateDBHelper()
-        //{
-        //    BaseDB baseDB = null;
-        //    switch (this.DBName)
-        //    {
-        //        case "redas":
-        //            baseDB = new RedasDBHelper();
-        //            break;
-        //        case "ompd":
-        //            baseDB = new OmpdDBHelper();
-        //            break;
-        //    }
-
-        //    return baseDB;
-        //}
+      
 
         /// <summary>
         /// 获取字段列表

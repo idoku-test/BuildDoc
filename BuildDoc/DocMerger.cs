@@ -8,12 +8,19 @@
     using System.Text;
     using System.Threading.Tasks;
     using Newtonsoft.Json.Linq;
+    using BuildDoc.Entities;
+    using BuildDoc.Logic;
 
     /// <summary>
     /// 多构件合并类
     /// </summary>
     public class DocMerger
     {
+        private IBuildDocLogic BuildWordInstance
+        {
+            get { return BuildDocLogic.CreateInstance(); }
+        }
+
         /// <summary>
         /// 文档操作类
         /// </summary>
@@ -47,21 +54,18 @@
             this.instanceDocumentIDList = instanceDocumentIDList;
             this.objectIDList = objectIDList;
 
-            //using (BaseDB dbHelper = new OmpdDBHelper())
-            //{
-            //    Dictionary<string, object> dic = new Dictionary<string, object>();
-            //    dic.Add("I_INSTANCE_DOCUMENT_ID", mergerInstanceDocumentID);
-
-            //    DataTable dt = dbHelper.ExecuteDataTableProc("pkg_redas_build_doc.sp_instance_document_get", dic);
-            //    if (dt != null && dt.Rows.Count > 0)
-            //    {
-            //        JArray ary = JArray.Parse(dt.Rows[0]["DOCUMENT_STRUCTURE"].ToString());
-            //        foreach (var ja in ary)
-            //        {
-            //            this.orderList.Add(new MergerItem() { InstanceDocumentID = ja["InstanceId"].Value<decimal>(), Key = ja["Key"].Value<decimal>() });
-            //        }
-            //    }
-            //}
+            InstanceDocumentDTO docInstance = BuildWordInstance.GetInstanceDocument(mergerInstanceDocumentID);
+            if (docInstance != null) {
+                JArray ary = JArray.Parse(docInstance.DOCUMENT_STRUCTURE);
+                foreach (var ja in ary)
+                {
+                    this.orderList.Add(new MergerItem()
+                    {
+                        InstanceDocumentID = ja["InstanceId"].Value<decimal>(),
+                        Key = ja["Key"].Value<decimal>()
+                    });
+                }
+            }
         }
 
         /// <summary>
@@ -72,16 +76,16 @@
         {
             for (var i = 0; i < this.instanceDocumentIDList.Count; i++)
             {
-                //DocMaster docMaster = new DocMaster(this.instanceDocumentIDList[i], this.objectIDList[i], true);
-                //foreach (var structureItem in docMaster.StructureInfoList)
-                //{
-                //    var findItem = this.orderList.Find(it => it.InstanceDocumentID == this.instanceDocumentIDList[i] && it.Key == structureItem.GetID);
-                //    if (findItem != null)
-                //    {
-                //        findItem.NewSection = structureItem.NewSection;
-                //        findItem.StructureStream = structureItem.BuildDoc();
-                //    }
-                //}
+                DocMaster docMaster = new DocMaster(this.instanceDocumentIDList[i], this.objectIDList[i], true);
+                foreach (var structureItem in docMaster.StructureInfoList)
+                {
+                    var findItem = this.orderList.Find(it => it.InstanceDocumentID == this.instanceDocumentIDList[i] && it.Key == structureItem.GetID);
+                    if (findItem != null)
+                    {
+                        findItem.NewSection = structureItem.NewSection;
+                        findItem.StructureStream = structureItem.BuildDoc();
+                    }
+                }
             }
 
             bool firstStructure = true;

@@ -138,26 +138,23 @@ namespace BuildDoc
         /// </summary>
         /// <param name="instanceDocumentID">实例文档ID</param>
         /// <param name="objID">对象ID</param>
-        //public DocMaster(decimal instanceDocumentID, decimal objID, bool isBuildDoc)
-        //{
-        //    this.LabelList = new List<BaseLabel>();
+        public DocMaster(decimal instanceDocumentID, decimal objID, bool isBuildDoc)
+        {
+            this.LabelList = new List<BaseLabel>();
 
-        //    // 根据instanceDocumentID从数据库取出相关数据 masterID instanceID resultJson jsonStructure
-        //    using (BaseDB dbHelper = new OmpdDBHelper())
-        //    {
-        //        Dictionary<string, object> dic = new Dictionary<string, object>();
-        //        dic.Add("I_INSTANCE_DOCUMENT_ID", instanceDocumentID);
-        //        DataTable dt = dbHelper.ExecuteDataTableProc("pkg_redas_build_doc.sp_instance_document_get", dic);
-        //        if (dt != null && dt.Rows.Count > 0)
-        //        {
-        //            this.IsBuildDoc = isBuildDoc;
-        //            this.masterID = Convert.ToDecimal(dt.Rows[0]["MOTHER_SET_ID"]);
-        //            this.InstanceID = objID;
-        //            this.resultJson = dt.Rows[0]["MANUAL_EDITING_RETURN"].ToString();
-        //            this.InitData(dt.Rows[0]["DOCUMENT_STRUCTURE"].ToString(), null);
-        //        }
-        //    }
-        //}
+            var docInstance = BuildWordInstance.GetInstanceDocument(instanceDocumentID);
+            
+            // 根据instanceDocumentID从数据库取出相关数据 masterID instanceID resultJson jsonStructure
+            if (docInstance != null)
+            {
+                this.IsBuildDoc = isBuildDoc;
+                this.masterID = docInstance.MOTHER_SET_ID.Value;
+                this.InstanceID = objID;
+                this.resultJson = docInstance.MANUAL_EDITING_RETURN;
+                this.InitData(docInstance.DOCUMENT_STRUCTURE, null);
+            }
+
+        }
 
         /// <summary>
         /// 初始化相关变量
@@ -219,16 +216,166 @@ namespace BuildDoc
         /// <param name="inputParams">输入参数</param>
         private void InitData(string jsonStructure, Dictionary<string, string> inputParams)
         {
-            MotherSetDTO motherSet = BuildWordInstance.GetMotherSet((int)this.masterID);
-            if (motherSet != null)
+            try
             {
-                this.FileID = motherSet.FILE_ID.Value;
-                this.DocTemplateType = new DocTemplateType(motherSet.TEMPLATE_TYPE.Value, this.InstanceID, inputParams);
-                var fileStream = FileServerHelper.GetFileStream(motherSet.FILE_ID.Value);
-                if (fileStream != null)
-                    this.buildWord = new BuildWord(fileStream);
-                if(jsonStructure==null)
-                    
+                MotherSetDTO motherSet = BuildWordInstance.GetMotherSet((int)this.masterID);
+                if (motherSet != null)
+                {
+                    Dictionary<BlockType, List<Structure>> structureCofing;
+                    this.FileID = motherSet.FILE_ID.Value;
+                    this.DocTemplateType = new DocTemplateType(motherSet.TEMPLATE_TYPE.Value, this.InstanceID, inputParams);
+                    var fileStream = FileServerHelper.GetFileStream(motherSet.FILE_ID.Value);
+                    if (fileStream != null)
+                        this.buildWord = new BuildWord(fileStream);
+                    if (jsonStructure == null)
+                    {
+                        structureCofing = this.GetStructureDictionary(motherSet.SET_CONTENT);
+                    }
+                    else
+                    {
+                        structureCofing = this.GetStructureDictionary(jsonStructure);
+                    }
+                    //获取构建信息
+                    this.StructureInfoList = this.GetStructureInfoList(structureCofing);
+                }
+
+                //处理返回结果
+                if (!string.IsNullOrEmpty(this.resultJson))
+                {
+                    JArray ary = JArray.Parse(this.resultJson);
+                    decimal id;
+                    StructureType type;
+                    foreach (var v in ary)
+                    {
+                        id = v["ID"].Value<decimal>();
+                        type = (StructureType)Enum.Parse(typeof(StructureType), v["StructureType"].Value<string>());
+
+                        if (!this.InputValue.ContainsKey(v["LabelName"].Value<string>()))
+                        {
+                            this.InputValue.Add(v["LabelName"].Value<string>(), v["Value"].Value<string>());
+                        }
+                    }
+                }
+
+                // 应用替换值
+                if (this.InputValue != null && this.InputValue.Count > 0)
+                {
+                    this.LabelList.ForEach(label =>
+                    {
+                        if (label is TextLabel)
+                        {
+                            var textLabel = label as TextLabel;
+                            var input = this.InputValue.FirstOrDefault(t => t.Key == label.LabelName);
+                            if (!string.IsNullOrEmpty(input.Key))
+                            {
+                                textLabel.IsInput = true;
+                                textLabel.Value = input.Value;
+                            }
+                        }
+                    });
+                }
+
+                //处理条件标签
+                // 1.这种判断有误，当条件标签的条件没有@标签的时候，内容不会被替换
+                // 2.条件标签应该都算outside  modify by huzy 2016.4.5
+                var inside = this.LabelList.Where(t => !t.RelateValue.Contains('@')).ToList();
+                var outside = this.LabelList.Where(t => t.RelateValue.Contains('@')).ToList();
+                var conditionS = this.LabelList.Where(t => t is ConditionLabel).ToList();
+                foreach (var c in conditionS)
+                {
+                    inside.Remove(c);
+                    if (!outside.Contains(c))
+                        outside.Add(c);
+                }
+
+                var tmpList = new List<BaseLabel>();
+                while (true)
+                {
+                    bool isBreak = true;
+                    foreach (var oItem in outside)
+                    {
+                        foreach (var iItem in inside)
+                        {
+                            if (iItem is TextLabel)
+                            {
+                                var textLabel = iItem as TextLabel;
+                                //var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
+
+                                var value = textLabel.GetValue();
+                                if (!textLabel.IsAfterCompute)
+                                    value = textLabel.InnerValue;
+
+                                bool pass = oItem.Replace(iItem.LabelName, value);
+                                if (!tmpList.Contains(oItem) && pass)
+                                    tmpList.Add(oItem);
+                                if (isBreak && pass)
+                                    isBreak = false;
+                            }
+                            else if (iItem is ConditionLabel) //条件引用条件标签
+                            {
+                                var conditionLabel = iItem as ConditionLabel;
+                                BaseLabel baseLabel = conditionLabel.ConditionJudgment();
+                                if (baseLabel is TextLabel)
+                                {
+                                    var textLabel = baseLabel as TextLabel;
+                                    var value = textLabel.GetValue();
+                                    bool pass = oItem.Replace(iItem.LabelName, value);
+                                    if (!tmpList.Contains(oItem) && pass)
+                                        tmpList.Add(oItem);
+                                    if (isBreak && pass)
+                                        isBreak = false;
+                                }
+                            }
+                        }
+                    }
+                    foreach (var item in tmpList)
+                    {
+                        inside.Add(item);
+                        outside.Remove(item);
+                    }
+                    tmpList.Clear();
+                    if (isBreak)
+                        break;
+                }
+
+                //处理构建里无匹配的标签  匹配常量中的书名号《》
+                this.LabelList.ForEach(label =>
+                {
+                    if (label is ConditionLabel)
+                    {
+                        var cl = label as ConditionLabel;
+                        cl.LabelList.ForEach(l =>
+                        {
+                            string key = DocHelper.PatternString(l.Condition);
+                            var findLable = inside.FirstOrDefault(i => i.LabelName == key);
+                            if (findLable != null && findLable is TextLabel)
+                            {
+                                try
+                                {
+                                    var textLabel = findLable as TextLabel;
+                                    var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
+                                    l.Condition = l.Condition.Replace("@" + key, value);
+                                }
+                                catch { }
+                            }
+                            if (DocHelper.CalcByJs(l.Condition) && l.BaseLabel is TextLabel)
+                            {
+                                var tl = l.BaseLabel as TextLabel;
+                                tl.ReplaceWithConst(inside);
+                            }
+                        });
+                    }
+
+                    if (label is TextLabel)
+                    {
+                        var tl = label as TextLabel;
+                        tl.ReplaceWithConst(inside);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -241,11 +388,6 @@ namespace BuildDoc
         {
             //decimal customerID = 0;
             List<IDocStructure> list = new List<IDocStructure>();
-            //if (this.DocTemplateType.ParamsCache.ContainsKey("CustomerID"))
-            //{
-            //    decimal.TryParse(this.DocTemplateType.ParamsCache["CustomerID"], out customerID);
-            //}
-
 
             foreach (var blockItem in structureConfig)
             {
@@ -261,10 +403,8 @@ namespace BuildDoc
                                 docStructure.InitLabelList();
                                 list.Add(docStructure);
                             }
-
                             break;
                         case StructureType.Custom:
-
                             list.Add(new CustomDocStructure(blockItem.Key, structureItem.Key, this, structureItem.Key, structureItem.StructureName));
                             break;
                     }
@@ -326,50 +466,35 @@ namespace BuildDoc
             }
         }
 
-        /// <summary>
-        /// 获取构件结构信息
-        /// </summary>
-        /// <param name="json">JSON构件结构信息</param>
-        /// <returns>构件结构信息</returns>
-        //private Dictionary<BlockType, List<Structure>> GetStructureDictionary(string json)
-        //{
-        //    var document_structure = new Redas.Logic.Document_structureLogic();
-        //    Dictionary<BlockType, List<Structure>> structureDictionary = new Dictionary<BlockType, List<Structure>>();
-        //    JObject j_structureConfig = JObject.Parse(json);
-        //    string ids = string.Empty;
-        //    foreach (var blockItem in j_structureConfig)
-        //    {
-        //        List<Structure> structureList = new List<Structure>();
-        //        structureDictionary.Add((BlockType)Enum.Parse(typeof(BlockType), blockItem.Key), structureList);
-        //        JArray j_structureList = blockItem.Value as JArray;
+         //<summary>
+         //获取构件结构信息
+         //</summary>
+         //<param name="json">JSON构件结构信息</param>
+         //<returns>构件结构信息</returns>
+        private Dictionary<BlockType, List<Structure>> GetStructureDictionary(string json)
+        {
+          
+            Dictionary<BlockType, List<Structure>> structureDictionary = new Dictionary<BlockType, List<Structure>>();
+            JObject j_structureConfig = JObject.Parse(json);
+            string ids = string.Empty;
+            foreach (var blockItem in j_structureConfig)
+            {
+                List<Structure> structureList = new List<Structure>();
+                structureDictionary.Add((BlockType)Enum.Parse(typeof(BlockType), blockItem.Key), structureList);
+                JArray j_structureList = blockItem.Value as JArray;
 
-        //        foreach (var j_structure in j_structureList)
-        //        {
-        //            Structure structure = new Structure();
-        //            structure.StructureType = (StructureType)Enum.Parse(typeof(StructureType), j_structure["Type"].Value<string>());
-        //            structure.Key = j_structure["Key"].Value<decimal>();
-        //            //structure.StructureName = j_structure["Name"].Value<string>();//构件名称会修改
+                foreach (var j_structure in j_structureList)
+                {
+                    Structure structure = new Structure();
+                    structure.StructureType = (StructureType)Enum.Parse(typeof(StructureType), j_structure["Type"].Value<string>());
+                    structure.Key = j_structure["Key"].Value<decimal>();
+                    structure.Condition = j_structure["Condition"].Value<string>();
+                    structureList.Add(structure);
+                }
+            }
 
-        //            structure.StructureName = document_structure.GetInfo(structure.Key, "", 0).STRUCTURE_NAME;
-        //            structure.Condition = j_structure["Condition"].Value<string>();
-
-        //            /*
-        //            JObject j_Condition = j_structure["Condition"].Value<JObject>();
-        //            if (j_Condition["DataLabelID"] != null)
-        //            {
-
-        //                structure.Condition.DataSourceName = j_Condition["DataSourceName"].Value<string>();
-        //                structure.Condition.DataLabelName = j_Condition["DataLabelName"].Value<string>();
-        //                structure.Condition.Operation = j_Condition["Operation"].Value<string>();
-        //                structure.Condition.Value = j_Condition["Value"].Value<string>();
-        //            }
-        //            */
-        //            structureList.Add(structure);
-        //        }
-        //    }
-
-        //    return structureDictionary;
-        //}
+            return structureDictionary;
+        }
 
         /// <summary>
         /// 没有调用到，暂时屏蔽 所有构建的书签

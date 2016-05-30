@@ -7,12 +7,20 @@
     using System.Text;
     using System.Threading.Tasks;
     using Newtonsoft.Json.Linq;
+    using BuildDoc.Entities;
+    using BuildDoc.Logic;
 
     /// <summary>
     /// 数据标签类
     /// </summary>
     public class DataLabel
     {
+        private IBuildDocLogic BuildWordInstance
+        {
+            get { return BuildDocLogic.CreateInstance(); }
+        }
+             
+
         /// <summary>
         /// 文本标签
         /// </summary>
@@ -169,31 +177,27 @@
             this.customerID = customerID;
 
             // 没有缓存从数据库取出内容
-            // string key = string.Format("{0}_{1}", dataSourctName, dataLabelName);
-            // if(!CacheData.ContainsKey(key))
-            // {
-            //using (BaseDB dbHelper = new OmpdDBHelper())
+            //string key = string.Format("{0}_{1}", dataSourctName, dataLabelName);
+            //if (!CacheData.ContainsKey(key))
             //{
-            //    Dictionary<string, object> dicParms = new Dictionary<string, object>();
-            //    dicParms.Add("I_LABEL_NAME", dataLabelName);
-            //    dicParms.Add("I_CUSTOMER_ID", customerID);
-            //    DataTable dt = dbHelper.ExecuteDataTableProc("pkg_redas_build_doc.sp_data_label_get", dicParms);
-            //    if (dt != null && dt.Rows.Count > 0)
-            //    {
-            //        JObject config = JObject.Parse(dt.Rows[0]["CONFIG_CONTENT"].ToString());
-            //        if (config["LabelType"].Value<string>() == "TextLabel")
-            //        {
-            //            this.DataLabelName = config["LabelName"].Value<string>();
-            //            this.textLabel = new TextLabel(this.DataLabelName, config, docMaster, this.structureID);
 
-            //            // 添加到缓存
-            //            // CacheData.Add(key, this);
-            //            this.DocControl = this.textLabel.DocControl;
-            //        }
-            //    }
+            DataLabelModel label = BuildWordInstance.GetLabel((int)customerID, dataLabelName);
+            if (label != null)
+            {
+                JObject config = JObject.Parse(label.CONFIG_CONTENT);
+                if (config["LabelType"].Value<string>() == "TextLabel")
+                {
+                    this.DataLabelName = config["LabelName"].Value<string>();
+                    this.textLabel = new TextLabel(this.DataLabelName, config, docMaster, this.structureID);
+
+                    // 添加到缓存
+                    // CacheData.Add(key, this);
+                    this.DocControl = this.textLabel.DocControl;
+                }
+            }
+                
+
             //}
-
-            // }
         }
 
         /// <summary>

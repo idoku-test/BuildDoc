@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Spring.Aop">
       <HintPath>..\SharedBinaries\Spring.NET\Spring.Aop.dll</HintPath>
     </Reference>
@@ -53,6 +56,10 @@
     <ProjectReference Include="..\BuildDoc.Entities\BuildDoc.Entities.csproj">
       <Project>{0c1c0dd2-38fa-4693-8dd1-e7f9e71f4ba0}</Project>
       <Name>BuildDoc.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{731b583c-f2e4-471f-a22b-5d5e1eda8462}</Project>
+      <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{32246b87-3afe-44fc-a98c-1b3b7fd4d9ba}</Project>

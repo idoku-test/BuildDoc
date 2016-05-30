@@ -115,14 +115,14 @@
         /// <summary>
         /// 动态表单
         /// </summary>
-        //[Description("动态表单")]
-        //Dynamic,
+        [Description("动态表单")]
+        Dynamic,
 
         /// <summary>
         /// 多数据源
         /// </summary>
-        //[Description("多数据源")]
-        //MultiSource
+        [Description("多数据源")]
+        MultiSource
     }
 
     /// <summary>

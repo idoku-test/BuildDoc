@@ -1,5 +1,7 @@
 namespace BuildDoc 
 {
+    using BuildDoc.Entities;
+    using BuildDoc.Logic;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -12,6 +14,11 @@ namespace BuildDoc
     /// </summary>
     public class DocTemplateType
     {
+        private IBuildDocLogic BuildWordInstance
+        {
+            get { return BuildDocLogic.CreateInstance(); }
+        }
+
         /// <summary>
         /// SQL
         /// </summary>
@@ -114,30 +121,19 @@ namespace BuildDoc
         {
             try
             {
-                //this.DataSourceList = new List<DataSource>();
-                //using (BaseDB dbHelper = new OmpdDBHelper())
-                //{
-                //    Dictionary<string, object> dicParms = new Dictionary<string, object>();
-                //    dicParms.Add("i_template_type", this.templateTypeID);
-                //    DataTable dt = dbHelper.ExecuteDataTableProc("pkg_redas_build_doc.sp_data_source_get", dicParms);
-                //    if (dt != null && dt.Rows.Count > 0)
-                //    {
-                //        string db_name = string.Empty;
-                //        string data_source_name = string.Empty;
-                //        string multi_select_field = string.Empty;
-                //        string sql_content = string.Empty;
-                //        foreach (DataRow dr in dt.Rows)
-                //        {
-                //            db_name = dr["FSQ_DB_NAME"].ToString();
-                //            data_source_name = dr["DATA_SOURCE_NAME"].ToString();
-                //            multi_select_field = dr["MULTI_SELECT_FIELD"].ToString();
-                //            sql_content = dr["SQL_CONTENT"].ToString();
-                //            this.DataSourceList.Add(new DataSource(db_name, data_source_name, data_source_name, false, sql_content, this));
-                //        }
-                //    }
-
-                //    dt.Dispose();
-                //}
+                this.DataSourceList = new List<DataSource>();
+                IList<DataSourceDTO> dataSource = BuildWordInstance.GetAllDataSource();
+                if (dataSource != null)
+                {
+                    foreach (var ds in dataSource)
+                    {
+                        this.DataSourceList.Add(
+                            new DataSource(ds.FSQ_DB_NAME, ds.DATA_SOURCE_NAME, ds.DATA_SOURCE_NAME, false,
+                                ds.SQL_CONTENT, this)
+                            );
+                    }
+                }
+                 
             }
             catch {
                 System.Console.Write("获取数据源报错");
@@ -151,39 +147,15 @@ namespace BuildDoc
         public Dictionary<string, string> GetParams()
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
-
-            //using (BaseDB dbHelper = new OmpdDBHelper())
-            //{
-            //    Dictionary<string, object> dicParms = new Dictionary<string, object>();
-            //    dicParms.Add("i_template_type", this.templateTypeID);
-            //    DataTable dt = dbHelper.ExecuteDataTableProc("pkg_redas_build_doc.sp_template_type_get", dicParms);
-            //    if (dt != null && dt.Rows.Count > 0)
-            //    {
-            //        this.DocTemplateTypeName = dt.Rows[0]["TEMPLATE_TYPE_NAME"].ToString();
-            //        this.sql = dt.Rows[0]["SQL_CONTENT"].ToString();
-            //        if (this.keyRegex.IsMatch(this.sql))
-            //        {
-            //            this.sql = this.keyRegex.Replace(this.sql, this.instanceID.ToString());
-            //        }
-
-            //        using (BaseDB redasHelper = new RedasDBHelper())
-            //        {
-            //            DataTable tmpData = redasHelper.ExecuteDataTable(this.sql, null);
-            //            if (tmpData != null && tmpData.Rows.Count > 0)
-            //            {
-            //                foreach (DataColumn col in tmpData.Columns)
-            //                {
-            //                    dic.Add(col.ColumnName, tmpData.Rows[0][col.ColumnName].ToString());
-            //                }
-            //            }
-
-            //            tmpData.Dispose();
-            //        }
-            //    }
-
-            //    dt.Dispose();
-            //}
-
+            TemplateTypeDTO templateType = BuildWordInstance.GetTemplateType((int)this.templateTypeID);
+            if (templateType != null)
+            {
+                this.DocTemplateTypeName = templateType.TEMPLATE_TYPE_NAME;
+                this.sql = templateType.SQL_CONTENT;
+                if (this.keyRegex.IsMatch(this.sql))
+                    this.sql = this.keyRegex.Replace(this.sql, this.instanceID.ToString());
+                dic = BuildWordInstance.GetTemplateParms(this.sql);
+            }
             return dic;
         }
     } // end DocTemplateType

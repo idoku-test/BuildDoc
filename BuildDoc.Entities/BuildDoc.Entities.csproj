@@ -42,8 +42,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseResult.cs" />
+    <Compile Include="SELECTMODEL.cs" />
     <Compile Include="DataLabelModel.cs" />
+    <Compile Include="Dto\DocumentStructureDTO.cs" />
     <Compile Include="Dto\DataSourceDTO.cs" />
+    <Compile Include="Generate\DocumentStructureDTO.cs" />
+    <Compile Include="Generate\InstanceDocumentDTO.cs" />
+    <Compile Include="Generate\TemplateTypeDTO.cs" />
     <Compile Include="Generate\MotherSetDTO.cs" />
     <Compile Include="Generate\DataSourceDTO.cs" />
     <Compile Include="LabelDealWithModel.cs" />

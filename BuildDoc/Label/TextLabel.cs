@@ -214,16 +214,16 @@
                 this.FilterOperation = config["FilterOperation"].Value<string>();
                 this.FilterValue = config["FilterValue"].Value<string>();
             }
-            //else if (GetDataMethod == GetDataMethod.Dynamic)
-            //{
-            //    this.formType = config["FormType"].Value<int>();
-            //    this.fieldID = config["FieldID"].Value<string>();
-            //}
-            //else if (GetDataMethod == GetDataMethod.MultiSource)
-            //{
-            //    this.tableID = config["TableID"].Value<string>();
-            //    this.fieldID = config["FieldID"].Value<string>();
-            //}
+            else if (GetDataMethod == GetDataMethod.Dynamic)
+            {
+                this.formType = config["FormType"].Value<int>();
+                this.fieldID = config["FieldID"].Value<string>();
+            }
+            else if (GetDataMethod == GetDataMethod.MultiSource)
+            {
+                this.tableID = config["TableID"].Value<string>();
+                this.fieldID = config["FieldID"].Value<string>();
+            }
 
             if (config["FormatInfo"] != null)
             {
@@ -337,31 +337,31 @@
                     case GetDataMethod.Formula:
                         strValue = this.InnerValue;
                         break;
-                    //case GetDataMethod.MultiSource:
-                    //    if (docMaster.GetValueDelegate != null)
-                    //    {
-                    //        if (docMaster.MultiSourceValue == null)
-                    //            docMaster.MultiSourceValue = new Dictionary<string, string>();
-                    //        if (!docMaster.MultiSourceValue.ContainsKey(this.LabelName))
-                    //        {
-                    //            strValue = docMaster.GetValueDelegate(docMaster.InstanceID, this.tableID, this.fieldID, this.structureID, this.LabelName, docMaster.DocTemplateType.ParamsCache);
-                    //            docMaster.MultiSourceValue.Add(this.LabelName, strValue);
-                    //        }
-                    //        else
-                    //            strValue = docMaster.MultiSourceValue[this.LabelName];
-                    //    }
-                    //    break;
-                    //case GetDataMethod.Dynamic:
-                    //    if (docMaster.DynamicFormData != null)
-                    //    {
-                    //        JArray array = (JArray)docMaster.DynamicFormData[this.formType];
-                    //        var item = array.FirstOrDefault(it => it["NAME"].Value<string>().Equals(this.fieldID));
-                    //        if (item != null)
-                    //        {
-                    //            strValue = item["VALUE"].Value<string>();
-                    //        }
-                    //    }
-                    //    break;
+                    case GetDataMethod.MultiSource:
+                        if (docMaster.GetValueDelegate != null)
+                        {
+                            if (docMaster.MultiSourceValue == null)
+                                docMaster.MultiSourceValue = new Dictionary<string, string>();
+                            if (!docMaster.MultiSourceValue.ContainsKey(this.LabelName))
+                            {
+                                strValue = docMaster.GetValueDelegate(docMaster.InstanceID, this.tableID, this.fieldID, this.structureID, this.LabelName, docMaster.DocTemplateType.ParamsCache);
+                                docMaster.MultiSourceValue.Add(this.LabelName, strValue);
+                            }
+                            else
+                                strValue = docMaster.MultiSourceValue[this.LabelName];
+                        }
+                        break;
+                    case GetDataMethod.Dynamic:
+                        if (docMaster.DynamicFormData != null)
+                        {
+                            JArray array = (JArray)docMaster.DynamicFormData[this.formType];
+                            var item = array.FirstOrDefault(it => it["NAME"].Value<string>().Equals(this.fieldID));
+                            if (item != null)
+                            {
+                                strValue = item["VALUE"].Value<string>();
+                            }
+                        }
+                        break;
                     case GetDataMethod.Source:
                         strValue = this.dataSource.GetValue(this.FieldName, this.FilterFieldName, this.FilterOperation, this.FilterValue);
                         break;

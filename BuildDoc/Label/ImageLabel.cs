@@ -161,11 +161,11 @@
         /// 获取图像流
         /// </summary>
         /// <returns>图像流</returns>
-        //public Stream GetStream()
-        //{
-        //    decimal fileID = this.GetFileID();
-        //    return FileHelper.GetFileStream(fileID);
-        //}
+        public Stream GetStream()
+        {
+            decimal fileID = this.GetFileID();
+            return FileServerHelper.GetFileStream(fileID);
+        }
 
         /// <summary>
         /// 执行操作
