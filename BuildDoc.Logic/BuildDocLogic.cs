@@ -373,7 +373,7 @@ namespace BuildDoc.Logic
         // string sourceConfig = "[{ Type:40031001 },{ Type:40031002 },{ Type:3 },{ Type:2 },{ Type:1 },{ Type:0 }]";
         string sourceConfig = "[{ Type:40031001 },{ Type:2 },{ Type:3 },{ Type:1 },{ Type:0 }]";
         // 2015.3.8会议决议  1：资料补齐  2:预估函  3:查勘   4：询价  5：基础数据
-        string objectCode, objectType = string.Empty;
+      
         private string GetValue(decimal objectID, string tableID, string fieldID, decimal structureID, string labelName, Dictionary<string, string> parame)
         {
             var configList = JArray.Parse(sourceConfig);
