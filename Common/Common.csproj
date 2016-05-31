@@ -61,7 +61,7 @@
     </Reference>
     <Reference Include="Microsoft.JScript" />
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\SharedBinaries\Json.Net\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\zfp\Code\ZFP\ZFP\SharedBinaries\Json.Net\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NPOI">
       <HintPath>..\SharedBinaries\NPOI\NPOI.dll</HintPath>

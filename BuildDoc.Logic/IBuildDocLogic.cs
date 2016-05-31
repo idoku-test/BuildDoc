@@ -18,7 +18,10 @@ namespace BuildDoc.Logic
 
         #region data source
         IList<DataSourceDTO> GetAllDataSource();
-        IList<DataSourceDTO> GetDataSource(int type);
+
+        IList<DataSourceDTO> GetDataSource(int templateTypeId);
+
+        IList<DataSourceDTO> GetDataSourceByType(int type);
 
         DataTable GetDataSource(string dbName, string sql);
 
@@ -46,6 +49,8 @@ namespace BuildDoc.Logic
         InstanceDocumentDTO GetInstanceDocument(decimal instanceDocumentID);
         #endregion
 
-        
+        #region garbage
+        string GetValue(decimal objectID, string tableID, string fieldID, decimal structureID, string labelName, Dictionary<string, string> parame);
+        #endregion
     }
 }

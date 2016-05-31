@@ -30,8 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\zfp\Code\ZFP\ZFP\SharedBinaries\Json.Net\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Spring.Aop">
       <HintPath>..\SharedBinaries\Spring.NET\Spring.Aop.dll</HintPath>
@@ -49,7 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildDocLogic.cs" />
+    <Compile Include="FormLogic.cs" />
     <Compile Include="IBuildDocLogic.cs" />
+    <Compile Include="IFormLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

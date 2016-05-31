@@ -42,6 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseResult.cs" />
+    <Compile Include="Forms\LabelDataDTO.cs" />
+    <Compile Include="Forms\TemplateParameterDTO.cs" />
+    <Compile Include="Forms\TemplateDirectoryDTO.cs" />
+    <Compile Include="Forms\DFormViewModel.cs" />
+    <Compile Include="Forms\FormViewModel.cs" />
+    <Compile Include="Forms\FormLabelDTO.cs" />
     <Compile Include="SELECTMODEL.cs" />
     <Compile Include="DataLabelModel.cs" />
     <Compile Include="Dto\DocumentStructureDTO.cs" />

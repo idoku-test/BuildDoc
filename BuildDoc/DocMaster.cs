@@ -289,54 +289,54 @@ namespace BuildDoc
                 }
 
                 var tmpList = new List<BaseLabel>();
-                while (true)
-                {
-                    bool isBreak = true;
-                    foreach (var oItem in outside)
-                    {
-                        foreach (var iItem in inside)
-                        {
-                            if (iItem is TextLabel)
-                            {
-                                var textLabel = iItem as TextLabel;
-                                //var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
+                //while (true)
+                //{
+                //    bool isBreak = true;
+                //    foreach (var oItem in outside)
+                //    {
+                //        foreach (var iItem in inside)
+                //        {
+                //            if (iItem is TextLabel)
+                //            {
+                //                var textLabel = iItem as TextLabel;
+                //                //var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
 
-                                var value = textLabel.GetValue();
-                                if (!textLabel.IsAfterCompute)
-                                    value = textLabel.InnerValue;
+                //                var value = textLabel.GetValue();
+                //                if (!textLabel.IsAfterCompute)
+                //                    value = textLabel.InnerValue;
 
-                                bool pass = oItem.Replace(iItem.LabelName, value);
-                                if (!tmpList.Contains(oItem) && pass)
-                                    tmpList.Add(oItem);
-                                if (isBreak && pass)
-                                    isBreak = false;
-                            }
-                            else if (iItem is ConditionLabel) //条件引用条件标签
-                            {
-                                var conditionLabel = iItem as ConditionLabel;
-                                BaseLabel baseLabel = conditionLabel.ConditionJudgment();
-                                if (baseLabel is TextLabel)
-                                {
-                                    var textLabel = baseLabel as TextLabel;
-                                    var value = textLabel.GetValue();
-                                    bool pass = oItem.Replace(iItem.LabelName, value);
-                                    if (!tmpList.Contains(oItem) && pass)
-                                        tmpList.Add(oItem);
-                                    if (isBreak && pass)
-                                        isBreak = false;
-                                }
-                            }
-                        }
-                    }
-                    foreach (var item in tmpList)
-                    {
-                        inside.Add(item);
-                        outside.Remove(item);
-                    }
-                    tmpList.Clear();
-                    if (isBreak)
-                        break;
-                }
+                //                bool pass = oItem.Replace(iItem.LabelName, value);
+                //                if (!tmpList.Contains(oItem) && pass)
+                //                    tmpList.Add(oItem);
+                //                if (isBreak && pass)
+                //                    isBreak = false;
+                //            }
+                //            else if (iItem is ConditionLabel) //条件引用条件标签
+                //            {
+                //                var conditionLabel = iItem as ConditionLabel;
+                //                BaseLabel baseLabel = conditionLabel.ConditionJudgment();
+                //                if (baseLabel is TextLabel)
+                //                {
+                //                    var textLabel = baseLabel as TextLabel;
+                //                    var value = textLabel.GetValue();
+                //                    bool pass = oItem.Replace(iItem.LabelName, value);
+                //                    if (!tmpList.Contains(oItem) && pass)
+                //                        tmpList.Add(oItem);
+                //                    if (isBreak && pass)
+                //                        isBreak = false;
+                //                }
+                //            }
+                //        }
+                //    }
+                //    foreach (var item in tmpList)
+                //    {
+                //        inside.Add(item);
+                //        outside.Remove(item);
+                //    }
+                //    tmpList.Clear();
+                //    if (isBreak)
+                //        break;
+                //}
 
                 //处理构建里无匹配的标签  匹配常量中的书名号《》
                 this.LabelList.ForEach(label =>

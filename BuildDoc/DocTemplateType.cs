@@ -122,7 +122,7 @@ namespace BuildDoc
             try
             {
                 this.DataSourceList = new List<DataSource>();
-                IList<DataSourceDTO> dataSource = BuildWordInstance.GetAllDataSource();
+                IList<DataSourceDTO> dataSource = BuildWordInstance.GetDataSource((int)this.templateTypeID);
                 if (dataSource != null)
                 {
                     foreach (var ds in dataSource)

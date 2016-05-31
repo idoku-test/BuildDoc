@@ -324,6 +324,14 @@
       <Project>{b723c4d1-5e43-44df-bcc6-5d99124417b5}</Project>
       <Name>BuildDoc</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{731b583c-f2e4-471f-a22b-5d5e1eda8462}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileServerInterface\FileServerInterface.csproj">
+      <Project>{bc23049e-f00f-4e91-987b-da40e2ede8d8}</Project>
+      <Name>FileServerInterface</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

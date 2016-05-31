@@ -92,12 +92,32 @@ namespace BuildDoc.Logic
             return result;
         }
 
+        public IList<DataSourceDTO> GetDataSource(int templateTypeId)
+        {
+            IList<DataSourceDTO> result = new List<DataSourceDTO>();
+            using (BaseDB dbHelper = new OmpdDBHelper())
+            {
+                try
+                {
+                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    dic.Add("i_template_type", templateTypeId);
+                    result = dbHelper.ExecuteListProc<DataSourceDTO>("pkg_redas_build_doc.sp_data_source_get", dic);
+                    
+                }
+                catch (Exception ex)
+                {
+                    result = null;
+                }
+            }
+            return result;
+        }
+
         /// <summary>
         /// 获得数据源
         /// </summary>
         /// <param name="type">-1获得所有的数据源  1：获得除数据转换之外的数据源  </param>
         /// <returns></returns>
-        public IList<DataSourceDTO> GetDataSource(int type)
+        public IList<DataSourceDTO> GetDataSourceByType(int type)
         {
             IList<DataSourceDTO> result = null;
             using (BaseDB dbHelper = new OmpdDBHelper())
@@ -366,7 +386,8 @@ namespace BuildDoc.Logic
         }
         #endregion
 
-        #region garbage
+        #region garbage     
+
         /// <summary>
         /// 0:基础数据 1:询价 2:预估函 3:查勘 40031002:资料整理 40031001:资料整理
         /// </summary>
@@ -374,7 +395,7 @@ namespace BuildDoc.Logic
         string sourceConfig = "[{ Type:40031001 },{ Type:2 },{ Type:3 },{ Type:1 },{ Type:0 }]";
         // 2015.3.8会议决议  1：资料补齐  2:预估函  3:查勘   4：询价  5：基础数据
       
-        private string GetValue(decimal objectID, string tableID, string fieldID, decimal structureID, string labelName, Dictionary<string, string> parame)
+        public string GetValue(decimal objectID, string tableID, string fieldID, decimal structureID, string labelName, Dictionary<string, string> parame)
         {
             var configList = JArray.Parse(sourceConfig);
             string value = string.Empty;

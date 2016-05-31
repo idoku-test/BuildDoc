@@ -128,8 +128,8 @@ namespace BuildDoc
             }
             catch
             {
-                //System.Console.Write(this.DataSourceName + "的数据源取值异常");
-                //throw;
+                System.Console.Write(this.DataSourceName + "的数据源取值异常");
+                throw;
             }
 
             return dt;

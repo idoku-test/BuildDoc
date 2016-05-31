@@ -19,7 +19,7 @@ namespace BuildDoc.Web.Controllers
         public ActionResult GetDataSource()
         {
             //获取所有数据源
-            var source = BuildWordInstance.GetDataSource(-1);
+            var source = BuildWordInstance.GetAllDataSource();
             return Json(source, JsonRequestBehavior.AllowGet);
         }
 
