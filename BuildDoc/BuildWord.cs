@@ -270,9 +270,9 @@
                             rowHeight = cell.ParentRow.RowFormat.Height;
                         }
 
-                        //var imageStream = FileHelper.GetFileStream(fileId);
-                        //if (imageStream.Length > 0)
-                        //    this.InsertImage(builder, imageStream, fixedWidth, rowHeight);
+                        var imageStream = FileServerHelper.GetFileStream(fileId);
+                        if (imageStream.Length > 0)
+                            this.InsertImage(builder, imageStream, fixedWidth, rowHeight);
                     }
                 }
             }

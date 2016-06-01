@@ -549,7 +549,10 @@ namespace BuildDoc.Logic
                         jArray = JArray.Parse(obj);
                     }
                 }
-                catch { }
+                catch
+                {
+                    throw;
+                }
             }
             return jArray;
         }
