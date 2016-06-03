@@ -543,10 +543,10 @@ namespace BuildDoc.Logic
                     Dictionary<string, object> dic = new Dictionary<string, object>();
                     dic.Add("i_object_id", objectId);
                     dic.Add("i_type", type);
-                    var obj = dbHelper.ExecuteScalarProc("pkg_object.sp_redas_formData_get", dic).ToString();
+                    var obj = dbHelper.ExecuteScalarProc("pkg_object.sp_redas_formData_get", dic);
                     if (obj != null)
                     {
-                        jArray = JArray.Parse(obj);
+                        jArray = JArray.Parse(obj.ToString());
                     }
                 }
                 catch

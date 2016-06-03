@@ -408,19 +408,21 @@ namespace BuildDoc
                             }
                             break;
                         case StructureType.Custom:
-                            list.Add(new CustomDocStructure(blockItem.Key, structureItem.Key, this, structureItem.Key, structureItem.StructureName));
+                            var custStructure = new CustomDocStructure(blockItem.Key, structureItem.Key, this, structureItem.Key, structureItem.StructureName);
+                            custStructure.InitLabelList();
+                            list.Add(custStructure);
                             break;
                     }
                 }
             }
 
-            foreach (IDocStructure item in list)
-            {
-                if (item is CustomDocStructure)
-                {
-                    item.InitLabelList();
-                }
-            }
+            //foreach (IDocStructure item in list)
+            //{
+            //    if (item is CustomDocStructure)
+            //    {
+            //        item.InitLabelList();
+            //    }
+            //}
 
             return list;
 

@@ -114,91 +114,91 @@
         /// 初始化占位符或公式引用
         /// </summary>
         /// <param name="inputValue"></param>
-        private void InitLabel(Dictionary<string, string> inputValue)
-        {
-            //应用替换值
-            if (inputValue != null && inputValue.Count > 0)
-            {
-                this.LabelList.ForEach(label =>
-                {
-                    if (label is TextLabel)
-                    {
-                        var textLabel = label as TextLabel;
-                        var input = inputValue.FirstOrDefault(t => t.Key == label.LabelName);
-                        if (!string.IsNullOrEmpty(input.Value))
-                        {
-                            textLabel.IsInput = true;
-                            textLabel.Value = input.Value;
-                        }
-                    }
-                });
-            }
+        //private void InitLabel(Dictionary<string, string> inputValue)
+        //{
+        //    //应用替换值
+        //    if (inputValue != null && inputValue.Count > 0)
+        //    {
+        //        this.LabelList.ForEach(label =>
+        //        {
+        //            if (label is TextLabel)
+        //            {
+        //                var textLabel = label as TextLabel;
+        //                var input = inputValue.FirstOrDefault(t => t.Key == label.LabelName);
+        //                if (!string.IsNullOrEmpty(input.Value))
+        //                {
+        //                    textLabel.IsInput = true;
+        //                    textLabel.Value = input.Value;
+        //                }
+        //            }
+        //        });
+        //    }
 
             
-            var inside = this.LabelList.Where(t => !t.RelateValue.Contains('@')).ToList();
-            var outside = this.LabelList.Where(t => t.RelateValue.Contains('@')).ToList();
+        //    var inside = this.LabelList.Where(t => !t.RelateValue.Contains('@')).ToList();
+        //    var outside = this.LabelList.Where(t => t.RelateValue.Contains('@')).ToList();
 
-            var tmpList = new List<BaseLabel>();
-            while (true)
-            {
-                bool isBreak = true;
-                foreach (var oItem in outside)
-                {
-                    foreach (var iItem in inside)
-                    {
-                        if (iItem is TextLabel)
-                        {
-                            var textLabel = iItem as TextLabel;
-                            //var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
+        //    var tmpList = new List<BaseLabel>();
+        //    while (true)
+        //    {
+        //        bool isBreak = true;
+        //        foreach (var oItem in outside)
+        //        {
+        //            foreach (var iItem in inside)
+        //            {
+        //                if (iItem is TextLabel)
+        //                {
+        //                    var textLabel = iItem as TextLabel;
+        //                    //var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
 
-                            var value = textLabel.GetValue();
-                            if (!textLabel.IsAfterCompute)
-                                value = textLabel.InnerValue;
+        //                    var value = textLabel.GetValue();
+        //                    if (!textLabel.IsAfterCompute)
+        //                        value = textLabel.InnerValue;
 
-                            bool pass = oItem.Replace(iItem.LabelName, value);
-                            if (!tmpList.Contains(oItem) && !oItem.RelateValue.Contains("@"))
-                                tmpList.Add(oItem);
-                            if (isBreak && pass)
-                                isBreak = false;
+        //                    bool pass = oItem.Replace(iItem.LabelName, value);
+        //                    if (!tmpList.Contains(oItem) && !oItem.RelateValue.Contains("@"))
+        //                        tmpList.Add(oItem);
+        //                    if (isBreak && pass)
+        //                        isBreak = false;
 
-                        }
-                    }
-                }
-                foreach (var item in tmpList)
-                {
-                    inside.Add(item);
-                    outside.Remove(item);
-                }
-                tmpList.Clear();
-                if (isBreak)
-                    break;
-            }
+        //                }
+        //            }
+        //        }
+        //        foreach (var item in tmpList)
+        //        {
+        //            inside.Add(item);
+        //            outside.Remove(item);
+        //        }
+        //        tmpList.Clear();
+        //        if (isBreak)
+        //            break;
+        //    }
 
-            var allInside = this.docMaster.LabelList.Where(t => !t.RelateValue.Contains('@')).ToList();
-            //处理构建里无匹配的标签
-            this.LabelList.ForEach(label =>
-            {
-                if (label is ConditionLabel)
-                {
-                    var cl = label as ConditionLabel;
-                    cl.LabelList.ForEach(l =>
-                    {
-                        string key = DocHelper.PatternString(l.Condition);
-                        var baseLable = allInside.FirstOrDefault(i => i.LabelName == key);
-                        if (baseLable != null && baseLable is TextLabel)
-                        {
-                            try
-                            {
-                                var textLabel = baseLable as TextLabel;
-                                var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
-                                l.Condition = l.Condition.Replace("@" + key, value);
-                            }
-                            catch { }
-                        }
-                    });
-                }
-            });
-        }
+        //    var allInside = this.docMaster.LabelList.Where(t => !t.RelateValue.Contains('@')).ToList();
+        //    //处理构建里无匹配的标签
+        //    this.LabelList.ForEach(label =>
+        //    {
+        //        if (label is ConditionLabel)
+        //        {
+        //            var cl = label as ConditionLabel;
+        //            cl.LabelList.ForEach(l =>
+        //            {
+        //                string key = DocHelper.PatternString(l.Condition);
+        //                var baseLable = allInside.FirstOrDefault(i => i.LabelName == key);
+        //                if (baseLable != null && baseLable is TextLabel)
+        //                {
+        //                    try
+        //                    {
+        //                        var textLabel = baseLable as TextLabel;
+        //                        var value = string.IsNullOrEmpty(textLabel.RelateValue) ? textLabel.GetValue() : textLabel.RelateValue;
+        //                        l.Condition = l.Condition.Replace("@" + key, value);
+        //                    }
+        //                    catch { }
+        //                }
+        //            });
+        //        }
+        //    });
+        //}
 
         /// <summary>
         /// 初始化标签列表
@@ -325,6 +325,10 @@
                     }
                     else
                     {
+                        string rs="";
+                        List<string> s = new List<string>();
+                        s.ForEach(r => rs += r);
+
                         if (label["LabelType"] != null && !string.IsNullOrEmpty(label["LabelType"].ToString()))
                         {
                             labelType = (LabelType)Enum.Parse(typeof(LabelType), label["LabelType"].Value<string>());
