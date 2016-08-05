@@ -15,7 +15,9 @@ $(function () {
     document.InitDataSource();
     //标签行点击
     $(document).on('click', '#remarks tr[name="remarkMould"]', function () {
-        document.GetRemarkInfo(null, $(this).find("[title='labelName']").html());
+        document.GetRemarkInfo($(this).find("[title='labelName']").html(),$(this).find("[title='configInfo']").html());
+        $("#remarks tr").removeClass("hover");
+        $(this).attr("class", "hover");
     });
 
     //选择构件
@@ -205,7 +207,7 @@ document.AnalysisConfig = function (config) {
     }  
     var marks = $.parseJSON(config);
     $.each(marks, function (i, mark) {
-        document.AddRemarkRow(i, mark);
+        document.AddRemarkRow(i + 1, mark);
     });
 };
 
@@ -303,8 +305,11 @@ document.GetRemarks = function () {
 }
 
 //获取书签信息
-document.GetRemarkInfo = function (config, labelName) {
+document.GetRemarkInfo = function (labelName, config) {
     $('#LabelName').val(labelName);
+    if (config === "")
+        return;
+    var info = $.parseJSON(config);
 
 }
 
@@ -316,7 +321,7 @@ document.AddRemarkRow = function (num,remark) {
     mould.find("[title='number']").text(num);
     mould.find("[title='labelName']").text(remark.LabelName);
     mould.find("[title='labelType']").text(remark.LabelType);    
-
+    mould.find("[title='config']").text(JSON.stringify(remark));
     $('#remarks tr:last').after(mould);
 
 }
