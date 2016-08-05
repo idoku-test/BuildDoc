@@ -8,13 +8,19 @@ document.ActiveLabelType = "";
 var feditor = null;
 
 $(function () {
-    
-    document.GetRemarks();         
+    //获取构件列表
+    document.GetStructures(0,0);
+    //document.GetRemarks();         
     //$('[name="GetDataMethod"]').hide();
     document.InitDataSource();
     //标签行点击
     $(document).on('click', '#remarks tr[name="remarkMould"]', function () {
         document.GetRemarkInfo(null, $(this).find("[title='labelName']").html());
+    });
+
+    //选择构件
+    $("#dropStructure").change(function () {
+        document.GetStructure($(this).val());
     });
 
     //标签类型切换
@@ -147,6 +153,63 @@ $(function () {
 });
 
 /*
+stype:header,body,footer.
+dtype:report,estimate
+*/
+document.GetStructures = function (stype,dtype) {
+    var dialogTip = ArtDailogTips('<img src="/Content/image/loading.gif"> 正在查询构件…', null, true);
+    $.ajax({
+        url: "GetStructures",
+        cache: false,
+        dataType: 'json',
+        type: "get",
+        data: { stype: stype, dtype: dtype },
+        success: function (data) {
+            var option = "<option value=''>-选择构件-</option>";
+            $(data).each(function (i, obj) {
+                option += "<option value='" + obj.STRUCTURE_ID + "'>" + obj.STRUCTURE_NAME + "</option>";
+            });
+            $("#dropStructure").html("").append(option);
+        },
+        complete: function () {
+            dialogTip.close();
+        }
+    });
+}
+
+//获取构件信息
+document.GetStructure = function (Id) {
+    //清除之前构件
+    $("#remarks tr:gt(0)").remove();
+    var dialogTip = ArtDailogTips("<img src='/Content/image/loading.gif'> 正在读取构件配置,请稍候…", null, true);
+    $.ajax({
+        url: "GetStructureInfo", //获取构件配置内容
+        data: { id: Id },
+        success: function (info) {
+            //解析json配置信息            
+            document.AnalysisConfig(info.SET_CONTENT);
+            //绘制表格
+            document.PaintTable("remarks");
+            //选择首项
+            $("#remarks tr:eq(1)").click();
+        }, complete: function () {
+            dialogTip.close();
+        }
+    });
+}
+
+//解析配置信息
+document.AnalysisConfig = function (config) {
+    if (config == null || $.trim(config) == "") {
+        return;
+    }  
+    var marks = $.parseJSON(config);
+    $.each(marks, function (i, mark) {
+        document.AddRemarkRow(i, mark);
+    });
+};
+
+/*
     初始化界面元素
     绑定界面数据源
 */
@@ -199,11 +262,8 @@ document.ResetDataLabel = function ()
         
 }
 
-//
-document.GetTableDataLabel = function () {
-
-}
-
+ 
+ 
 document.CloseConfigConditionDailog = function () {
     AlertClose($("#alert_ConfigCondition"));
     document.ResetDataLabel();
@@ -245,6 +305,7 @@ document.GetRemarks = function () {
 //获取书签信息
 document.GetRemarkInfo = function (config, labelName) {
     $('#LabelName').val(labelName);
+
 }
 
 //解析json配置--为表格增加标签行
@@ -800,6 +861,22 @@ document.Selector = function (ctrls, attribute, value) {
     });
 }
 
+//绘制表
+document.PaintTable = function (Id) {
+    $("#" + Id).find("tr:visible").mouseover(function () {
+        //如果鼠标移到class为stripe的表格的tr上时，执行函数    
+        $(this).addClass("over");
+    }).mouseout(function () {
+        //给这行添加class值为over，并且当鼠标一出该行时执行函数    
+        $(this).removeClass("over");
+    }) //移除该行的class    
+    $("#" + Id).find("tr:visible:even").addClass("alt");
+    //给class为stripe的表格的偶数行添加class值为alt 
+    //www.divcss5.com 整理特效 
+
+
+
+}
  
 String.prototype.startsWith = function (prefix) {
     return this.slice(0, prefix.length) === prefix;

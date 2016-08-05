@@ -36,6 +36,8 @@ namespace BuildDoc.Logic
 
         #region structure
         DocumentStructureDTO GetStructure(int structureId);
+
+        IList<DocumentStructureDTO> GetStructuresByCustomer(decimal customerId, decimal stype, decimal dtype);
         #endregion
 
         #region label

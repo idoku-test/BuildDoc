@@ -5,6 +5,9 @@
 @section scripts{
     <script src="~/Scripts/jquery-ui/jquery-ui.js"></script>
     <link href="~/Scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
+ 
+<script src="~/Scripts/artDialogs/artDialog.js?skin=blue"></script> 
+<script src="~/Scripts/artDialogs/plugins/iframeTools.js"></script>
     <script src="~/Scripts/docs/documents.js"></script>
     <script src="~/Scripts/docs/formula_editor.js"></script>
     <link href="~/Content/layout.css" rel="stylesheet" />
@@ -61,6 +64,31 @@
 
         <div class="bot_B oh">
             <div class="E_contact fl" style="width:50%;">
+                @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "id", "" } }, new AjaxOptions { UpdateTargetId = "dataLabelList", HttpMethod = "Get", InsertionMode = InsertionMode.Replace }, new RouteValueDictionary { { "id", "searchForm" } }))
+                {
+                    <div class="search">
+                        <ul class="oh">
+                            <li style="width:15%">
+                                <select name="" id="dropStructureType" class="box_text fl" style="width:95%;">
+                                    <option value="0">-选择类型-</option>
+                                    <option value="1">头部</option>
+                                    <option value="2">中部</option>
+                                    <option value="3">尾部</option>
+                                </select>
+                            </li>
+                            <li style="width:15%">
+                                <select class="box_text fl" id="document_type" name="document_type" style="width:95%;">
+                                    <option value="0">-请选择-</option>
+                                    <option value="40016003">预估函</option>
+                                    <option value="40016004">估价报告</option>
+                                </select>
+                            </li>
+                            <li style="width:35%"><select name="" id="dropStructure" class="box_text fl" style="width:95%;"></select></li>
+                            <li style="width:20%;*width:19%;"><a class="fl mblue_bg white tc" id="btnReGetBook">重新获取</a></li>
+                            <li style="width:15%;*width:14%;"><a class="fl mblue_bg white tc" id="btnSave" onclick="document.submit(); return false;">提交配置</a></li>
+                        </ul>
+                    </div>
+                }
                 <div id="dataLabelList" style="overflow-y: auto;max-height: 600px;">
 <table id="remarks" style=" width: 100%;" border="0" cellpadding="0" cellspacing="0" class="table table2">
     <!-- 正常显示 -->

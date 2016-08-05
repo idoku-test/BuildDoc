@@ -85,3 +85,20 @@ function AlertDiv(seletor, zindex) {
 function AlertClose(seletor) {
     $(seletor).closest(".alert").css("display", "none");
 }
+
+function ArtDailogTips(content, times, locked) {
+    var dailog =
+     artDialog({
+         id: 'Tips',
+         title: false,
+         cancel: false,
+         fixed: true,
+         lock: locked,
+         zIndex: 9999999
+     })
+ .content('<div style="padding: 0 1em;">' + content + '</div>');
+    if (times > 0) {
+        dailog.time(times);
+    }
+    return dailog;
+}

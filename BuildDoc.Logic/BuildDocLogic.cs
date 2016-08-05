@@ -330,6 +330,36 @@ namespace BuildDoc.Logic
             }
             return result;
         }
+
+        /// <summary>
+        /// 根据客户ID获得该公司下的所有构件
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="template_Type"></param>
+        /// <returns></returns>
+        public IList<DocumentStructureDTO> GetStructuresByCustomer(decimal customerId, decimal stype, decimal dtype)
+        {
+            IList<DocumentStructureDTO> result = null;
+            using (BaseDB dbHelper = new OmpdDBHelper())
+            {
+                try
+                {
+                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    dic.Add("i_customerId", customerId);                  
+                    dic.Add("i_Structure_Type", stype);
+                    dic.Add("i_Document_Type", dtype);
+                    result = dbHelper.ExecuteListProc<DocumentStructureDTO>("PKG_USC_DocumentStructure.sp_structure_getByCustomer", dic);
+
+                }
+                catch
+                {
+                    result = new List<DocumentStructureDTO>();
+                    throw;
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         #region instance
