@@ -15,7 +15,7 @@ $(function () {
     document.InitDataSource();
     //标签行点击
     $(document).on('click', '#remarks tr[name="remarkMould"]', function () {
-        document.GetRemarkInfo($(this).find("[title='labelName']").html(),$(this).find("[title='configInfo']").html());
+        document.SetRemarkInfo($(this).find("[title='labelName']").html(), $(this).find("[title='config']").html());
         $("#remarks tr").removeClass("hover");
         $(this).attr("class", "hover");
     });
@@ -45,6 +45,7 @@ $(function () {
         $('#DataMethod').change();
     });
     $('#LabelType').change();
+    
 
     //数据源切换
     $('#DataMethod').change(function () {
@@ -265,7 +266,6 @@ document.ResetDataLabel = function ()
 }
 
  
- 
 document.CloseConfigConditionDailog = function () {
     AlertClose($("#alert_ConfigCondition"));
     document.ResetDataLabel();
@@ -305,14 +305,15 @@ document.GetRemarks = function () {
 }
 
 //获取书签信息
-document.GetRemarkInfo = function (labelName, config) {
+document.SetRemarkInfo = function (labelName, configStr) {
     $('#LabelName').val(labelName);
-    if (config === "")
+    if (configStr === "")
         return;
-    var info = $.parseJSON(config);
-
+    var config = $.parseJSON(configStr);
+    $("#LabelType").val(config.LabelType).change();
+    document.SetRemarkConfig(config, "div_DataLabel");
 }
-
+ 
 //解析json配置--为表格增加标签行
 document.AddRemarkRow = function (num,remark) {
     var mould = $('#docMould').find("[name='remarkMould']").clone();
@@ -636,6 +637,31 @@ document.GetRemarkConfig = function (remark,continer) {
     return remark;
 }
 
+//设置书签配置
+document.SetRemarkConfig = function (remark, continer) {
+    var config = remark.Config;
+    switch (remark.LabelType) {
+        case "TextLabel":
+            document.SetValueConfig(continer,config);
+            break;
+        case "DocLabel":
+            document.SetValueConfig(continer, config);
+            break;
+        case "TableLabel":
+            document.SetValueConfig(continer, config);
+            break;
+        case "ImageLabel":
+            document.SetValueConfig(continer, config);
+            break;
+        case 'ConditionLabel':
+            break;
+        default:
+            //出错
+            break;
+
+    }
+}
+
 //获取文本配置
 document.GetValueConfig = function (container) {
     config = {};
@@ -657,6 +683,26 @@ document.GetValueConfig = function (container) {
             //报错
     }
     return config;
+}
+
+//设置文本配置
+document.SetValueConfig = function (container,config) {   
+    switch (config.GetDataMethod) {
+        case "Const":
+            //document.SetConfigJson(container, "GetDataMetho", "method", "Const", config);
+            document.SetConfigJson(container,config);
+            break;
+        case "Formula":
+            //document.SetConfigJson(container, "GetDataMethod", "method", "Formula", config);            
+            document.SetConfigJson(container,config);
+            break;
+        case "Source":
+            //document.SetConfigJson(container, "GetDataMethod", "method", "Source", config);
+            document.SetConfigJson(container, config);
+            break;
+        default:
+            //报错
+    }
 }
 
 //获取条件配置
@@ -754,31 +800,41 @@ document.GetConfigJson = function (continer,ctrl, filter, value, config) {
 }
 
 //设置配置项
-document.SetRemarkConfig = function (remark, continer) {
-    switch (remark.LabelType) {
-        case "TextLabel":
-            remark.Config = document.SetConfigJson(remark, continer);
-
-            break;
-        case "DocLabel":
-
-            break;
-        case "TableLabel":
-
-            break;
-        case "ImageLabel":
-
-            break;
-        case 'ConditionLabel':
-            //            
-            break;
-        default:
-            //出错
-            break;
-
-    }
-
+/*
+document.SetConfigJson = function (continer,ctrl,filter,config) {
+    $('#' + continer + ' [name="' + ctrl + '"]').each(function (i, element) {
+        //筛选属性值
+        if ($(this).is(filter) && $(this).attr(filter) != value) {
+            return;
+        }
+        $(this).find(':input').each(function (i, obj) {
+            var key = $(this).attr("key");            
+            if (config[key] === null && config[key] === undefined)
+                return true;
+            if ($(this).is("select")) {
+                $(this).val(config[key]).change();
+            }
+            else if ($(this).is("input:checkbox")) {
+                if (config[key]) {
+                    $(this).prop("checked", true);
+                }
+            }
+            else if ($(this).is("input:radio")) {
+                if ($(this).val() === config[key]) {
+                    $(this).prop("checked", true);
+                }
+            }
+           // else if ($(this).hasClass("autocomplate")) {               
+           // }
+            else {
+                $(this).val(config[key]);
+            }
+            
+        });
+    });
 }
+*/
+
 
 //设置配置项 
 document.SetConfigJson = function (continer, config){
@@ -877,10 +933,6 @@ document.PaintTable = function (Id) {
     }) //移除该行的class    
     $("#" + Id).find("tr:visible:even").addClass("alt");
     //给class为stripe的表格的偶数行添加class值为alt 
-    //www.divcss5.com 整理特效 
-
-
-
 }
  
 String.prototype.startsWith = function (prefix) {

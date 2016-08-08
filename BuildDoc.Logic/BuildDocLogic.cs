@@ -129,20 +129,21 @@ namespace BuildDoc.Logic
                     result = dbHelper.ExecuteListProc<DataSourceDTO>("PKG_UCS_DataSource.sp_Data_Source_get", dic);
 
                     //提取sql中的参数
-                    Regex reg = new Regex(@"(?<=as\b).*?(?=,)");
+                    Regex reg = new Regex(@"(?<=""\b).*?(?="")");
 
                     foreach (var info in result)
                     {
                         var fields = new List<string>();
+                        info.SQL_CONTENT = info.SQL_CONTENT.Replace("\r","").Replace("\n","");
                         if (reg.IsMatch(info.SQL_CONTENT))
                         {
                             var matches = reg.Matches(info.SQL_CONTENT);
                             foreach (Match mc in matches)
                             {
                                 if (!fields.Contains(mc.Value))
-                                    fields.Add(mc.Value.Replace("\"", ""));
+                                    fields.Add(mc.Value.ToLower().Trim());
                             }
-                            info.Fields = fields;
+                            info.Fields = fields;                            
                         }
                     }
                 }

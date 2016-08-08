@@ -20,7 +20,11 @@ namespace BuildDoc.Logic
         IList<DataSourceDTO> GetAllDataSource();
 
         IList<DataSourceDTO> GetDataSource(int templateTypeId);
-
+        /// <summary>
+        /// 获得数据源
+        /// </summary>
+        /// <param name="type">-1获得所有的数据源  1：获得除数据转换之外的数据源  </param>
+        /// <returns></returns>
         IList<DataSourceDTO> GetDataSourceByType(int type);
 
         DataTable GetDataSource(string dbName, string sql);
