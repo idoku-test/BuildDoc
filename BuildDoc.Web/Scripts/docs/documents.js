@@ -72,7 +72,8 @@ $(function () {
     //控件类型
     $('#ControlType').change(function () {
         var val = $(this).val();       
-        document.Selector($('[name="LabelControl"]'), "control", val);      
+        document.Selector($('[name="LabelControl"]'), "control", val);
+        document.Selector($('[name="LabelFill"]'), "control", val);
         $('#FillType').change();
     });
     $('#ControlType').change();
@@ -81,10 +82,10 @@ $(function () {
     $('#FillType').change(function () {
         var val = $(this).val();
         var control = $('#ControlType').val();
-        //屏蔽填充方式不一致的选项
-        document.Selector($('[name="LabelFill"]'), "fill", val);
-        document.Selector($('[name="LabelFill"][control]'), "control", control);
-       
+        if (control === "Dropdown") {
+            //数据源切换
+            document.Selector($('[name="LabelFill"]'), "fill", val);
+        }       
     });
     $('#FillType').change();
 
@@ -276,9 +277,12 @@ document.InitDataSource = function () {
     
     document.BindDataSource($('#div_DataLabel').find('[name="sltDataSource"]'));
     document.BindDataSource($('#alert_ConfigCondition').find('[name="sltDataSource"]'));
+   
     //绑定数据源
-    document.BindConstSource($('[name="sltFillDataSource"]'));
-    document.BindConstSource($('[name="sltFormatFields"]'));        
+    document.BindConstSource($('#div_Control').find('[name="sltDataSource"]'),true);
+    document.BindConstSource($('[name="sltFormatFields"]'),false);
+
+
 }
 
 //获取书签
@@ -482,7 +486,7 @@ document.SaveConditionSet = function () {
 }
 
 //绑定常量数据源
-document.BindConstSource = function (sltSource) {
+document.BindConstSource = function (sltSource,hasFilter) {
     $.getJSON("/DataSource/GetLabelDealSource", function (datas) {
         document.datasource = datas;
         //绑定数据源
@@ -492,6 +496,21 @@ document.BindConstSource = function (sltSource) {
                 text: datas[i].DATA_SOURCE_NAME
             }).appendTo(sltSource);
         };
+        if (hasFilter) {
+
+            var closet = $(sltSource).closest('div');
+            $(sltSource).change(function () {
+                var val = $(this).val();
+                $.each(document.datasource, function (i, data) {
+                    if (data.DATA_SOURCE_NAME === val) {
+                        var fields = data.Fields;
+                        document.BindFields($(closet).find('[name="sltFilterFields"]'), fields);
+                    }
+                });
+             
+            });
+            $(sltSource).change();
+        }
     });
 }
  
@@ -642,7 +661,8 @@ document.SetRemarkConfig = function (remark, continer) {
     var config = remark.Config;
     switch (remark.LabelType) {
         case "TextLabel":
-            document.SetValueConfig(continer,config);
+            document.SetValueConfig(continer, config);
+            document.SetControlConfig(remark.Control);
             break;
         case "DocLabel":
             document.SetValueConfig(continer, config);
@@ -762,6 +782,13 @@ document.GetControlConfig = function () {
     }
     return control;
 }
+
+//设置控件配置
+document.SetControlConfig = function (control) {
+    $("#ControlType").val(control.ControlType);
+    document.SetConfigJson("div_Control", control);
+
+};
 
 //获取配置项
 //获取筛选属性的输入配置项
@@ -898,6 +925,7 @@ document.Selector = function (ctrls, attribute, value) {
     $.each(ctrls, function () {
         var ctrl = $(this);
         var hasAttr = $(ctrl).is('[' + attribute + ']');
+        //不存在属性直接显式
         if (!hasAttr) {
             $(this).show();
             return;

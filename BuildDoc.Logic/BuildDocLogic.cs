@@ -127,25 +127,8 @@ namespace BuildDoc.Logic
                     Dictionary<string, object> dic = new Dictionary<string, object>();
                     dic.Add("i_Type", type);
                     result = dbHelper.ExecuteListProc<DataSourceDTO>("PKG_UCS_DataSource.sp_Data_Source_get", dic);
-
-                    //提取sql中的参数
-                    Regex reg = new Regex(@"(?<=""\b).*?(?="")");
-
-                    foreach (var info in result)
-                    {
-                        var fields = new List<string>();
-                        info.SQL_CONTENT = info.SQL_CONTENT.Replace("\r","").Replace("\n","");
-                        if (reg.IsMatch(info.SQL_CONTENT))
-                        {
-                            var matches = reg.Matches(info.SQL_CONTENT);
-                            foreach (Match mc in matches)
-                            {
-                                if (!fields.Contains(mc.Value))
-                                    fields.Add(mc.Value.ToLower().Trim());
-                            }
-                            info.Fields = fields;                            
-                        }
-                    }
+                    //提取sql中参数
+                    ExtractSqlParms(result);
                 }
                 catch (Exception ex)
                 {
@@ -153,6 +136,28 @@ namespace BuildDoc.Logic
                 }
             }
             return result;
+        }
+
+        private void ExtractSqlParms(IList<DataSourceDTO> result)
+        {
+            //提取sql中的参数
+            Regex reg = new Regex(@"(?<=""\b).*?(?="")");
+
+            foreach (var info in result)
+            {
+                var fields = new List<string>();
+                info.SQL_CONTENT = info.SQL_CONTENT.Replace("\r", "").Replace("\n", "");
+                if (reg.IsMatch(info.SQL_CONTENT))
+                {
+                    var matches = reg.Matches(info.SQL_CONTENT);
+                    foreach (Match mc in matches)
+                    {
+                        if (!fields.Contains(mc.Value))
+                            fields.Add(mc.Value.ToLower().Trim());
+                    }
+                    info.Fields = fields;
+                }
+            }
         }
 
         /// <summary>
@@ -191,7 +196,9 @@ namespace BuildDoc.Logic
                 try
                 {
                     Dictionary<string, object> dic = new Dictionary<string, object>();
-                    list = dbHelper.ExecuteListProc<LabelDealWithModel>("PKG_UCS_DataSource.sp_label_deal_with_get", dic);
+                    list = dbHelper.ExecuteListProc<LabelDealWithModel>("PKG_UCS_DataSource.sp_label_deal_with_get", dic);  
+                    
+
                 }
                 catch (Exception ex)
                 {

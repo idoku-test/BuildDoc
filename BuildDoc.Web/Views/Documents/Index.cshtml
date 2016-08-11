@@ -322,17 +322,15 @@
             <ul class="oh">
                 <li>
                     <p class="tc">  类型:</p>
-                    @Html.EnumDropDownList("ControlType", BuildDoc.ControlType.Text, null, true, new { })
+                    @Html.EnumDropDownList("ControlType", BuildDoc.ControlType.Text, null, true, new { @class = "fl box_text" })
                 </li>
                 <li name="LabelControl" control="@BuildDoc.ControlType.Text">
-                    <p class="tc"> 格式要求</p>
-                                @*@Html.EnumDropDownList("ControlType", BuildDoc.ControlType.Text, null, true, new { })*@
+                    <p class="tc"> 格式要求</p>                           
                     <select key="ValidateString" class="box_text fl">
-                                    <option value="">-请选择-</option>
+                        <option value="">-请选择-</option>
                         <option value="1">整数</option>
                         <option value="2">小数及整数</option>
-                    </select>
-                    @*<input type="text" id="Control_Text_ValidateString" class="fl box_text" />*@
+                    </select>                    
                 </li>
                 <li name="LabelControl" control="@BuildDoc.ControlType.Date">
                     <p class="tc">
@@ -348,7 +346,7 @@
                     <p class="tc">
                         填充方式:
                     </p>
-                    @Html.EnumDropDownList("FillType", BuildDoc.FillType.Custom, null, true, new { })
+                    @Html.EnumDropDownList("FillType", BuildDoc.FillType.Custom, null, true, new { @class = "fl box_text" })
                 </li>
                 <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.Custom">
                     <p class="tc">
@@ -363,9 +361,30 @@
                 <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.DataSource">
                     <p class="tc">
                         数据源:
-                    </p><select name="sltFillDataSource" key="DataSource" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
+                    </p><select name="sltDataSource" key="DataSource" class="box_text fl"><option value="">-请选择-</option></select><span class="red">*</span>
                 </li>
-                <li name="LabelControl" control="@BuildDoc.ControlType.Dropdown">
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.DataSource">
+                    <p class="tc">
+                        筛选字段:
+                    </p><select name="sltFilterFields" key="FilterFieldName" class="box_text fl">
+    <option value="">请先选择数据源</option>
+</select>
+                </li>
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.DataSource">
+                    <p class="tc">
+                        筛选操作:
+                    </p><select name="sltFilterOperation" key="FilterOperation" class="box_text fl">
+    <option value="">-请选择-</option>
+    <option value="=">等于</option>
+</select>
+                </li>
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown" fill="@BuildDoc.FillType.DataSource">
+                    <p class="tc">
+                        筛选值:
+                    </p><input name="sltFilterValue" key="FilterValue" type="text" class="fl box_text" />
+                </li>
+
+                <li name="LabelFill" control="@BuildDoc.ControlType.Dropdown">
                     <p class="tc">是否多选:</p>  <input type="checkbox" key="IsMultiMode" style="margin-top: 7px; margin-left: 5px;" class="fl" />
                 </li>
                 <li name="LabelControl">
