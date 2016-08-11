@@ -190,6 +190,8 @@ document.GetStructure = function (Id) {
         url: "GetStructureInfo", //获取构件配置内容
         data: { id: Id },
         success: function (info) {
+           
+
             //解析json配置信息            
             document.AnalysisConfig(info.SET_CONTENT);
             //绘制表格
@@ -208,7 +210,13 @@ document.AnalysisConfig = function (config) {
         return;
     }  
     var marks = $.parseJSON(config);
+    document.remarks = new Array();
     $.each(marks, function (i, mark) {
+        var bookInfo = [];
+        bookInfo.LabelName = mark.LabelName;
+        bookInfo.Name = mark.LabelName;
+        document.remarks.push(bookInfo);
+        //新增书签行
         document.AddRemarkRow(i + 1, mark);
     });
 };
@@ -310,6 +318,7 @@ document.GetRemarks = function () {
 
 //获取书签信息
 document.SetRemarkInfo = function (labelName, configStr) {
+    document.Reset();
     $('#LabelName').val(labelName);
     if (configStr === "")
         return;
@@ -347,23 +356,26 @@ document.AddRelateRow = function (num, relate) {
     labelCtrl.val(relate.LabelName);
     var filedCtrl = mould.find("[title='fieldName']").find('input');
     filedCtrl.val(relate.FieldName);
-    document.AutoReMarks(labelCtrl);
-    document.AutoReMarks(filedCtrl);
+    document.AutoReMarks(labelCtrl,true);
+    document.AutoReMarks(filedCtrl,true);
     $('#relates tr:last').after(mould);
 }
 
 //自动完成书签
-document.AutoReMarks = function (control) {   
+document.AutoReMarks = function (control,hasAlt) {   
     $(control).autocomplete({
         minLength: 0,        
         source: function (request, response) {
             response($.map(document.remarks, function (value, key) {
+                if (hasAlt) {
+
+                }
                 return {
                     label: value.LabelName,
-                    value:value.labelName
+                    value: hasAlt ? "@" + value.LabelName : value.LabelName
                 }
             }));
-        }
+        }       
     }).click(function () {
         $(this).autocomplete("search", $(this).val());
     });
@@ -383,7 +395,7 @@ document.AddTableFieldRow = function (num, field) {
     mould.find("[title='number']").text(num);
 
     var filedCtrl = mould.find("[title='field']").find('input');
-    document.AutoReMarks(filedCtrl);
+    document.AutoReMarks(filedCtrl,false);
     mould.find("[title='configStr']").val(field.FormatInfo);    
     mould.find("[title='config']").val(field.FieldName).click(function () {
         document.AlertTableFieldConfig(num, "");
@@ -453,7 +465,7 @@ document.AddConditionSetExpRow = function (conditionSetExp, expLogic) {
     $('#condtionSetExps').append(mould);
 
     //条件字段自动完成
-    document.AutoReMarks(mould.find("[name='txtConditionSetRemark']"));
+    document.AutoReMarks(mould.find("[name='txtConditionSetRemark']"), true);
 }
 
 
@@ -599,7 +611,6 @@ document.AlertConditionConfig = function (num, configStr) {
     }
 }
 
-
 //保存配置
 document.Save = function () {
 
@@ -663,6 +674,7 @@ document.SetRemarkConfig = function (remark, continer) {
         case "TextLabel":
             document.SetValueConfig(continer, config);
             document.SetControlConfig(remark.Control);
+            document.SetRelateConfig(remark.Relate);
             break;
         case "DocLabel":
             document.SetValueConfig(continer, config);
@@ -756,6 +768,13 @@ document.GetRelateConfig = function () {
     return relates;
 }
 
+document.SetRelateConfig = function (relates) {
+
+    $.each(relates, function (i, relate) {
+        document.AddRelateRow(i+1, relate);
+    });
+}
+
 //获取填充字段配置
 document.GetColumnInfo = function () {
     var cols = [];
@@ -785,7 +804,7 @@ document.GetControlConfig = function () {
 
 //设置控件配置
 document.SetControlConfig = function (control) {
-    $("#ControlType").val(control.ControlType);
+    $("#ControlType").val(control.ControlType).change();
     document.SetConfigJson("div_Control", control);
 
 };
@@ -862,7 +881,6 @@ document.SetConfigJson = function (continer,ctrl,filter,config) {
 }
 */
 
-
 //设置配置项 
 document.SetConfigJson = function (continer, config){
     for (var c in config)
@@ -873,7 +891,7 @@ document.SetConfigJson = function (continer, config){
         if (obj.is("select"))
             obj.val(config[c]).change();
         else if (obj.is("input:checkbox")) {           
-                 obj.prop("checked",config[c])
+            obj.prop("checked", config[c] === "true" ? "checked" : "");
         } else if (obj.is("input:radio")) {
             obj.filter("[value='" + config[c] + "']").prop("checked", true);
         } else {
@@ -946,6 +964,36 @@ document.Selector = function (ctrls, attribute, value) {
             if (value == "" || (val != "" && val.indexOf(value) == -1)) {
                 $(ctrl).hide();
             }
+        }
+    });
+}
+
+//还原页面
+document.Reset = function () {
+
+    document.Clear("#div_DataLabel");
+    document.Clear("#div_Control");
+    document.Clear("#div_FormatInfo");
+
+    $("#conditions tr:gt(0)").remove();
+    $("#relates tr:gt(0)").remove();
+    $("#tableFields tr:gt(0)").remove();    
+}
+
+//清空值
+document.Clear = function(continer){
+    $(continer).find('input,select').each(function (i, ctrl) {        
+        if ($(this).is("select")) {
+            $(this).val('');
+        }
+        else if ($(this).is("input:checkbox")) {
+            $(this).attr("checked", false);
+        }
+        else if ($(this).is("input:radio")) {
+            $(this).eq(0).prop('checked', true);
+        }
+        else {
+            $(this).val("");
         }
     });
 }
